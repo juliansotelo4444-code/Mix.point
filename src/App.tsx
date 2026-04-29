@@ -14,7 +14,7 @@ function App() {
     window.open(`https://wa.me/5491131469587?text=${mensaje}`, '_blank');
   };
 
-  return (
+ return (
     <div className="app-container">
       <header className="header">
         <img src="/assets/logo_mixpoint.png" alt="Logo" className="logo-header" />
@@ -24,8 +24,19 @@ function App() {
 
       <main>
         <section className="promotions-section">
-          <img src="/assets/Flyer-mix-point.png" alt="Promo 1" className="flyer" />
-          {/* <img src="/assets/promo_privado.png" alt="Promo 2" className="flyer" /> */}
+          <picture>
+            {/* Si la pantalla tiene 800px o más, usa la horizontal */}
+            <source 
+              media="(min-width: 800px)" 
+              srcSet="/assets/Flyer-mix-point.png" 
+            />
+            {/* Si es menor a 800px (celulares), usa la vertical */}
+            <img 
+              src="/assets/Flyer-mix-vertical.png" 
+              alt="Promoción Mix Point" 
+              className="flyer" 
+            />
+          </picture>
         </section>
 
         <h2 style={{ textAlign: 'center' }}>Nuestro Catálogo</h2>

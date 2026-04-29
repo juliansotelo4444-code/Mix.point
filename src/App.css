@@ -36,19 +36,34 @@
   margin: 30px 0;
 }
 
+
 .flyer {
-  /* Busca esto y reemplázalo por completo: */
-.flyer {
-  width: 100%;             /* Primero ocupa todo el ancho disponible del contenedor */
-  max-width: 1000px;       /* Pero le ponemos un tope para que no se estire infinito en PC y se vea mal */
-  margin: 0 auto;          /* Centra la imagen si el tope es menor al ancho de pantalla */
-  border-radius: 15px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-  display: block;          /* Ayuda con el centrado del margen auto */
-}
+  width: 100%;
+  height: auto;
+  display: block;
+  max-width: 1000px; /* Para que en monitores muy grandes no se pixele */
+  margin: 0 auto;
 }
 
-/* Grilla de Productos */
+.flyer-container img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 8px; /* Opcional, para que quede más pro */
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+/* Media Query para el resto del diseño */
+@media (max-width: 799px) {
+  .product-grid {
+    grid-template-columns: 1fr; /* Una columna en celu */
+  }
+  
+  h1 {
+    font-size: 1.8rem;
+  }
+}
+
 .product-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -73,7 +88,6 @@
   border-radius: 10px;
 }
 
-/* Controles + y - */
 .quantity-controls {
   display: flex;
   align-items: center;
@@ -99,18 +113,18 @@
   box-sizing: border-box;
   background-color: var(--dark);
   color: white;
-  padding: 15px 40px; /* Más padding a los costados */
+  padding: 15px 40px; 
   border-top: 3px solid var(--primary);
   z-index: 1000;
   box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.3);
 
-  /* MAGIA AQUÍ: Flexbox dinámico */
+  
   display: flex;
-  flex-direction: row;       /* Por defecto en fila (horizontal) */
-  flex-wrap: wrap;           /* Si no entra, salta de línea */
-  justify-content: space-between; /* Espacio entre el total y el botón */
-  align-items: center;       /* Centrados verticalmente entre sí */
-  gap: 20px;                 /* Separación mínima */
+  flex-direction: row;       
+  flex-wrap: wrap;           
+  justify-content: space-between; 
+  align-items: center;       
+  gap: 20px;                 
 }
 
 /* Ajuste para que en celulares (pantallas chicas) vuelva a ser vertical */
