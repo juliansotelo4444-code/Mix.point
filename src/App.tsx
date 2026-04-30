@@ -4,8 +4,10 @@ import { ProductCard } from './components/ProductCard';
 import './App.css';
 
 function App() {
-  const { cart, addToCart, cartTotal } = useCart();
-  const MINIMO_COMPRA = 70000;
+  // En la parte superior de App.tsx
+const { cart, addToCart, removeFromCart, cartTotal } = useCart();
+  const MINIMO_COMPRA = 20000;
+  
 
   const handlePedidoWhatsApp = () => {
   const productosMsg = cart
@@ -65,6 +67,22 @@ function App() {
       </main>
 
       <footer className="cart-footer">
+        {/* Esto va dentro del footer o antes del total en App.tsx */}
+<div className="cart-items-list">
+  {cart.map((item) => (
+    <div key={`${item.id}-${item.escalaSeleccionada}`} className="cart-item-mini">
+      <span>{item.nombre} ({item.escalaSeleccionada}) x{item.quantity}</span>
+      
+      {/* AQUÍ USAMOS LA FUNCIÓN QUE TENÍA ERROR */}
+      <button 
+  className="btn-remove" 
+  onClick={() => removeFromCart(item.id)} // Pasamos solo el ID numérico
+>
+  Borrar
+</button>
+    </div>
+  ))}
+</div>
         <p>Total Pedido: <span className="gold-text">${cartTotal}</span></p>
         {cartTotal >= MINIMO_COMPRA ? (
           <p className="free-ship">¡Envío Gratis habilitado! 🚚</p>

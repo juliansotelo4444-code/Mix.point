@@ -1,25 +1,30 @@
+
 import { useState } from 'react';
-import type { Product, CartItem } from '../types';
+import type { Product, CartItem, Precios } from '../types'; 
 
 export const useCart = () => {
   const [cart, setCart] = useState<CartItem[]>([]);
 
-  const addToCart = (product: Product) => {
-    setCart((prevCart) => {
-      const existingItem = prevCart.find((item) => item.id === product.id);
+ const addToCart = (product: Product, peso: keyof Precios, cantidad: number) => {
+  setCart(prevCart => {
+    // Revisamos si ya existe el mismo producto con el mismo peso
+    const existingItem = prevCart.find(
+      item => item.id === product.id && item.escalaSeleccionada === peso
+    );
 
-      if (existingItem) {
-        return prevCart.map((item) =>
-          item.id === product.id 
-            ? { ...item, quantity: item.quantity + 1 } 
-            : item
-        );
-      }
+    if (existingItem) {
+      // Si ya existe, le sumamos la nueva cantidad a la que ya tenía
+      return prevCart.map(item =>
+        (item.id === product.id && item.escalaSeleccionada === peso)
+          ? { ...item, quantity: item.quantity + cantidad }
+          : item
+      );
+    }
 
-      // Agregamos el producto con la escala por defecto 'kg'
-      return [...prevCart, { ...product, quantity: 1, escalaSeleccionada: 'kg' }];
-    });
-  };
+    // Si es nuevo, lo agregamos con la cantidad que viene de la tarjeta
+    return [...prevCart, { ...product, escalaSeleccionada: peso, quantity: cantidad }];
+  });
+};
 
   // Calculamos el total usando el precio de la escala seleccionada
   const cartTotal = cart.reduce((acc, item) => {
