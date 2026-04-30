@@ -35,21 +35,21 @@ export const products: Product[] = [
     nombre: "Almendras Non Pareil Chilenas",
     categoria: "Frutos Secos",
     precios: { kg: 23000, cincoKg: 21850, diezKg: 21275 },
-    imagen: "/assets/almendras-chilenas.jpg"
+    imagen: "/assets/Almendras-Chilenas.jgp"
   },
   {
     id: 6,
     nombre: "Castañas De Caju W4",
     categoria: "Frutos Secos",
     precios: { kg: 18975, cincoKg: 18400, diezKg: 17250 },
-    imagen: "/assets/caju.jpg"
+    imagen: "/assets/Castañas De Caju W4.jfif"
   },
   {
     id: 7,
     nombre: "Pistacho",
     categoria: "Frutos Secos",
     precios: { kg: 42550, cincoKg: 40250, diezKg: 36800 },
-    imagen: "/assets/pistacho.jpg"
+    imagen: "/assets/Pistacho.jpg"
   },
 
   // --- MIXES ---
@@ -59,7 +59,7 @@ export const products: Product[] = [
     descripcion: "Arandanos, almendras, caju, nuez",
     categoria: "Mixes",
     precios: { kg: 18975, cincoKg: 18400, diezKg: 17480 },
-    imagen: "/assets/mix-patagonia.jpg"
+    imagen: "/assets/Mix Patagonia.jpg"
   },
   {
     id: 9,
@@ -67,7 +67,7 @@ export const products: Product[] = [
     descripcion: "Almendra, nuez, pasas, castaña",
     categoria: "Mixes",
     precios: { kg: 14950, cincoKg: 13800, diezKg: 12650 },
-    imagen: "/assets/mix-sin-mani.jpg"
+    imagen: "/assets/Mix Frutas Sin Mani.jpg"
   },
   {
     id: 10,
@@ -75,7 +75,7 @@ export const products: Product[] = [
     descripcion: "Nuez, castañas, almendras, avellanas",
     categoria: "Mixes",
     precios: { kg: 21275, cincoKg: 20700, diezKg: 20125 },
-    imagen: "/assets/mix-premium.jpg"
+    imagen: "/assets/Mix Premium.jpg"
   },
   {
     id: 11,
@@ -138,13 +138,13 @@ export const products: Product[] = [
     nombre: "Aceite De Oliva x 2LT",
     categoria: "Aceites",
     precios: { kg: 9660, cincoKg: 8970, diezKg: 8280 },
-    imagen: "/assets/aceite-oliva.jpg"
+    imagen: "/assets/Aceite De Oliva x 2LT.jfif"
   },
   {
     id: 19,
     nombre: "Miel Pura X 1KG",
     categoria: "Otros",
-    precios: { kg: 4025, cincoKg: 3450 }, // Pack x6: $20.700 [cite: 4]
-    imagen: "/assets/miel.jpg"
+    precios: { kg: 4025, cincoKg: 3450 }, 
+    imagen: "/assets/Miel Pura X 1KG.jfif"
   }
 ];
