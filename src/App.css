@@ -217,3 +217,85 @@ h1 {
   color: #888;
   font-weight: 400;
 }
+
+/* Forzamos el estilo del selector de Mix Point */
+.selector-container select {
+  appearance: none !important; /* Quita la flecha gris de Windows */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23d4af37' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 12px center !important;
+  background-size: 16px !important;
+  padding-right: 40px !important; /* Espacio para que el texto no pise la flecha */
+  border: 1px solid #ddd !important;
+  border-radius: 4px !important;
+  background-color: white !important;
+  height: 40px;
+  cursor: pointer;
+}
+
+.selector-container select:focus {
+  border-color: #d4af37 !important;
+  outline: none;
+}
+
+.selector-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centra el label y el select */
+  justify-content: center;
+  margin: 10px 0;
+}
+
+.price {
+  margin-top: 15px;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.selector-container {
+  margin: 20px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.selector-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #888;
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+.select-formato {
+  appearance: none;
+  background-color: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 10px 40px 10px 15px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #2c3e50;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 90%;
+  text-align: center;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23d4af37' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 15px center;
+}
+
+.select-formato:hover {
+  border-color: #0fee2d;
+  background-color: #fff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.select-formato:focus {
+  outline: none;
+  border-color: #14cc3c;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+}

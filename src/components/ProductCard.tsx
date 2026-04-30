@@ -18,20 +18,20 @@ export const ProductCard = ({ product, addToCart }: Props) => {
         {product.descripcion && <p className="description">{product.descripcion}</p>}
         
         <div className="selector-container">
-          <label htmlFor={`peso-${product.id}`}>Seleccionar Formato:</label>
-          <select 
-            id={`peso-${product.id}`}
-            value={pesoSeleccionado} 
-            onChange={(e) => setPesoSeleccionado(e.target.value as keyof Precios)}
-          >
-            {/* Renderizamos las opciones solo si existen en el objeto precios de este producto */}
-            <option value="kg">1 Kilogramo</option>
-            {product.precios.cincoKg && <option value="cincoKg">Bolsa 5kg</option>}
-            {product.precios.diezKg && <option value="diezKg">Bolsa 10kg</option>}
-            {product.precios.veinticincoKg && <option value="veinticincoKg">Bolsa 25kg</option>}
-            {product.precios.treintaKg && <option value="treintaKg">Bolsa 30kg</option>}
-          </select>
-        </div>
+  <span className="selector-label">Formato de venta</span>
+  <select 
+    id={`peso-${product.id}`}
+    className="select-formato"
+    value={pesoSeleccionado} 
+    onChange={(e) => setPesoSeleccionado(e.target.value as keyof Precios)}
+  >
+    <option value="kg">Por Kilogramo</option>
+    {product.precios.cincoKg && <option value="cincoKg">Bolsa 5kg (Mayorista)</option>}
+    {product.precios.diezKg && <option value="diezKg">Bolsa 10kg (Mayorista)</option>}
+    {product.precios.veinticincoKg && <option value="veinticincoKg">Bolsa 25kg (Bulto)</option>}
+    {product.precios.treintaKg && <option value="treintaKg">Bolsa 30kg (Bulto)</option>}
+  </select>
+</div>
 
         <p className="price">
           {/* Accedemos al valor numérico usando el peso seleccionado como llave */}
