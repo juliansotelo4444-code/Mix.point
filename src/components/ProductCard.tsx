@@ -39,8 +39,21 @@ export const ProductCard = ({ product, addToCart }: Props) => {
         </div>
 
         <p className="price">
-          Precio: <strong>${product.precios[pesoSeleccionado]?.toLocaleString()}</strong>
-        </p>
+  Precio: <strong>
+    ${(() => {
+      const multiplicadores: Record<string, number> = {
+        kg: 1,
+        cincoKg: 5,
+        diezKg: 10,
+        veinticincoKg: 25,
+        treintaKg: 30
+      };
+      const precioUnitario = product.precios[pesoSeleccionado] ?? 0;
+      const total = precioUnitario * multiplicadores[pesoSeleccionado];
+      return total.toLocaleString("es-AR");
+    })()}
+  </strong>
+</p>
 
         {/* Controles de cantidad integrados */}
         <div className="quantity-controls">
