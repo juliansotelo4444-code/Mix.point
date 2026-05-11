@@ -389,7 +389,7 @@ export const products: Product[] = [
     nombre: "Mani Tostado Sin Sal",
     categoria: "Snacks",
     precios: { kg: 3220, cincoKg: 2875, diezKg: 2645, veinticincoKg: 2530 },
-    imagen: "/assets/mani-tostado.jpg"
+    imagen: "/assets/mani-salado.jpg"
   },
   {
     id: 145,
@@ -971,14 +971,14 @@ export const products: Product[] = [
     nombre: "Aceite De Oliva x 2LT",
     categoria: "Aceites",
     precios: { kg: 9660, cincoKg: 8970, diezKg: 8280 },
-    imagen: "/assets/Aceite De Oliva x 2LT.jfif"
+    imagen: "/assets/aceite-oliva.jpg"
   },
   {
     id: 134,
     nombre: "Aceite De Oliva x 1/2 Vidrio",
     categoria: "Aceites",
     precios: { kg: 5290, cincoKg: 4830 },
-    imagen: "/assets/aceite-oliva-vidrio.jpg"
+    imagen: "/assets/aceite-oliva.jpg"
   },
   {
     id: 135,
@@ -1042,7 +1042,7 @@ export const products: Product[] = [
     descripcion: "x360cc — Bio Nativa",
     categoria: "Aceites",
     precios: { kg: 9890 },
-    imagen: "/assets/aceite-coco-virgen.jpg"
+    imagen: "/assets/aceite-coco.jpg"
   },
   {
     id: 143,
