@@ -7,7 +7,7 @@ export const products: Product[] = [
     id: 1,
     nombre: "Nueces Mariposa Chandler Extra light",
     categoria: "Frutos Secos",
-    precios: { kg: 21850, cincoKg: 20700, diezKg: 18630 },
+    precios: { kg: 14900, cincoKg: 13900, diezKg: 13900 },
     imagen: "/assets/nuez-mariposa-extra.jpg"
   },
   {
@@ -35,7 +35,7 @@ export const products: Product[] = [
     id: 5,
     nombre: "Almendras Guara Nacionales",
     categoria: "Frutos Secos",
-    precios: { kg: 21735, cincoKg: 20700, diezKg: 19780 },
+    precios: { kg: 18900, cincoKg: 16500, diezKg: 16500 },
     imagen: "/assets/almendras-guara.jpg"
   },
   {
@@ -49,7 +49,7 @@ export const products: Product[] = [
     id: 7,
     nombre: "Castañas De Caju W4",
     categoria: "Frutos Secos",
-    precios: { kg: 18975, cincoKg: 18400, diezKg: 17250 },
+    precios: { kg: 17000, cincoKg: 15000, diezKg: 15000 },
     imagen: "/assets/castanas-caju.jpg"
   },
   {
@@ -381,14 +381,14 @@ export const products: Product[] = [
     id: 52,
     nombre: "Mani Salado Pelado",
     categoria: "Snacks",
-    precios: { kg: 3220, cincoKg: 2875, diezKg: 2645, veinticincoKg: 2530 },
+    precios: { kg: 2800, cincoKg: 2500, diezKg: 2500, veinticincoKg: 2500 },
     imagen: "/assets/mani-salado.jpg"
   },
   {
     id: 53,
     nombre: "Mani Tostado Sin Sal",
     categoria: "Snacks",
-    precios: { kg: 3220, cincoKg: 2875, diezKg: 2645, veinticincoKg: 2530 },
+    precios: { kg: 2800, cincoKg: 2500, diezKg: 2500, veinticincoKg: 2500 },
     imagen: "/assets/mani-salado.jpg"
   },
   {
