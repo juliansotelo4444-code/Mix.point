@@ -1,10 +1,11 @@
 import { useState, useMemo } from "react";
-import { products } from './data/products';
+import { useProducts } from './hooks/useProducts';
 import { useCart } from './hooks/useCart';
 import { ProductCard } from './components/ProductCard';
 import './App.css';
 
 function App() {
+  const { products, loading, error } = useProducts();  // ← CAMBIO 1
   const { cart, addToCart, removeFromCart, cartTotal } = useCart();
   const MINIMO_COMPRA = 20000;
 
@@ -19,7 +20,7 @@ function App() {
       p.categoria.toLowerCase().includes(q) ||
       p.descripcion?.toLowerCase().includes(q)
     );
-  }, [query]);
+  }, [query, products]);  // ← CAMBIO 2: agregar products a las dependencias
   // ──────────────────────────────────────────────────────────
 
   const handlePedidoWhatsApp = () => {
@@ -77,8 +78,20 @@ function App() {
           />
         </div>
 
+        {/* ── CAMBIO 3: estados de carga y error ── */}
+        {loading && (
+          <p style={{ textAlign: 'center', color: '#888', margin: '2rem 0' }}>
+            Cargando productos...
+          </p>
+        )}
+        {error && (
+          <p style={{ textAlign: 'center', color: 'red', margin: '2rem 0' }}>
+            Error al cargar productos. Intentá recargar la página.
+          </p>
+        )}
+
         {/* Contador de resultados */}
-        {query && (
+        {query && !loading && (
           <p style={{ textAlign: 'center', color: '#888', marginBottom: '1rem' }}>
             {productosFiltrados.length} resultado{productosFiltrados.length !== 1 ? 's' : ''} para "{query}"
           </p>
@@ -124,7 +137,6 @@ function App() {
         </button>
       </footer>
     </div>
-
   );
 }
 
