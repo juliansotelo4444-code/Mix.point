@@ -5,11 +5,10 @@ import { ProductCard } from './components/ProductCard';
 import './App.css';
 
 function App() {
-  const { products, loading, error } = useProducts();  // ← CAMBIO 1
+  const { products, loading, error } = useProducts();
   const { cart, addToCart, removeFromCart, cartTotal } = useCart();
   const MINIMO_COMPRA = 20000;
 
-  // ── BUSCADOR ──────────────────────────────────────────────
   const [query, setQuery] = useState("");
 
   const productosFiltrados = useMemo(() => {
@@ -20,19 +19,16 @@ function App() {
       p.categoria.toLowerCase().includes(q) ||
       p.descripcion?.toLowerCase().includes(q)
     );
-  }, [query, products]);  // ← CAMBIO 2: agregar products a las dependencias
-  // ──────────────────────────────────────────────────────────
+  }, [query, products]);
 
   const handlePedidoWhatsApp = () => {
+    const pesosLabels: Record<string, string> = {
+      kg: "1kg", cincoKg: "5kg", diezKg: "10kg",
+      veinticincoKg: "25kg", treintaKg: "30kg"
+    };
+
     const productosMsg = cart
       .map(item => {
-        const pesosLabels: Record<string, string> = {
-          kg: "1kg",
-          cincoKg: "5kg",
-          diezKg: "10kg",
-          veinticincoKg: "25kg",
-          treintaKg: "30kg"
-        };
         const label = pesosLabels[item.escalaSeleccionada] || item.escalaSeleccionada;
         return `- ${item.nombre} (${label}) x${item.quantity}`;
       })
@@ -44,8 +40,9 @@ function App() {
 
   return (
     <div className="app-container">
+
       <header className="header">
-        <img src="/assets/logo_mixpoint.png" alt="Logo" className="logo-header" />
+        <img src="/assets/logo_mixpoint.png" alt="Logo Mix Point" className="logo-header" />
         <h1>MIX POINT</h1>
         <p>Mayorista de Frutos Secos</p>
       </header>
@@ -58,41 +55,23 @@ function App() {
           </picture>
         </section>
 
-        <h2 style={{ textAlign: 'center' }}>Nuestro Catálogo</h2>
+        <h2 className="catalog-title">Nuestro Catálogo</h2>
 
-        {/* ── BUSCADOR ── */}
-        <div style={{ display: 'flex', justifyContent: 'center', margin: '1rem 0' }}>
+        <div className="search-wrapper">
           <input
             type="text"
             placeholder="Buscar productos..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            style={{
-              padding: '0.6rem 1rem',
-              fontSize: '1rem',
-              borderRadius: '8px',
-              border: '1px solid #ccc',
-              width: '100%',
-              maxWidth: '400px'
-            }}
+            className="search-input"
           />
         </div>
 
-        {/* ── CAMBIO 3: estados de carga y error ── */}
-        {loading && (
-          <p style={{ textAlign: 'center', color: '#888', margin: '2rem 0' }}>
-            Cargando productos...
-          </p>
-        )}
-        {error && (
-          <p style={{ textAlign: 'center', color: 'red', margin: '2rem 0' }}>
-            Error al cargar productos. Intentá recargar la página.
-          </p>
-        )}
+        {loading && <p className="status-msg">Cargando productos...</p>}
+        {error   && <p className="status-msg status-msg--error">Error al cargar productos. Intentá recargar la página.</p>}
 
-        {/* Contador de resultados */}
         {query && !loading && (
-          <p style={{ textAlign: 'center', color: '#888', marginBottom: '1rem' }}>
+          <p className="status-msg">
             {productosFiltrados.length} resultado{productosFiltrados.length !== 1 ? 's' : ''} para "{query}"
           </p>
         )}
@@ -113,21 +92,20 @@ function App() {
           {cart.map((item) => (
             <div key={`${item.id}-${item.escalaSeleccionada}`} className="cart-item-mini">
               <span>{item.nombre} ({item.escalaSeleccionada}) x{item.quantity}</span>
-              <button
-                className="btn-remove"
-                onClick={() => removeFromCart(item.id)}
-              >
+              <button className="btn-remove" onClick={() => removeFromCart(item.id)}>
                 Borrar
               </button>
             </div>
           ))}
         </div>
-        <p>Total Pedido: <span className="gold-text">${cartTotal}</span></p>
-        {cartTotal >= MINIMO_COMPRA ? (
-          <p className="free-ship">¡Envío Gratis habilitado! 🚚</p>
-        ) : (
-          <p className="min-alert">Faltan ${MINIMO_COMPRA - cartTotal} para el mínimo</p>
-        )}
+
+        <p>Total: <span className="gold-text">${cartTotal}</span></p>
+
+        {cartTotal >= MINIMO_COMPRA
+          ? <p className="free-ship">¡Envío Gratis habilitado! 🚚</p>
+          : <p className="min-alert">Faltan ${MINIMO_COMPRA - cartTotal} para el mínimo</p>
+        }
+
         <button
           className="btn-whatsapp"
           onClick={handlePedidoWhatsApp}
@@ -136,6 +114,7 @@ function App() {
           Finalizar Pedido por WhatsApp 📱
         </button>
       </footer>
+
     </div>
   );
 }
