@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { products } from "./products";
+import { products } from "./products.backup";
 import type { Product } from "../types";
 
 export default function ProductSearch() {
