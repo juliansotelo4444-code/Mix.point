@@ -377,3 +377,120 @@ h1 {
   cursor: not-allowed;
   opacity: 0.6;
 }
+
+/* ── Secciones informativas ─────────────────── */
+.section-title {
+  text-align: center;
+  font-size: clamp(1.2rem, 3vw, 1.6rem);
+  margin: 0 0 1.5rem;
+  color: var(--text);
+}
+
+.envios-section,
+.nosotros-section {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 clamp(12px, 3vw, 20px);
+}
+
+/* ── Grid de tarjetas ───────────────────────── */
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: clamp(16px, 3vw, 25px);
+}
+
+.info-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 1.5rem;
+  text-align: center;
+  border-top: 4px solid var(--primary);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.info-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+.info-icon {
+  font-size: 2.2rem;
+  display: block;
+  margin-bottom: 0.75rem;
+}
+
+.info-card h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 0.5rem;
+}
+
+.info-card p {
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* ── Tarjeta sobre nosotros ─────────────────── */
+.nosotros-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 2rem;
+  border-left: 4px solid var(--primary);
+  max-width: 750px;
+  margin: 0 auto;
+}
+
+.nosotros-card p {
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: var(--text);
+  margin: 0;
+  text-align: center;
+}
+
+/* ── Paginación ─────────────────────────────── */
+.paginacion {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 2rem 0;
+  padding: 0 16px;
+}
+
+.pag-btn {
+  background: var(--white);
+  border: 1px solid #ddd;
+  border-radius: var(--radius-sm);
+  padding: 8px 14px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.pag-btn:hover:not(:disabled) {
+  background: var(--primary);
+  color: var(--dark);
+  border-color: var(--primary);
+}
+
+.pag-btn--active {
+  background: var(--primary);
+  color: var(--dark);
+  border-color: var(--primary);
+}
+
+.pag-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
