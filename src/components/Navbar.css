@@ -22,12 +22,15 @@
   padding: 0;
   display: flex;
   gap: 8px;
+  align-items: center;
 }
 
-.nav-links button {
+/* Cambiado de button a la clase .navlink o etiqueta a */
+.nav-links a {
   background: none;
   border: none;
   color: var(--white);
+  text-decoration: none;
   font-family: 'Montserrat', sans-serif;
   font-size: 0.9rem;
   font-weight: 600;
@@ -37,13 +40,14 @@
   transition: background 0.2s, color 0.2s;
 }
 
-.nav-links button:hover {
+.nav-links a:hover,
+.nav-links a.active {
   background: var(--primary);
   color: var(--dark);
 }
 
 @media (max-width: 480px) {
-  .nav-links button {
+  .nav-links a {
     font-size: 0.78rem;
     padding: 5px 8px;
   }

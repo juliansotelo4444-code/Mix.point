@@ -21,19 +21,33 @@ function parseCSV(text: string): Product[] {
     const get = (key: string) => cols[headers.indexOf(key)]?.trim() ?? '';
     const num = (key: string) => { const v = get(key); return v !== '' ? parseInt(v) : undefined; };
 
+    // Nuevo: leemos la columna tipoVenta. Si está vacía o no existe,
+    // asumimos "peso" (comportamiento de siempre, no rompe nada de lo
+    // que ya tenías cargado).
+    const tipoVentaRaw = get('tipoVenta').toLowerCase();
+    const tipoVenta: 'peso' | 'unidad' = tipoVentaRaw === 'unidad' ? 'unidad' : 'peso';
+
+    const precioBase = num('kg') ?? 0;
+
     return {
       id: parseInt(get('id')),
       nombre: get('nombre'),
       descripcion: get('descripcion') || undefined,
       categoria: get('categoria'),
       imagen: get('imagen'),
-      precios: {
-        kg:             num('kg') ?? 0,
-        cincoKg:        num('cincoKg'),
-        diezKg:         num('diezKg'),
-        veinticincoKg:  num('veinticincoKg'),
-        treintaKg:      num('treintaKg'),
-      },
+      tipoVenta,
+      precios: tipoVenta === 'unidad'
+        // Producto por unidad: el precio que estaba en la columna "kg"
+        // pasa a vivir en la clave "unidad" (precio fijo por unidad).
+        ? { kg: 0, unidad: precioBase }
+        // Producto por peso: comportamiento original, sin cambios.
+        : {
+            kg:             precioBase,
+            cincoKg:        num('cincoKg'),
+            diezKg:         num('diezKg'),
+            veinticincoKg:  num('veinticincoKg'),
+            treintaKg:      num('treintaKg'),
+          },
     };
   }).filter(p => !isNaN(p.id));
 }

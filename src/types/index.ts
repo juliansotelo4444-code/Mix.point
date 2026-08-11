@@ -6,6 +6,7 @@ export interface Precios {
   diezKg?: number;
   veinticincoKg?: number;
   treintaKg?: number;
+  unidad?: number;
 }
 
 export interface Product {
@@ -15,6 +16,7 @@ export interface Product {
   descripcion?: string;
   precios: Precios;
   imagen: string;
+  tipoVenta: 'peso' | 'unidad';
 }
 
 export interface CartItem extends Product {
