@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxUe5HAWVgTXRr61grTfLlJf-rhB9J8AeY_QRqEtuVYc6p9Xg3sMGQPzrTR4LVBp_kQ/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyLugszoGUzdKhIN1dDyICjm4tP2m2LrTRqZC9LQr_-85R9lG1fm3_yotSU5-LMKAxz/exec';
+
 interface DatosEntrega {
   nombre: string;
   telefono: string;
@@ -26,8 +27,7 @@ export function useOrderSubmit() {
     try {
       const response = await fetch(APPS_SCRIPT_URL, {
         method: 'POST',
-        // Apps Script no maneja bien application/json con preflight CORS,
-        // text/plain evita el preflight y Apps Script igual lo parsea con JSON.parse
+        // text/plain evita el preflight de CORS; Apps Script igual lo parsea con JSON.parse
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify({
           nombre: datos.nombre,
@@ -41,7 +41,7 @@ export function useOrderSubmit() {
 
       const data = await response.json();
       return data;
-    } catch  {
+    } catch {
       return { success: false, error: 'No se pudo conectar con el servidor' };
     } finally {
       setEnviando(false);
