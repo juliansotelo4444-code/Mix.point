@@ -1,7 +1,6 @@
 import { useState } from 'react';
 
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/TU_ID_AQUI/exec';
-
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxUe5HAWVgTXRr61grTfLlJf-rhB9J8AeY_QRqEtuVYc6p9Xg3sMGQPzrTR4LVBp_kQ/exec';
 interface DatosEntrega {
   nombre: string;
   telefono: string;
