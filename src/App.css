@@ -946,6 +946,70 @@ h1 {
 }
 .checkout-submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
+.checkout-remember {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--muted);
+  cursor: pointer;
+  line-height: 1.4;
+}
+.checkout-remember input[type="checkbox"] {
+  margin-top: 2px;
+  accent-color: var(--primary);
+  cursor: pointer;
+}
+
+.checkout-clear-link {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 12px;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+  margin-top: -4px;
+  align-self: center;
+}
+.checkout-clear-link:hover { color: var(--text); }
+
+/* Saludo de bienvenida para clientes que ya compraron antes */
+.welcome-back {
+  max-width: 1200px;
+  margin: 16px auto 0;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--bg-cream-deep);
+  border: 1px solid var(--border-color);
+  border-left: 4px solid var(--accent);
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  color: var(--text);
+}
+
+.welcome-back-close {
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 14px;
+  flex-shrink: 0;
+  padding: 2px 6px;
+  transition: color 0.2s;
+}
+.welcome-back-close:hover { color: var(--text); }
+
+@media (max-width: 480px) {
+  .welcome-back {
+    font-size: 0.85rem;
+    padding: 10px 14px;
+  }
+}
+
 /* ═══════════════════════════════════════════════
    Navegación entre páginas
 ═══════════════════════════════════════════════ */

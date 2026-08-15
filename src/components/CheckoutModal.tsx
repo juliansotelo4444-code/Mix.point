@@ -1,11 +1,11 @@
 import { useState } from 'react';
-
-interface DatosEntrega {
-  nombre: string;
-  telefono: string;
-  direccion: string;
-  zona: string;
-}
+import {
+  type DatosEntrega,
+  DATOS_VACIOS,
+  cargarDatosGuardados,
+  guardarDatosEntrega,
+  borrarDatosEntrega,
+} from '../utils/datosEntrega';
 
 interface Props {
   onConfirm: (datos: DatosEntrega) => void;
@@ -14,13 +14,9 @@ interface Props {
 }
 
 export function CheckoutModal({ onConfirm, onClose, enviando }: Props) {
-  const [datos, setDatos] = useState<DatosEntrega>({
-    nombre: '',
-    telefono: '',
-    direccion: '',
-    zona: '',
-  });
+  const [datos, setDatos] = useState<DatosEntrega>(cargarDatosGuardados);
   const [errores, setErrores] = useState<Partial<DatosEntrega>>({});
+  const [recordar, setRecordar] = useState(true);
 
   const validar = (): boolean => {
     const nuevosErrores: Partial<DatosEntrega> = {};
@@ -37,7 +33,15 @@ export function CheckoutModal({ onConfirm, onClose, enviando }: Props) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (validar()) onConfirm(datos);
+    if (!validar()) return;
+
+    if (recordar) {
+      guardarDatosEntrega(datos);
+    } else {
+      borrarDatosEntrega();
+    }
+
+    onConfirm(datos);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -47,6 +51,14 @@ export function CheckoutModal({ onConfirm, onClose, enviando }: Props) {
       setErrores(prev => ({ ...prev, [name]: undefined }));
     }
   };
+
+  const handleBorrarDatosGuardados = () => {
+    borrarDatosEntrega();
+    setDatos(DATOS_VACIOS);
+    setErrores({});
+  };
+
+  const hayDatosGuardados = datos.nombre || datos.telefono || datos.direccion || datos.zona;
 
   return (
     <div className="checkout-modal-overlay" onClick={onClose}>
@@ -111,9 +123,28 @@ export function CheckoutModal({ onConfirm, onClose, enviando }: Props) {
             {errores.zona && <span className="field-error">{errores.zona}</span>}
           </div>
 
+          <label className="checkout-remember">
+            <input
+              type="checkbox"
+              checked={recordar}
+              onChange={(e) => setRecordar(e.target.checked)}
+            />
+            Recordar mis datos en este dispositivo para el próximo pedido
+          </label>
+
           <button type="submit" className="checkout-submit-btn" disabled={enviando}>
             {enviando ? 'Confirmando pedido...' : 'Confirmar pedido y continuar 📱'}
           </button>
+
+          {hayDatosGuardados && (
+            <button
+              type="button"
+              className="checkout-clear-link"
+              onClick={handleBorrarDatosGuardados}
+            >
+              ¿No sos vos? Borrar datos guardados
+            </button>
+          )}
         </form>
       </div>
     </div>

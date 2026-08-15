@@ -4,6 +4,7 @@ import { useProducts } from '../hooks/useProducts';
 import { ProductCard } from '../components/ProductCard';
 import { useCartContext } from '../context/CartContext';
 import { PageCTA } from '../components/PageCTA';
+import { WelcomeBack } from '../components/WelcomeBack';
 
 const slides = [
   {
@@ -45,6 +46,8 @@ export function Home() {
 
   return (
     <>
+      <WelcomeBack />
+
       {/* CARRUSEL HERO / GALERÍA DINÁMICA */}
       <section className="hero-carousel-section" style={{ position: 'relative', overflow: 'hidden', margin: '20px auto', maxWidth: '1200px', borderRadius: '12px', boxShadow: '0 8px 25px rgba(0,0,0,0.5)' }}>
         <div className="carousel-inner" style={{

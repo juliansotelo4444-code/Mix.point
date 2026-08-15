@@ -96,6 +96,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useCartContext() {
   const ctx = useContext(CartContext);
   if (!ctx) throw new Error('useCartContext debe usarse dentro de <CartProvider>');

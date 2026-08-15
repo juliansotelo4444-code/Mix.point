@@ -1,4 +1,4 @@
-import { useCartContext } from '../context/CartContext.tsx';
+import { useCartContext } from '../context/CartContext';
 import { CheckoutModal } from './CheckoutModal';
 
 const MINIMO_COMPRA = 20000;
