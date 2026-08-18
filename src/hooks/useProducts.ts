@@ -4,16 +4,22 @@ import type { Product } from '../types';
 const SHEETS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTsSl1udCka3CKz61sitiiwynsibWeGS65K9zEe-6UXdCb_k1W8_Nr0ABoIZm_7wIvHbWd13KKOqOiI/pub?gid=120010130&single=true&output=csv';
 
 function parseCSV(text: string): Product[] {
-  // Google Sheets exporta con saltos de línea \r\n (estilo Windows).
-  // Separar solo por '\n' deja un '\r' invisible pegado al final de
-  // cada línea, lo que corrompe el ÚLTIMO encabezado de la fila
-  // (tipoVenta pasaba a ser literalmente "tipoVenta\r", rompiendo
-  // headers.indexOf('tipoVenta') para todas las filas). Separamos por
-  // \r\n o \n indistintamente para evitar esto.
-  const lines = text.trim().split(/\r\n|\n/);
+  // Google Sheets exporta con saltos de línea \r\n (estilo Windows) y a veces
+  // con un BOM invisible (\uFEFF) al principio del archivo. Si no se limpian,
+  // el header "id" (o el último, "tipoVenta") no matchea con indexOf(),
+  // haciendo que TODOS los productos se descarten silenciosamente al final
+  // por el filter(!isNaN(p.id)).
+  const cleanText = text.replace(/^\uFEFF/, '');
+  const lines = cleanText.trim().split(/\r\n|\n/);
   const headers = lines[0].split(',').map(h => h.trim());
 
-  return lines.slice(1).map(line => {
+  // DEBUG temporal — sacar una vez confirmado que el catálogo carga bien.
+  console.log('--- DEBUG CSV ---');
+  console.log('Primeros 300 caracteres (raw):', JSON.stringify(text.slice(0, 300)));
+  console.log('Headers detectados:', JSON.stringify(headers));
+  console.log('Total líneas:', lines.length);
+
+  const productos = lines.slice(1).map(line => {
     const cols: string[] = [];
     let current = '';
     let inQuotes = false;
@@ -27,9 +33,9 @@ function parseCSV(text: string): Product[] {
     const get = (key: string) => cols[headers.indexOf(key)]?.trim() ?? '';
     const num = (key: string) => { const v = get(key); return v !== '' ? parseInt(v) : undefined; };
 
-    // Nuevo: leemos la columna tipoVenta. Si está vacía o no existe,
-    // asumimos "peso" (comportamiento de siempre, no rompe nada de lo
-    // que ya tenías cargado).
+    // Leemos la columna tipoVenta. Si está vacía o no existe, asumimos
+    // "peso" (comportamiento de siempre, no rompe nada de lo que ya
+    // tenías cargado).
     const tipoVentaRaw = get('tipoVenta').toLowerCase();
     const tipoVenta: 'peso' | 'unidad' = tipoVentaRaw === 'unidad' ? 'unidad' : 'peso';
 
@@ -55,7 +61,16 @@ function parseCSV(text: string): Product[] {
             treintaKg:      num('treintaKg'),
           },
     };
-  }).filter(p => !isNaN(p.id));
+  });
+
+  console.log('Productos parseados (antes del filter):', productos.length);
+  const final = productos.filter(p => !isNaN(p.id));
+  console.log('Productos parseados (después del filter):', final.length);
+  if (final.length === 0 && productos.length > 0) {
+    console.log('Primer producto descartado (para ver por qué):', productos[0]);
+  }
+
+  return final;
 }
 
 export function useProducts() {
