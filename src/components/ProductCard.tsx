@@ -18,11 +18,17 @@ const multiplicadores: Record<string, number> = {
 export const ProductCard = ({ product, addToCart }: Props) => {
   const esPorUnidad = product.tipoVenta === 'unidad';
 
-  // Si el producto es por unidad, arrancamos con "unidad" seleccionado
-  // directo (no hay dropdown que elegir). Si es por peso, "kg" como antes.
-  const [pesoSeleccionado, setPesoSeleccionado] = useState<keyof Precios>(
-    esPorUnidad ? 'unidad' : 'kg'
+  // Obtenemos solo las escalas que tienen precio válido (> 0)
+  const escalasDisponibles = (Object.keys(product.precios) as Array<keyof Precios>).filter(
+    (k) => (product.precios[k] ?? 0) > 0
   );
+
+  // Seleccionamos por defecto la primera escala válida disponible
+  const escalaInicial: keyof Precios = esPorUnidad
+    ? 'unidad'
+    : ((product.precios.kg ?? 0) > 0 ? 'kg' : escalasDisponibles[0] || 'kg');
+
+  const [pesoSeleccionado, setPesoSeleccionado] = useState<keyof Precios>(escalaInicial);
   const [cantidad, setCantidad] = useState(1);
 
   const incrementar = () => setCantidad(prev => prev + 1);
@@ -30,7 +36,21 @@ export const ProductCard = ({ product, addToCart }: Props) => {
 
   return (
     <div className="product-card">
-      <img src={product.imagen} alt={product.nombre} className="product-img" />
+      <div className="product-card-img-container">
+        <img
+          src={product.imagen}
+          alt={product.nombre}
+          className="product-img"
+          loading="lazy"
+          onError={(e) => {
+            (e.target as HTMLImageElement).src = '/assets/Flyer-mix-point.png';
+          }}
+        />
+        {product.categoria && (
+          <span className="product-category-tag">{product.categoria}</span>
+        )}
+      </div>
+
       <div className="product-info">
         <h3>{product.nombre}</h3>
         {product.descripcion && <p className="description">{product.descripcion}</p>}
@@ -41,7 +61,7 @@ export const ProductCard = ({ product, addToCart }: Props) => {
             <span className="selector-label">Precio por unidad</span>
           </div>
         ) : (
-          // Producto por peso: selector de formato, igual que siempre
+          // Producto por peso: selector de formato mostrando solo escalas con precio válido
           <div className="selector-container">
             <span className="selector-label">Formato de venta</span>
             <select
@@ -50,11 +70,11 @@ export const ProductCard = ({ product, addToCart }: Props) => {
               value={pesoSeleccionado}
               onChange={(e) => setPesoSeleccionado(e.target.value as keyof Precios)}
             >
-              <option value="kg">Por Kilogramo</option>
-              {product.precios.cincoKg && <option value="cincoKg">Bolsa 5kg (Mayorista)</option>}
-              {product.precios.diezKg && <option value="diezKg">Bolsa 10kg (Mayorista)</option>}
-              {product.precios.veinticincoKg && <option value="veinticincoKg">Bolsa 25kg (Bulto)</option>}
-              {product.precios.treintaKg && <option value="treintaKg">Bolsa 30kg (Bulto)</option>}
+              {(product.precios.kg ?? 0) > 0 && <option value="kg">Por Kilogramo</option>}
+              {(product.precios.cincoKg ?? 0) > 0 && <option value="cincoKg">Bolsa 5kg (Mayorista)</option>}
+              {(product.precios.diezKg ?? 0) > 0 && <option value="diezKg">Bolsa 10kg (Mayorista)</option>}
+              {(product.precios.veinticincoKg ?? 0) > 0 && <option value="veinticincoKg">Bolsa 25kg (Bulto)</option>}
+              {(product.precios.treintaKg ?? 0) > 0 && <option value="treintaKg">Bolsa 30kg (Bulto)</option>}
             </select>
           </div>
         )}
@@ -70,9 +90,9 @@ export const ProductCard = ({ product, addToCart }: Props) => {
         </p>
 
         <div className="quantity-controls">
-          <button type="button" onClick={decrementar} className="qty-btn">-</button>
+          <button type="button" onClick={decrementar} className="qty-btn" aria-label="Restar una unidad">-</button>
           <span className="qty-number">{cantidad}</span>
-          <button type="button" onClick={incrementar} className="qty-btn">+</button>
+          <button type="button" onClick={incrementar} className="qty-btn" aria-label="Sumar una unidad">+</button>
         </div>
 
         <button
@@ -82,6 +102,11 @@ export const ProductCard = ({ product, addToCart }: Props) => {
             setCantidad(1);
           }}
         >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="9" cy="21" r="1" />
+            <circle cx="20" cy="21" r="1" />
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+          </svg>
           Agregar al carrito
         </button>
       </div>

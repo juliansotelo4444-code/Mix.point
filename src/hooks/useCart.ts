@@ -33,20 +33,26 @@ export const useCart = () => {
     return acc + (precioUnitario * item.quantity);
   }, 0);
 
-  const removeFromCart = (productId: number) => {
+  const removeFromCart = (productId: number, escala: keyof Precios) => {
     setCart((prevCart) => {
-      const existingItem = prevCart.find(item => item.id === productId);
+      const existingItem = prevCart.find(
+        item => item.id === productId && item.escalaSeleccionada === escala
+      );
 
       if (existingItem && existingItem.quantity > 1) {
         // Si hay más de uno, restamos 1
         return prevCart.map(item =>
-          item.id === productId ? { ...item, quantity: item.quantity - 1 } : item
+          item.id === productId && item.escalaSeleccionada === escala
+            ? { ...item, quantity: item.quantity - 1 }
+            : item
         );
       }
       // Si hay uno solo o no existe, lo sacamos del array
-      return prevCart.filter(item => item.id !== productId);
+      return prevCart.filter(
+        item => !(item.id === productId && item.escalaSeleccionada === escala)
+      );
     });
   };
 
   return { cart, addToCart, removeFromCart, cartTotal };
-};;
+};

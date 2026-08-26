@@ -17,8 +17,10 @@ export function CartModal() {
     <>
       <div className="cart-modal-overlay" onClick={() => setShowCart(false)}>
         <div className="cart-modal" onClick={(e) => e.stopPropagation()}>
-          <button className="cart-modal-close" onClick={() => setShowCart(false)} aria-label="Cerrar carrito">✕</button>
-          <h2 className="cart-modal-title">Tu carrito</h2>
+          <div className="cart-modal-header">
+            <h2 className="cart-modal-title">Tu Carrito</h2>
+            <button className="cart-modal-close" onClick={() => setShowCart(false)} aria-label="Cerrar carrito">✕</button>
+          </div>
 
           {cart.length === 0 ? (
             <p className="cart-modal-empty">Todavía no agregaste productos.</p>
@@ -32,7 +34,7 @@ export function CartModal() {
                   </div>
                   <button
                     className="btn-remove"
-                    onClick={() => removeFromCart(item.id)}
+                    onClick={() => removeFromCart(item.id, item.escalaSeleccionada)}
                     aria-label={`Quitar ${item.nombre} del carrito`}
                   >
                     Borrar
@@ -43,11 +45,11 @@ export function CartModal() {
           )}
 
           <div className="cart-modal-summary">
-            <p className="cart-modal-total">Total: <span className="gold-text">${cartTotal}</span></p>
+            <p className="cart-modal-total">Total: <span className="gold-text">${cartTotal.toLocaleString('es-AR')}</span></p>
 
             {cartTotal >= MINIMO_COMPRA
-              ? <p className="free-ship">¡Envío Gratis habilitado! 🚚</p>
-              : <p className="min-alert">Faltan ${MINIMO_COMPRA - cartTotal} para el mínimo</p>
+              ? <p className="free-ship">¡Tenés Envío Gratis habilitado! 🚚</p>
+              : <p className="min-alert">Te faltan ${(MINIMO_COMPRA - cartTotal).toLocaleString('es-AR')} para obtener <strong>Envío Gratis</strong></p>
             }
 
             <button

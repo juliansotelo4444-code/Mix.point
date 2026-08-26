@@ -3,41 +3,53 @@ import { PageCTA } from '../components/PageCTA';
 export function Envios() {
   return (
     <>
-      <section className="envios-section" id="envios">
-        <h2 className="section-title">Envíos y entregas</h2>
+      <div className="section-header">
+        <span className="section-tag">Logística Eficiente</span>
+        <h1 className="section-title" id="envios">Envíos y Entregas</h1>
+        <p className="section-subtitle">
+          Llegamos a tu comercio o domicilio en todo el país con la máxima rapidez y cuidado de la mercadería.
+        </p>
+      </div>
+
+      <section className="envios-section">
         <div className="info-grid">
           <div className="info-card">
             <span className="info-icon">📦</span>
-            <h3>Correo Argentino / Andreani</h3>
-            <p>Enviamos al interior del país por Correo Argentino y Andreani.</p>
+            <h3>Todo el País</h3>
+            <p>Despachos al interior por Correo Argentino y Andreani con número de seguimiento online.</p>
           </div>
-          <div className="info-card">
-            <span className="info-icon">🌎</span>
-            <h3>Zona oeste</h3>
-            <p>Entrega sin cargo según disponibilidad.</p>
-          </div>
+
           <div className="info-card">
             <span className="info-icon">🚚</span>
-            <h3>Zona norte</h3>
-            <p>Entrega sin cargo una vez por semana en zona norte.</p>
+            <h3>Zona Oeste</h3>
+            <p>Entregas programadas y sin cargo según volumen y localidad.</p>
           </div>
+
           <div className="info-card">
             <span className="info-icon">🛵</span>
-            <h3>Zona sur</h3>
-            <p>Entrega por logística propia en zona sur.</p>
+            <h3>Zona Norte</h3>
+            <p>Reparto semanal fijo para dietéticas, comercios y pedidos familiares.</p>
           </div>
+
+          <div className="info-card">
+            <span className="info-icon">🌿</span>
+            <h3>Zona Sur y CABA</h3>
+            <p>Logística propia coordinada directamente vía WhatsApp tras tu compra.</p>
+          </div>
+        </div>
+
+        <div className="info-card" style={{ marginTop: '30px', border: '2px solid var(--accent-gold)' }}>
+          <span className="info-icon">💰</span>
+          <h3>Garantía de Satisfacción 100%</h3>
+          <p>
+            Si algún producto no llega en óptimas condiciones o no cumple tus expectativas, te devolvemos el dinero sin complicaciones.
+          </p>
         </div>
       </section>
 
-      <div className="info-card" style={{ maxWidth: '1200px', margin: '20px auto' }}>
-        <span className="info-icon">💰</span>
-        <h3>Garantía</h3>
-        <p>Cualquier inconveniente con tu pedido, te devolvemos el dinero. Sin preguntas.</p>
-      </div>
-
       <PageCTA
-        texto="¿Ya elegiste tus productos?"
-        linkTexto="Ir al catálogo"
+        texto="¿Ya elegiste tus productos favoritos?"
+        linkTexto="Ir al catálogo online"
         to="/catalogo"
         icono="🛒"
       />

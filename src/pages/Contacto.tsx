@@ -24,37 +24,74 @@ export function Contacto() {
 
   return (
     <>
-      <section className="contacto-mayoristas" style={{ backgroundColor: '#1a1a1a', color: '#fff', padding: '40px 20px', borderTop: '2px solid #d4af37', borderBottom: '2px solid #d4af37', margin: '20px 0' }}>
-        <div className="container" style={{ maxWidth: '600px', margin: '0 auto', textAlign: 'center' }}>
-          <h2 style={{ color: '#d4af37', marginBottom: '10px' }}>¿Querés comprar por mayor o tenés dudas?</h2>
-          <p style={{ marginBottom: '30px', color: '#ccc' }}>Completá tus datos y un asesor comercial se pondrá en contacto con vos a la brevedad.</p>
+      <div className="section-header">
+        <span className="section-tag">Atención Personalizada</span>
+        <h1 className="section-title">Contacto Comercial</h1>
+        <p className="section-subtitle">
+          Asesoramiento para compras mayoristas, comercios, dietéticas y pedidos familiares especiales.
+        </p>
+      </div>
 
-          <form onSubmit={handleSubmitAsesoramiento} style={{ display: 'flex', flexDirection: 'column', gap: '15px', textAlign: 'left' }}>
-            <div>
-              <label htmlFor="nombre" style={{ fontSize: '14px', display: 'block', marginBottom: '5px' }}>Nombre o Razón Social</label>
-              <input type="text" id="nombre" name="nombre" value={formData.nombre} onChange={handleFormChange} required placeholder="Ej: Distribuidora Los Amigos" style={{ width: '100%', padding: '10px', borderRadius: '5px', border: '1px solid #444', background: '#2a2a2a', color: '#fff', boxSizing: 'border-box' }} />
+      <section className="contacto-section">
+        <div className="contacto-card">
+          <h2>¿Querés comprar por mayor o tenés dudas?</h2>
+          <p>Completá tus datos y un asesor comercial se pondrá en contacto directo por WhatsApp.</p>
+
+          <form onSubmit={handleSubmitAsesoramiento} className="contacto-form">
+            <div className="contacto-field">
+              <label htmlFor="nombre">Nombre o Razón Social</label>
+              <input
+                type="text"
+                id="nombre"
+                name="nombre"
+                value={formData.nombre}
+                onChange={handleFormChange}
+                required
+                placeholder="Ej: Distribuidora Los Amigos / Juan Pérez"
+              />
             </div>
 
-            <div>
-              <label htmlFor="telefono" style={{ fontSize: '14px', display: 'block', marginBottom: '5px' }}>Teléfono / WhatsApp</label>
-              <input type="tel" id="telefono" name="telefono" value={formData.telefono} onChange={handleFormChange} required placeholder="Ej: 11 1234 5678" style={{ width: '100%', padding: '10px', borderRadius: '5px', border: '1px solid #444', background: '#2a2a2a', color: '#fff', boxSizing: 'border-box' }} />
+            <div className="contacto-field">
+              <label htmlFor="telefono">Teléfono / WhatsApp</label>
+              <input
+                type="tel"
+                id="telefono"
+                name="telefono"
+                value={formData.telefono}
+                onChange={handleFormChange}
+                required
+                placeholder="Ej: 11 1234 5678"
+              />
             </div>
 
-            <div>
-              <label htmlFor="tipo_compra" style={{ fontSize: '14px', display: 'block', marginBottom: '5px' }}>Tipo de compra</label>
-              <select id="tipo_compra" name="tipo_compra" value={formData.tipo_compra} onChange={handleFormChange} style={{ width: '100%', padding: '10px', borderRadius: '5px', border: '1px solid #444', background: '#2a2a2a', color: '#fff', boxSizing: 'border-box' }}>
-                <option value="familiar">Familiar</option>
-                <option value="revendedor">Revendedor</option>
-                <option value="comercio">Comercio / Dietética</option>
+            <div className="contacto-field">
+              <label htmlFor="tipo_compra">Tipo de compra</label>
+              <select
+                id="tipo_compra"
+                name="tipo_compra"
+                value={formData.tipo_compra}
+                onChange={handleFormChange}
+              >
+                <option value="familiar">Familiar / Consumo propio</option>
+                <option value="revendedor">Revendedor independiente</option>
+                <option value="comercio">Comercio / Dietética / Gastronomía</option>
               </select>
             </div>
 
-            <div>
-              <label htmlFor="zona" style={{ fontSize: '14px', display: 'block', marginBottom: '5px' }}>Barrio / Localidad</label>
-              <input type="text" id="zona" name="zona" value={formData.zona} onChange={handleFormChange} required placeholder="Ej: Ituzaingo" style={{ width: '100%', padding: '10px', borderRadius: '5px', border: '1px solid #444', background: '#2a2a2a', color: '#fff', boxSizing: 'border-box' }} />
+            <div className="contacto-field">
+              <label htmlFor="zona">Barrio / Localidad / Provincia</label>
+              <input
+                type="text"
+                id="zona"
+                name="zona"
+                value={formData.zona}
+                onChange={handleFormChange}
+                required
+                placeholder="Ej: Ituzaingó, Buenos Aires"
+              />
             </div>
 
-            <button type="submit" style={{ backgroundColor: '#d4af37', color: '#000', fontWeight: 'bold', padding: '12px', border: 'none', borderRadius: '5px', cursor: 'pointer', marginTop: '10px' }}>
+            <button type="submit" className="btn-whatsapp-submit">
               Solicitar Asesoramiento por WhatsApp 📱
             </button>
           </form>

@@ -4,24 +4,35 @@ import { ProductCard } from '../components/ProductCard';
 import { useCartContext } from '../context/CartContext';
 import { PageCTA } from '../components/PageCTA';
 
-const PRODUCTOS_POR_PAGINA = 28;
+const PRODUCTOS_POR_PAGINA = 24;
 
 export function Catalogo() {
   const { products, loading, error } = useProducts();
   const { addToCart } = useCartContext();
 
   const [query, setQuery] = useState("");
+  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("Todos");
   const [pagina, setPagina] = useState(1);
+
+  // Lista de categorías únicas extraídas de los productos
+  const categorias = useMemo(() => {
+    const list = Array.from(new Set(products.map((p) => p.categoria).filter(Boolean)));
+    return ["Todos", ...list];
+  }, [products]);
 
   const productosFiltrados = useMemo(() => {
     const q = query.toLowerCase().trim();
-    if (!q) return products;
-    return products.filter((p) =>
-      p.nombre.toLowerCase().includes(q) ||
-      p.categoria.toLowerCase().includes(q) ||
-      p.descripcion?.toLowerCase().includes(q)
-    );
-  }, [query, products]);
+    return products.filter((p) => {
+      const matchCategoria =
+        categoriaSeleccionada === "Todos" || p.categoria === categoriaSeleccionada;
+      const matchQuery =
+        !q ||
+        p.nombre.toLowerCase().includes(q) ||
+        p.categoria.toLowerCase().includes(q) ||
+        p.descripcion?.toLowerCase().includes(q);
+      return matchCategoria && matchQuery;
+    });
+  }, [query, categoriaSeleccionada, products]);
 
   const totalPaginas = Math.ceil(productosFiltrados.length / PRODUCTOS_POR_PAGINA);
 
@@ -35,6 +46,11 @@ export function Catalogo() {
     setPagina(1);
   };
 
+  const handleCategoria = (cat: string) => {
+    setCategoriaSeleccionada(cat);
+    setPagina(1);
+  };
+
   const handlePagina = (nueva: number) => {
     setPagina(nueva);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -42,24 +58,51 @@ export function Catalogo() {
 
   return (
     <>
-      <h2 className="catalog-title" id="catalogo">Nuestro Catálogo</h2>
-
-      <div className="search-wrapper">
-        <input
-          type="text"
-          placeholder="Buscar productos..."
-          value={query}
-          onChange={handleQuery}
-          className="search-input"
-        />
+      <div className="section-header">
+        <span className="section-tag">Directo de Productores</span>
+        <h1 className="catalog-title" id="catalogo">Catálogo Completo</h1>
+        <p className="section-subtitle">
+          Precios por kilogramo, bolsas mayoristas y bultos cerrados para dietéticas y hogares.
+        </p>
       </div>
 
-      {loading && <p className="status-msg">Cargando productos...</p>}
+      {/* BUSCADOR ELEGANTE */}
+      <div className="search-wrapper">
+        <div className="search-container">
+          <span className="search-icon">🔍</span>
+          <input
+            type="text"
+            placeholder="Buscar por nombre, tipo de fruto, mix o especia..."
+            value={query}
+            onChange={handleQuery}
+            className="search-input"
+          />
+        </div>
+      </div>
+
+      {/* PILLS DE CATEGORÍAS */}
+      {!loading && categorias.length > 1 && (
+        <div className="category-pills-wrapper">
+          {categorias.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => handleCategoria(cat)}
+              className={`category-pill ${categoriaSeleccionada === cat ? 'category-pill--active' : ''}`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {loading && <p className="status-msg">Cargando productos de la huerta...</p>}
       {error && <p className="status-msg status-msg--error">Error al cargar productos. Intentá recargar la página.</p>}
 
-      {query && !loading && (
+      {(query || categoriaSeleccionada !== "Todos") && !loading && (
         <p className="status-msg">
-          {productosFiltrados.length} resultado{productosFiltrados.length !== 1 ? 's' : ''} para "{query}"
+          {productosFiltrados.length} producto{productosFiltrados.length !== 1 ? 's' : ''} encontrado{productosFiltrados.length !== 1 ? 's' : ''}
+          {categoriaSeleccionada !== "Todos" && ` en "${categoriaSeleccionada}"`}
+          {query && ` para "${query}"`}
         </p>
       )}
 
@@ -104,8 +147,8 @@ export function Catalogo() {
       )}
 
       <PageCTA
-        texto="¿Compra grande o sos revendedor?"
-        linkTexto="Pedí asesoramiento comercial"
+        texto="¿Precisás una cotización por pallets o grandes volúmenes?"
+        linkTexto="Contactá a nuestro equipo comercial"
         to="/contacto"
         icono="📦"
       />

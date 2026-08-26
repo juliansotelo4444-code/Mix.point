@@ -1,57 +1,53 @@
-/* src/index.css */
+/* src/index.css - Base Reset & Setup */
 :root {
-  --marron-oscuro: #5d4037;
-  --crema: #fdf5e6;
-  --verde-hoja: #689f38;
+  --bg-main: #fdfbf7;
+  --bg-surface: #ffffff;
+  --bg-subtle: #f7f3eb;
+  --bg-accent: #f0eae1;
+  --bg-card: #ffffff;
+
+  --primary-green: #1a382b;
+  --primary-green-hover: #264e3d;
+  --primary-green-light: #e8f0ec;
+
+  --accent-gold: #c88a35;
+  --accent-gold-hover: #b0762a;
+  --accent-gold-light: #fbf3e8;
+
+  --text-dark: #221e1b;
+  --text-muted: #6b635b;
+  --text-light: #fdfbf7;
+
+  --border-light: #e8e2d8;
+  --border-subtle: #f0eae1;
+
+  --font-title: 'Playfair Display', Georgia, serif;
+  --font-body: 'Montserrat', sans-serif;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+
+  --shadow-sm: 0 2px 8px rgba(34, 30, 27, 0.04);
+  --shadow-card: 0 4px 20px rgba(26, 56, 43, 0.06);
+  --shadow-card-hover: 0 10px 30px rgba(26, 56, 43, 0.12);
+  --shadow-modal: 0 20px 50px rgba(34, 30, 27, 0.25);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   margin: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: var(--crema);
-  color: var(--marron-oscuro);
-}
-
-header {
-  background-color: var(--marron-oscuro);
-  color: white;
-  padding: 1rem 2rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.product-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 20px;
-  padding: 20px;
-}
-
-.product-card {
-  background: white;
-  padding: 15px;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  text-align: center;
-}
-
-.product-card button {
-  background-color: var(--verde-hoja);
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.cart-summary {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  background: white;
-  padding: 20px;
-  display: flex;
-  justify-content: space-around;
-  border-top: 2px solid var(--marron-oscuro);
+  font-family: var(--font-body);
+  background-color: var(--bg-main);
+  color: var(--text-dark);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }

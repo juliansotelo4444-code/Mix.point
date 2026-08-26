@@ -1,18 +1,16 @@
-// import { Link } from 'react-router-dom';
 import { SocialSection } from '../components/SocialLinks';
 import { PageCTA } from '../components/PageCTA';
 
 export function Nosotros() {
   return (
     <>
-      {/* HERO a página completa: foto de fondo + overlay oscuro + título grande */}
       <section
         className="hero-nosotros"
         style={{ backgroundImage: "url('/assets/fondo.frutos.jpg')" }}
       >
         <div className="hero-nosotros-overlay">
           <p className="hero-nosotros-badge">DISTRIBUIDORA FAMILIAR · ARGENTINA</p>
-          <h1 className="hero-nosotros-title">Somos sinónimo de calidad</h1>
+          <h1 className="hero-nosotros-title">Pasión por la Calidad Natural</h1>
 
           <div className="hero-nosotros-social">
             <a
@@ -46,8 +44,10 @@ export function Nosotros() {
       <section className="nosotros-section" id="nosotros">
         <div className="nosotros-card">
           <p>
-            Somos una distribuidora joven que trabaja en familia. Compramos directo a productores mercadería fresca, granos enteros, bien cuidados, con la maduración
-            justa para que conserven todos sus nutrientes y propiedades.
+            Somos una distribuidora familiar nacida con el propósito de conectar a los mejores productores agropecuarios del país con comercios, dietéticas y familias que valoran la frescura auténtica.
+          </p>
+          <p style={{ marginTop: '16px', color: 'var(--text-muted)', fontSize: '1rem' }}>
+            Seleccionamos granos enteros, nueces mariposa extra light, almendras crocantes y frutas desecadas sin agregados artificiales, cuidando cada etapa del fraccionamiento para mantener intactas todas sus propiedades nutricionales.
           </p>
         </div>
       </section>
@@ -55,8 +55,8 @@ export function Nosotros() {
       <SocialSection />
 
       <PageCTA
-        texto="¿Ya viste todo lo que tenemos para vos?"
-        linkTexto="Ver catálogo mayorista"
+        texto="¿Querés conocer toda nuestra variedad de frutos y mixes?"
+        linkTexto="Explorar el catálogo mayorista"
         to="/catalogo"
         icono="✨"
       />

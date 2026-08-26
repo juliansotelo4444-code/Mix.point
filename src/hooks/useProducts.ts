@@ -13,12 +13,6 @@ function parseCSV(text: string): Product[] {
   const lines = cleanText.trim().split(/\r\n|\n/);
   const headers = lines[0].split(',').map(h => h.trim());
 
-  // DEBUG temporal — sacar una vez confirmado que el catálogo carga bien.
-  console.log('--- DEBUG CSV ---');
-  console.log('Primeros 300 caracteres (raw):', JSON.stringify(text.slice(0, 300)));
-  console.log('Headers detectados:', JSON.stringify(headers));
-  console.log('Total líneas:', lines.length);
-
   const productos = lines.slice(1).map(line => {
     const cols: string[] = [];
     let current = '';
@@ -31,7 +25,12 @@ function parseCSV(text: string): Product[] {
     cols.push(current.trim());
 
     const get = (key: string) => cols[headers.indexOf(key)]?.trim() ?? '';
-    const num = (key: string) => { const v = get(key); return v !== '' ? parseInt(v) : undefined; };
+    const num = (key: string) => {
+      const v = get(key);
+      if (!v) return undefined;
+      const parsed = parseInt(v.replace(/\s+/g, ''), 10);
+      return isNaN(parsed) ? undefined : parsed;
+    };
 
     // Leemos la columna tipoVenta. Si está vacía o no existe, asumimos
     // "peso" (comportamiento de siempre, no rompe nada de lo que ya
@@ -42,7 +41,7 @@ function parseCSV(text: string): Product[] {
     const precioBase = num('kg') ?? 0;
 
     return {
-      id: parseInt(get('id')),
+      id: parseInt(get('id'), 10),
       nombre: get('nombre'),
       descripcion: get('descripcion') || undefined,
       categoria: get('categoria'),
@@ -63,14 +62,7 @@ function parseCSV(text: string): Product[] {
     };
   });
 
-  console.log('Productos parseados (antes del filter):', productos.length);
-  const final = productos.filter(p => !isNaN(p.id));
-  console.log('Productos parseados (después del filter):', final.length);
-  if (final.length === 0 && productos.length > 0) {
-    console.log('Primer producto descartado (para ver por qué):', productos[0]);
-  }
-
-  return final;
+  return productos.filter(p => !isNaN(p.id));
 }
 
 export function useProducts() {

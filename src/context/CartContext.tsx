@@ -70,7 +70,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     const mensaje =
       `Hola Mix Point! Quiero confirmar mi pedido *${resultado.numeroPedido}*:%0A` +
       `${productosMsg}%0A` +
-      `Total: $${cartTotal}%0A%0A` +
+      `Total: $${cartTotal.toLocaleString('es-AR')}%0A%0A` +
       `📍 Datos de entrega:%0A` +
       `Nombre: ${datos.nombre}%0A` +
       `Teléfono: ${datos.telefono}%0A` +

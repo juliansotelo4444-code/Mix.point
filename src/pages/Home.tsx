@@ -1,106 +1,127 @@
-import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useProducts } from '../hooks/useProducts';
 import { ProductCard } from '../components/ProductCard';
 import { useCartContext } from '../context/CartContext';
 import { PageCTA } from '../components/PageCTA';
 import { WelcomeBack } from '../components/WelcomeBack';
-
-const slides = [
-  {
-    id: 1,
-    titulo: "¡DESCUBRE EL SABOR DE LA CALIDAD!",
-    subtitulo: "Nueces y Frutos Secos Premium de Origen Argentino",
-    badge: "BIENVENIDOS A MIX POINT",
-  },
-  {
-    id: 2,
-    titulo: "LOS FAVORITOS DE NUESTROS CLIENTES",
-    subtitulo: "Selección especial de temporada con la máxima frescura",
-    badge: "⭐ NUEVA COSECHA",
-  },
-  {
-    id: 3,
-    titulo: "CALIDAD 100% GARANTIZADA",
-    subtitulo: "Si no estás satisfecho con tu pedido, te devolvemos tu dinero sin vueltas.",
-    badge: "🔒 COMPRA SEGURA",
-  }
-];
+import { ReviewsSection } from '../components/ReviewsSection';
 
 export function Home() {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const { products } = useProducts();
+  const { products, loading } = useProducts();
   const { addToCart } = useCartContext();
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 5000);
-    return () => clearInterval(timer);
-  }, []);
-
-  // Teaser de productos: los primeros 4 del catálogo.
-  // Si más adelante tenés un campo tipo `destacado: boolean` en tus
-  // productos, cambiá esta línea por products.filter(p => p.destacado).
+  // Teaser de productos: los primeros 4 del catálogo o favoritos
   const destacados = products.slice(0, 4);
 
   return (
     <>
       <WelcomeBack />
 
-      {/* CARRUSEL HERO / GALERÍA DINÁMICA */}
-      <section className="hero-carousel-section" style={{ position: 'relative', overflow: 'hidden', margin: '20px auto', maxWidth: '1200px', borderRadius: '12px', boxShadow: '0 8px 25px rgba(0,0,0,0.5)' }}>
-        <div className="carousel-inner" style={{
-          background: currentSlide === 1
-            ? 'linear-gradient(135deg, #1f1f1f 0%, #111111 100%)'
-            : currentSlide === 2
-            ? 'linear-gradient(135deg, #2b2518 0%, #14120c 100%)'
-            : 'linear-gradient(135deg, #11161d 0%, #0a0c10 100%)',
-          color: '#fff',
-          padding: '60px 30px',
-          textAlign: 'center',
-          minHeight: '320px',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          border: '2px solid #d4af37',
-          transition: 'background 0.5s ease-in-out'
-        }}>
-          <span style={{ backgroundColor: '#d4af37', color: '#000', padding: '5px 15px', borderRadius: '20px', fontSize: '13px', fontWeight: '800', marginBottom: '15px', letterSpacing: '1px' }}>
-            {slides[currentSlide].badge}
-          </span>
-          <h2 style={{ fontSize: '32px', color: '#d4af37', marginBottom: '12px', fontWeight: '800', textTransform: 'uppercase', textShadow: '0 2px 4px rgba(0,0,0,0.4)' }}>
-            {slides[currentSlide].titulo}
-          </h2>
-          <p style={{ fontSize: '18px', color: '#e0e0e0', maxWidth: '700px', marginBottom: '30px', lineHeight: '1.5' }}>
-            {slides[currentSlide].subtitulo}
-          </p>
-          <Link to="/catalogo" style={{ backgroundColor: '#d4af37', color: '#000', padding: '12px 30px', borderRadius: '6px', fontWeight: 'bold', textDecoration: 'none', fontSize: '15px', boxShadow: '0 4px 10px rgba(212, 175, 55, 0.4)' }}>
-            VER CATÁLOGO MAYORISTA 🛒
-          </Link>
-        </div>
+      {/* HERO SECTION — ESTILO ORGANIC & NATURAL PREMIUM */}
+      <section className="hero-premium">
+        <div className="hero-premium-container">
+          <div className="hero-content">
+            <span className="hero-badge">
+              ✨ 100% Calidad Garantizada
+            </span>
 
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px', padding: '12px', background: '#0a0a0a' }}>
-          {slides.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentSlide(index)}
-              aria-label={`Ir al slide ${index + 1}`}
-              style={{
-                width: currentSlide === index ? '30px' : '12px',
-                height: '10px',
-                borderRadius: '5px',
-                border: 'none',
-                backgroundColor: currentSlide === index ? '#d4af37' : '#555',
-                cursor: 'pointer',
-                transition: 'width 0.3s'
-              }}
-            />
-          ))}
+            <h1 className="hero-title">
+              Sabor Natural y <em>Frescura Premium</em>
+            </h1>
+
+            <p className="hero-subtitle">
+              Descubrí frutos secos, mix artesanales y alimentos naturales seleccionados de máxima calidad argentina. Venta mayorista y minorista con envíos directos a tu puerta.
+            </p>
+
+            <div className="hero-cta-group">
+              <Link to="/catalogo" className="btn-primary">
+                Explorar Catálogo 🛒
+              </Link>
+              <Link to="/contacto" className="btn-secondary">
+                Pedir Asesoramiento 💬
+              </Link>
+            </div>
+          </div>
+
+          <div className="hero-visual">
+            <div className="hero-image-wrapper">
+              <img
+                src="/assets/fondo.frutos.jpg"
+                alt="Frutos Secos Premium Mix Point"
+                className="hero-image"
+              />
+            </div>
+            <div className="hero-seal-badge">
+              <span className="hero-seal-icon">🌿</span>
+              <span className="hero-seal-text">Origen Argentino</span>
+            </div>
+          </div>
         </div>
       </section>
 
+      {/* FEATURES / BENEFICIOS DESTACADOS */}
+      <section className="features-bar">
+        <div className="features-container">
+          <div className="feature-item">
+            <div className="feature-icon-box">🚚</div>
+            <div className="feature-text">
+              <h4>Envío a Domicilio</h4>
+              <p>Entregas en AMBA e interior por Correo y Andreani.</p>
+            </div>
+          </div>
+
+          <div className="feature-item">
+            <div className="feature-icon-box">🌰</div>
+            <div className="feature-text">
+              <h4>Cosecha Seleccionada</h4>
+              <p>Granos enteros y frescos directo de productores.</p>
+            </div>
+          </div>
+
+          <div className="feature-item">
+            <div className="feature-icon-box">🤝</div>
+            <div className="feature-text">
+              <h4>Venta Directa</h4>
+              <p>Precios mayoristas para dietéticas y familias.</p>
+            </div>
+          </div>
+
+          <div className="feature-item">
+            <div className="feature-icon-box">🔒</div>
+            <div className="feature-text">
+              <h4>Garantía Total</h4>
+              <p>Satisfacción 100% asegurada en cada pedido.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* PRODUCTOS DESTACADOS / FAVORITOS */}
+      <section className="teaser-section">
+        <div className="section-header">
+          <span className="section-tag">Selección Especial</span>
+          <h2 className="section-title">Nuestros Favoritos</h2>
+          <p className="section-subtitle">Los productos más elegidos por su calidad y frescura inigualable.</p>
+        </div>
+
+        {loading ? (
+          <p className="status-msg">Cargando productos destacados...</p>
+        ) : (
+          <div className="product-grid">
+            {destacados.map((product) => (
+              <ProductCard key={product.id} product={product} addToCart={addToCart} />
+            ))}
+          </div>
+        )}
+
+        <div className="teaser-cta-wrapper">
+          <Link to="/catalogo" className="teaser-cta-btn">
+            Ver catálogo completo ({products.length} productos) →
+          </Link>
+        </div>
+      </section>
+
+      {/* PROMICIONES / FLYER */}
       <section className="promotions-section">
         <picture>
           <source media="(min-width: 800px)" srcSet="/assets/Flyer-mix-point.png" />
@@ -108,41 +129,31 @@ export function Home() {
         </picture>
       </section>
 
-      {/* TEASER: productos destacados -> empuja al catálogo completo */}
-      <section className="teaser-section">
-        <h2 className="section-title">Nuestros favoritos</h2>
-        <div className="product-grid">
-          {destacados.map((product) => (
-            <ProductCard key={product.id} product={product} addToCart={addToCart} />
-          ))}
-        </div>
-        <div className="teaser-cta-wrapper">
-          <Link to="/catalogo" className="teaser-cta-btn">Ver catálogo completo →</Link>
-        </div>
-      </section>
+      {/* SECCIÓN DE OPINIONES DE COMPRADORES */}
+      <ReviewsSection />
 
-      {/* TEASERS: nosotros + envíos, como tarjetas con ícono */}
+      {/* TEASERS GRID: NOSOTROS Y ENVÍOS */}
       <section className="teaser-grid-section">
         <div className="teaser-info-card">
           <span className="teaser-icon">🌾</span>
-          <h3>Somos una distribuidora familiar</h3>
-          <p>Compramos directo a productores, mercadería fresca y bien cuidada.</p>
+          <h3>Distribuidora Familiar</h3>
+          <p>Trabajamos directo con productores agropecuarios para garantizar mercadería fresca y bien conservada.</p>
           <Link to="/nosotros" className="teaser-link">Conocé nuestra historia →</Link>
         </div>
 
         <div className="teaser-info-card teaser-info-card--accent">
           <span className="teaser-icon">🚚</span>
-          <h3>Envíos a todo el país</h3>
-          <p>Zona oeste, norte y sur con entregas propias. Interior por Correo Argentino y Andreani.</p>
-          <Link to="/envios" className="teaser-link">Ver zonas de entrega →</Link>
+          <h3>Logística y Envíos</h3>
+          <p>Entregas periódicas en zona oeste, norte y sur. Despachos rápidos a todo el país.</p>
+          <Link to="/envios" className="teaser-link">Ver zonas y condiciones →</Link>
         </div>
       </section>
 
       <PageCTA
-        texto="¿Tenés dudas sobre tu compra o querés precios mayoristas?"
-        linkTexto="Pedí asesoramiento"
+        texto="¿Tenés una dietética, comercio o querés comprar por bulto cerrado?"
+        linkTexto="Pedí lista de precios mayorista"
         to="/contacto"
-        icono="🤝"
+        icono="📦"
       />
     </>
   );
