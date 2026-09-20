@@ -1337,13 +1337,15 @@ main {
 .checkout-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(34, 30, 27, 0.65);
+  background: rgba(34, 30, 27, 0.72);
   backdrop-filter: blur(4px);
   z-index: 1100;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 16px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   animation: fadeIn 0.2s ease-out;
 }
 
@@ -1352,59 +1354,90 @@ main {
   border-radius: var(--radius-xl);
   max-width: 500px;
   width: 100%;
-  padding: 32px 28px;
+  max-height: calc(100vh - 32px);
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 22px 20px;
   box-shadow: var(--shadow-modal);
   position: relative;
+  margin: auto;
   animation: scaleUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+}
+
+.checkout-modal::-webkit-scrollbar {
+  width: 6px;
+}
+.checkout-modal::-webkit-scrollbar-thumb {
+  background: var(--border-medium);
+  border-radius: 4px;
 }
 
 .checkout-modal-close {
   position: absolute;
-  top: 18px;
-  right: 18px;
-  background: none;
-  border: none;
-  font-size: 1.2rem;
+  top: 14px;
+  right: 14px;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-light);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
   color: var(--text-muted);
   cursor: pointer;
+  transition: all 0.15s ease;
+  z-index: 10;
+}
+
+.checkout-modal-close:hover {
+  background: #f1ede3;
+  color: var(--text-dark);
 }
 
 .checkout-modal-title {
   font-family: var(--font-title);
   color: var(--primary-green);
-  font-size: 1.6rem;
-  margin: 0 0 6px;
+  font-size: 1.4rem;
+  margin: 0 0 4px;
+  padding-right: 32px;
 }
 
 .checkout-modal-subtitle {
   color: var(--text-muted);
-  font-size: 0.88rem;
-  margin: 0 0 16px;
+  font-size: 0.84rem;
+  margin: 0 0 12px;
+  line-height: 1.35;
 }
 
 .checkout-order-summary {
   background: var(--bg-subtle);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-md);
-  padding: 14px 16px;
-  margin-bottom: 20px;
+  padding: 10px 14px;
+  margin-bottom: 12px;
 }
 
 .checkout-summary-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.88rem;
+  font-size: 0.84rem;
   font-weight: 700;
   color: var(--primary-green);
-  margin-bottom: 10px;
-  padding-bottom: 8px;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
   border-bottom: 1px solid var(--border-light);
 }
 
 .checkout-summary-total {
   color: var(--accent-gold);
   font-size: 0.95rem;
+  font-weight: 700;
 }
 
 .checkout-summary-list {
@@ -1413,16 +1446,24 @@ main {
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 7px;
-  max-height: 140px;
+  gap: 6px;
+  max-height: 100px;
   overflow-y: auto;
+}
+
+.checkout-summary-list::-webkit-scrollbar {
+  width: 5px;
+}
+.checkout-summary-list::-webkit-scrollbar-thumb {
+  background: var(--border-medium);
+  border-radius: 4px;
 }
 
 .checkout-summary-item {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  font-size: 0.84rem;
+  font-size: 0.82rem;
   gap: 12px;
 }
 
@@ -1447,30 +1488,37 @@ main {
 .checkout-form {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 10px;
+}
+
+.checkout-fields-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
 }
 
 .checkout-field {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
 }
 
 .checkout-field label {
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   font-weight: 600;
   color: var(--text-dark);
 }
 
 .checkout-field input {
-  padding: 10px 14px;
+  padding: 8px 12px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border-light);
   background-color: var(--bg-subtle);
   font-family: var(--font-body);
-  font-size: 0.92rem;
+  font-size: 0.9rem;
   color: var(--text-dark);
   outline: none;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
 }
 
 .checkout-field input:focus {
@@ -1491,25 +1539,27 @@ main {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   color: var(--text-muted);
-  margin-top: 4px;
+  margin-top: 2px;
   cursor: pointer;
+  user-select: none;
 }
 
 .checkout-submit-btn {
   background-color: var(--primary-green);
   color: var(--text-white);
   border: none;
-  padding: 14px;
+  padding: 12px 18px;
   border-radius: var(--radius-full);
   font-family: var(--font-body);
-  font-size: 0.98rem;
+  font-size: 0.95rem;
   font-weight: 700;
   cursor: pointer;
-  margin-top: 10px;
+  margin-top: 6px;
   transition: all 0.25s ease;
   box-shadow: 0 4px 15px var(--primary-green-glow);
+  width: 100%;
 }
 
 .checkout-submit-btn:hover:not(:disabled) {
@@ -1524,8 +1574,26 @@ main {
   font-size: 0.8rem;
   text-decoration: underline;
   cursor: pointer;
-  margin-top: 6px;
+  margin-top: 4px;
   text-align: center;
+}
+
+@media (max-width: 540px) {
+  .checkout-modal-overlay {
+    padding: 0;
+    align-items: flex-end;
+  }
+
+  .checkout-modal {
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    max-height: 92dvh;
+    padding: 18px 14px 22px;
+  }
+
+  .checkout-fields-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
 }
 
 /* ── 19. STATUS & MISC ───────────────────────────────────────── */

@@ -117,18 +117,33 @@ export function CheckoutModal({ onConfirm, onClose, enviando }: Props) {
             {errores.nombre && <span className="field-error">{errores.nombre}</span>}
           </div>
 
-          <div className="checkout-field">
-            <label htmlFor="telefono">Teléfono *</label>
-            <input
-              id="telefono"
-              name="telefono"
-              type="tel"
-              value={datos.telefono}
-              onChange={handleChange}
-              placeholder="Ej: 11 1234 5678"
-              className={errores.telefono ? 'input-error' : ''}
-            />
-            {errores.telefono && <span className="field-error">{errores.telefono}</span>}
+          <div className="checkout-fields-row">
+            <div className="checkout-field">
+              <label htmlFor="telefono">Teléfono *</label>
+              <input
+                id="telefono"
+                name="telefono"
+                type="tel"
+                value={datos.telefono}
+                onChange={handleChange}
+                placeholder="Ej: 11 1234 5678"
+                className={errores.telefono ? 'input-error' : ''}
+              />
+              {errores.telefono && <span className="field-error">{errores.telefono}</span>}
+            </div>
+
+            <div className="checkout-field">
+              <label htmlFor="zona">Zona / Barrio *</label>
+              <input
+                id="zona"
+                name="zona"
+                value={datos.zona}
+                onChange={handleChange}
+                placeholder="Ej: Ituzaingó, zona oeste"
+                className={errores.zona ? 'input-error' : ''}
+              />
+              {errores.zona && <span className="field-error">{errores.zona}</span>}
+            </div>
           </div>
 
           <div className="checkout-field">
@@ -142,19 +157,6 @@ export function CheckoutModal({ onConfirm, onClose, enviando }: Props) {
               className={errores.direccion ? 'input-error' : ''}
             />
             {errores.direccion && <span className="field-error">{errores.direccion}</span>}
-          </div>
-
-          <div className="checkout-field">
-            <label htmlFor="zona">Zona / Barrio *</label>
-            <input
-              id="zona"
-              name="zona"
-              value={datos.zona}
-              onChange={handleChange}
-              placeholder="Ej: Ituzaingó, zona oeste"
-              className={errores.zona ? 'input-error' : ''}
-            />
-            {errores.zona && <span className="field-error">{errores.zona}</span>}
           </div>
 
           <label className="checkout-remember">
