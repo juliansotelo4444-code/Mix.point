@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 // import { useProducts } from '../hooks/useProducts';
 // import { ProductCard } from '../components/ProductCard';
@@ -9,10 +10,9 @@ import { ReviewsSection } from '../components/ReviewsSection';
 import { DesktopVideoPresentation } from '../components/DesktopVideoPresentation';
 
 export function Home() {
-  // Teaser de productos (desactivado temporalmente):
-  // const { products, loading } = useProducts();
-  // const { addToCart } = useCartContext();
-  // const destacados = products.slice(0, 4);
+  useEffect(() => {
+    document.title = 'Mix Point | Frutos Secos & Mix Artesanales Premium';
+  }, []);
 
   return (
     <>

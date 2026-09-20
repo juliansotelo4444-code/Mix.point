@@ -1,0 +1,94 @@
+.wa-float-container {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  z-index: 998;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.wa-float-btn {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background-color: #25d366;
+  color: #ffffff;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(37, 211, 102, 0.45);
+  transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.2s;
+  position: relative;
+}
+
+.wa-float-btn:hover {
+  transform: scale(1.1);
+  background-color: #20ba5a;
+}
+
+.wa-float-tooltip {
+  background: var(--bg-surface, #ffffff);
+  color: var(--text-dark, #1f2d24);
+  padding: 8px 12px 8px 14px;
+  border-radius: 12px;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 600;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.15);
+  border: 1px solid var(--border-light, #e8e3d9);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  animation: waBounceIn 0.4s ease-out;
+  max-width: 240px;
+}
+
+.wa-float-tooltip-close {
+  background: none;
+  border: none;
+  color: var(--text-muted, #7c897d);
+  font-size: 0.8rem;
+  cursor: pointer;
+  padding: 0 2px;
+  line-height: 1;
+}
+
+.wa-float-tooltip-close:hover {
+  color: var(--text-dark, #1f2d24);
+}
+
+@keyframes waBounceIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 500px) {
+  .wa-float-container {
+    bottom: 20px;
+    left: 18px;
+  }
+
+  .wa-float-btn {
+    width: 52px;
+    height: 52px;
+  }
+
+  .wa-float-btn svg {
+    width: 26px;
+    height: 26px;
+  }
+
+  .wa-float-tooltip {
+    display: none;
+  }
+}

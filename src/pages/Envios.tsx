@@ -1,6 +1,11 @@
+import { useEffect } from 'react';
 import { PageCTA } from '../components/PageCTA';
 
 export function Envios() {
+  useEffect(() => {
+    document.title = 'Envíos y Entregas a Todo el País | Mix Point';
+  }, []);
+
   return (
     <>
       <div className="section-header">

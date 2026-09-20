@@ -1,7 +1,12 @@
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { PageCTA } from '../components/PageCTA';
 
 export function Privacidad() {
+  useEffect(() => {
+    document.title = 'Política de Privacidad y Cookies | Mix Point';
+  }, []);
+
   return (
     <div className="privacy-page">
       <div className="section-header">

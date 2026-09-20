@@ -1,9 +1,13 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { PageCTA } from '../components/PageCTA';
 
 const WHATSAPP_NUMERO = '5491131469587';
 
 export function Contacto() {
+  useEffect(() => {
+    document.title = 'Contacto y Asesoramiento Comercial | Mix Point';
+  }, []);
+
   const [formData, setFormData] = useState({
     nombre: "",
     telefono: "",

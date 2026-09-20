@@ -1,10 +1,20 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useProducts } from '../hooks/useProducts';
 import { ProductCard } from '../components/ProductCard';
 import { useCartContext } from '../context/CartContext';
 import { PageCTA } from '../components/PageCTA';
+import type { Product } from '../types';
 
 const PRODUCTOS_POR_PAGINA = 24;
+
+type TipoOrden = 'relevancia' | 'precio-menor' | 'precio-mayor' | 'nombre-az';
+
+const getPrecioBase = (p: Product): number => {
+  if (p.tipoVenta === 'unidad') {
+    return p.precios.unidad ?? p.precios.kg ?? 0;
+  }
+  return p.precios.kg ?? 0;
+};
 
 export function Catalogo() {
   const { products, loading, error } = useProducts();
@@ -12,7 +22,12 @@ export function Catalogo() {
 
   const [query, setQuery] = useState("");
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("Todos");
+  const [orden, setOrden] = useState<TipoOrden>("relevancia");
   const [pagina, setPagina] = useState(1);
+
+  useEffect(() => {
+    document.title = 'Catálogo Mayorista & Minorista | Mix Point';
+  }, []);
 
   // Lista de categorías únicas extraídas de los productos
   const categorias = useMemo(() => {
@@ -34,12 +49,26 @@ export function Catalogo() {
     });
   }, [query, categoriaSeleccionada, products]);
 
-  const totalPaginas = Math.ceil(productosFiltrados.length / PRODUCTOS_POR_PAGINA);
+  const productosOrdenados = useMemo(() => {
+    const list = [...productosFiltrados];
+    if (orden === 'precio-menor') {
+      return list.sort((a, b) => getPrecioBase(a) - getPrecioBase(b));
+    }
+    if (orden === 'precio-mayor') {
+      return list.sort((a, b) => getPrecioBase(b) - getPrecioBase(a));
+    }
+    if (orden === 'nombre-az') {
+      return list.sort((a, b) => a.nombre.localeCompare(b.nombre));
+    }
+    return list;
+  }, [productosFiltrados, orden]);
+
+  const totalPaginas = Math.ceil(productosOrdenados.length / PRODUCTOS_POR_PAGINA);
 
   const productosPagina = useMemo(() => {
     const inicio = (pagina - 1) * PRODUCTOS_POR_PAGINA;
-    return productosFiltrados.slice(inicio, inicio + PRODUCTOS_POR_PAGINA);
-  }, [productosFiltrados, pagina]);
+    return productosOrdenados.slice(inicio, inicio + PRODUCTOS_POR_PAGINA);
+  }, [productosOrdenados, pagina]);
 
   const handleQuery = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
@@ -66,7 +95,7 @@ export function Catalogo() {
         </p>
       </div>
 
-      {/* BUSCADOR ELEGANTE */}
+      {/* BUSCADOR ELEGANTE Y ORDEN */}
       <div className="search-wrapper">
         <div className="search-container">
           <span className="search-icon">🔍</span>
@@ -76,7 +105,27 @@ export function Catalogo() {
             value={query}
             onChange={handleQuery}
             className="search-input"
+            aria-label="Buscar productos"
           />
+        </div>
+
+        <div className="sort-container">
+          <label htmlFor="sort-select" className="sort-label">Ordenar por:</label>
+          <select
+            id="sort-select"
+            value={orden}
+            onChange={(e) => {
+              setOrden(e.target.value as TipoOrden);
+              setPagina(1);
+            }}
+            className="sort-select"
+            aria-label="Ordenar productos"
+          >
+            <option value="relevancia">Relevancia / Destacados</option>
+            <option value="precio-menor">Precio: Menor a Mayor</option>
+            <option value="precio-mayor">Precio: Mayor a Menor</option>
+            <option value="nombre-az">Nombre: A - Z</option>
+          </select>
         </div>
       </div>
 
@@ -95,26 +144,47 @@ export function Catalogo() {
         </div>
       )}
 
-      {loading && <p className="status-msg">Cargando productos de la huerta...</p>}
+      {/* SKELETON CARDS DURANTE CARGA */}
+      {loading && (
+        <div className="catalog-loading-section">
+          <p className="status-msg">Cargando productos frescos de la huerta...</p>
+          <div className="product-grid skeleton-grid">
+            {Array.from({ length: 8 }).map((_, idx) => (
+              <div key={idx} className="product-card skeleton-card" aria-hidden="true">
+                <div className="product-card-img-container skeleton-box skeleton-img" />
+                <div className="skeleton-content">
+                  <div className="skeleton-box skeleton-line skeleton-title" />
+                  <div className="skeleton-box skeleton-line skeleton-desc" />
+                  <div className="skeleton-box skeleton-line skeleton-price" />
+                  <div className="skeleton-box skeleton-button" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {error && <p className="status-msg status-msg--error">Error al cargar productos. Intentá recargar la página.</p>}
 
       {(query || categoriaSeleccionada !== "Todos") && !loading && (
         <p className="status-msg">
-          {productosFiltrados.length} producto{productosFiltrados.length !== 1 ? 's' : ''} encontrado{productosFiltrados.length !== 1 ? 's' : ''}
+          {productosOrdenados.length} producto{productosOrdenados.length !== 1 ? 's' : ''} encontrado{productosOrdenados.length !== 1 ? 's' : ''}
           {categoriaSeleccionada !== "Todos" && ` en "${categoriaSeleccionada}"`}
           {query && ` para "${query}"`}
         </p>
       )}
 
-      <section className="product-grid">
-        {productosPagina.map((product) => (
-          <ProductCard
-            key={product.id}
-            product={product}
-            addToCart={addToCart}
-          />
-        ))}
-      </section>
+      {!loading && !error && (
+        <section className="product-grid">
+          {productosPagina.map((product) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              addToCart={addToCart}
+            />
+          ))}
+        </section>
+      )}
 
       {totalPaginas > 1 && (
         <div className="paginacion">

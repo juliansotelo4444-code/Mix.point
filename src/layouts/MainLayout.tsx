@@ -4,6 +4,7 @@ import { CartButton } from '../components/CartButton';
 import { CartModal } from '../components/CartModal';
 import { SocialBarTop } from '../components/SocialLinks';
 import { ScrollToTop } from '../components/ScrollToTop';
+import { WhatsAppFloat } from '../components/WhatsAppFloat';
 import { CartProvider } from '../context/CartContext';
 import '../App.css';
 
@@ -85,6 +86,7 @@ export function MainLayout() {
         </footer>
 
         <CartButton />
+        <WhatsAppFloat />
         <CartModal />
       </div>
     </CartProvider>

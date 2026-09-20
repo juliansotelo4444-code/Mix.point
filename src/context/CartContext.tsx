@@ -23,6 +23,8 @@ interface CartContextType {
   cart: UseCartReturn['cart'];
   addToCart: UseCartReturn['addToCart'];
   removeFromCart: UseCartReturn['removeFromCart'];
+  updateQuantity: UseCartReturn['updateQuantity'];
+  removeItem: UseCartReturn['removeItem'];
   clearCart: () => void;
   cartTotal: number;
   cartCount: number;
@@ -39,7 +41,15 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 // Envuelve toda la app (ver MainLayout.tsx) para que el carrito y el
 // checkout estén disponibles sin importar en qué página esté el usuario.
 export function CartProvider({ children }: { children: ReactNode }) {
-  const { cart, addToCart, removeFromCart, clearCart, cartTotal } = useCart();
+  const {
+    cart,
+    addToCart,
+    removeFromCart,
+    updateQuantity,
+    removeItem,
+    clearCart,
+    cartTotal
+  } = useCart();
   const { submitPedido, enviando } = useOrderSubmit();
   const [showCart, setShowCart] = useState(false);
   const [showCheckout, setShowCheckout] = useState(false);
@@ -97,10 +107,20 @@ export function CartProvider({ children }: { children: ReactNode }) {
   return (
     <CartContext.Provider
       value={{
-        cart, addToCart, removeFromCart, clearCart, cartTotal, cartCount,
-        showCart, setShowCart,
-        showCheckout, setShowCheckout,
-        enviando, handleConfirmarPedido,
+        cart,
+        addToCart,
+        removeFromCart,
+        updateQuantity,
+        removeItem,
+        clearCart,
+        cartTotal,
+        cartCount,
+        showCart,
+        setShowCart,
+        showCheckout,
+        setShowCheckout,
+        enviando,
+        handleConfirmarPedido,
       }}
     >
       {children}

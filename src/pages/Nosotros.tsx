@@ -1,7 +1,12 @@
+import { useEffect } from 'react';
 import { SocialSection } from '../components/SocialLinks';
 import { PageCTA } from '../components/PageCTA';
 
 export function Nosotros() {
+  useEffect(() => {
+    document.title = 'Sobre Nosotros | Mix Point';
+  }, []);
+
   return (
     <>
       <section
