@@ -54,5 +54,9 @@ export const useCart = () => {
     });
   };
 
-  return { cart, addToCart, removeFromCart, cartTotal };
+  const clearCart = () => {
+    setCart([]);
+  };
+
+  return { cart, addToCart, removeFromCart, clearCart, cartTotal };
 };

@@ -18,8 +18,8 @@ export function Contacto() {
 
   const handleSubmitAsesoramiento = (e: React.FormEvent) => {
     e.preventDefault();
-    const mensaje = `Hola Mix Point! Me interesa recibir asesoramiento:%0A- Nombre/Comercio: ${formData.nombre}%0A- Teléfono: ${formData.telefono}%0A- Tipo de compra: ${formData.tipo_compra}%0A- Barrio/Localidad: ${formData.zona}`;
-    window.open(`https://wa.me/${WHATSAPP_NUMERO}?text=${mensaje}`, '_blank');
+    const mensaje = `Hola Mix Point! Me interesa recibir asesoramiento:\n- Nombre/Comercio: ${formData.nombre}\n- Teléfono: ${formData.telefono}\n- Tipo de compra: ${formData.tipo_compra}\n- Barrio/Localidad: ${formData.zona}`;
+    window.open(`https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(mensaje)}`, '_blank');
   };
 
   return (

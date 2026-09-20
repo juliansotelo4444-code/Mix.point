@@ -5,6 +5,8 @@ import { useCartContext } from '../context/CartContext';
 import { PageCTA } from '../components/PageCTA';
 import { WelcomeBack } from '../components/WelcomeBack';
 import { ReviewsSection } from '../components/ReviewsSection';
+import { PromosOffers } from '../components/PromosOffers';
+import { DesktopVideoPresentation } from '../components/DesktopVideoPresentation';
 
 export function Home() {
   const { products, loading } = useProducts();
@@ -121,7 +123,13 @@ export function Home() {
         </div>
       </section>
 
-      {/* PROMICIONES / FLYER */}
+      {/* SECCIÓN DE OFERTAS Y COMBOS DESTACADOS */}
+      <PromosOffers />
+
+      {/* VIDEO DE PRESENTACIÓN (SOLO ESCRITORIO) */}
+      <DesktopVideoPresentation />
+
+      {/* PROMOCIONES / FLYER */}
       <section className="promotions-section">
         <picture>
           <source media="(min-width: 800px)" srcSet="/assets/Flyer-mix-point.png" />

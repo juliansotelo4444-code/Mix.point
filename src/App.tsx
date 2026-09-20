@@ -5,6 +5,7 @@ import { Catalogo } from './pages/Catalogo';
 import { Nosotros } from './pages/Nosotros';
 import { Contacto } from './pages/Contacto';
 import { Envios } from './pages/Envios';
+import { Privacidad } from './pages/Privacidad';
 
 function App() {
   return (
@@ -16,6 +17,8 @@ function App() {
           <Route path="/nosotros" element={<Nosotros />} />
           <Route path="/contacto" element={<Contacto />} />
           <Route path="/envios" element={<Envios />} />
+          <Route path="/privacidad" element={<Privacidad />} />
+          <Route path="*" element={<Home />} />
         </Route>
       </Routes>
     </BrowserRouter>

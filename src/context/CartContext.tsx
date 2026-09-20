@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, type ReactNode } from 'react';
 import { useCart } from '../hooks/useCart';
 import { useOrderSubmit } from '../hooks/useOrderSubmit';
+import { calcularPrecioUnitario } from '../utils/precios';
 
 const WHATSAPP_NUMERO = '5491131469587';
 
@@ -22,6 +23,7 @@ interface CartContextType {
   cart: UseCartReturn['cart'];
   addToCart: UseCartReturn['addToCart'];
   removeFromCart: UseCartReturn['removeFromCart'];
+  clearCart: () => void;
   cartTotal: number;
   cartCount: number;
   showCart: boolean;
@@ -37,7 +39,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 // Envuelve toda la app (ver MainLayout.tsx) para que el carrito y el
 // checkout estén disponibles sin importar en qué página esté el usuario.
 export function CartProvider({ children }: { children: ReactNode }) {
-  const { cart, addToCart, removeFromCart, cartTotal } = useCart();
+  const { cart, addToCart, removeFromCart, clearCart, cartTotal } = useCart();
   const { submitPedido, enviando } = useOrderSubmit();
   const [showCart, setShowCart] = useState(false);
   const [showCheckout, setShowCheckout] = useState(false);
@@ -49,35 +51,45 @@ export function CartProvider({ children }: { children: ReactNode }) {
     const productosTexto = cart
       .map(item => {
         const label = pesosLabels[item.escalaSeleccionada] || item.escalaSeleccionada;
-        return `${item.nombre} (${label}) x${item.quantity}`;
+        const precioUnitario = calcularPrecioUnitario(item.precios, item.escalaSeleccionada);
+        const subtotal = precioUnitario * item.quantity;
+        return `${item.nombre} (${label}) x${item.quantity} [$${subtotal.toLocaleString('es-AR')}]`;
       })
       .join(' | ');
 
     const resultado = await submitPedido(datos, productosTexto, cartTotal);
 
     if (!resultado.success) {
-      alert('Hubo un problema al registrar tu pedido. Probá de nuevo o escribinos directamente por WhatsApp.');
-      return;
+      const continuar = window.confirm(
+        'Hubo un problema temporal con el registro automático, pero podés enviar tu pedido directamente por WhatsApp para que lo preparemos.\n\n¿Querés enviarlo ahora?'
+      );
+      if (!continuar) return;
     }
 
+    const pedidoCodigo = resultado.numeroPedido ? ` *${resultado.numeroPedido}*` : '';
     const productosMsg = cart
       .map(item => {
         const label = pesosLabels[item.escalaSeleccionada] || item.escalaSeleccionada;
-        return `- ${item.nombre} (${label}) x${item.quantity}`;
+        const precioUnitario = calcularPrecioUnitario(item.precios, item.escalaSeleccionada);
+        const subtotal = precioUnitario * item.quantity;
+        const unitarioTxt = item.quantity > 1 ? ` ($${precioUnitario.toLocaleString('es-AR')} c/u)` : '';
+        return `- ${item.nombre} (${label}) x${item.quantity}: $${subtotal.toLocaleString('es-AR')}${unitarioTxt}`;
       })
-      .join('%0A');
+      .join('\n');
 
     const mensaje =
-      `Hola Mix Point! Quiero confirmar mi pedido *${resultado.numeroPedido}*:%0A` +
-      `${productosMsg}%0A` +
-      `Total: $${cartTotal.toLocaleString('es-AR')}%0A%0A` +
-      `📍 Datos de entrega:%0A` +
-      `Nombre: ${datos.nombre}%0A` +
-      `Teléfono: ${datos.telefono}%0A` +
-      `Dirección: ${datos.direccion}%0A` +
+      `Hola Mix Point! Quiero confirmar mi pedido${pedidoCodigo}:\n\n` +
+      `📦 Detalle del pedido:\n` +
+      `${productosMsg}\n\n` +
+      `💰 Total: $${cartTotal.toLocaleString('es-AR')}\n\n` +
+      `📍 Datos de entrega:\n` +
+      `Nombre: ${datos.nombre}\n` +
+      `Teléfono: ${datos.telefono}\n` +
+      `Dirección: ${datos.direccion}\n` +
       `Zona: ${datos.zona}`;
 
-    window.open(`https://wa.me/${WHATSAPP_NUMERO}?text=${mensaje}`, '_blank');
+    window.open(`https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(mensaje)}`, '_blank');
+    clearCart();
     setShowCheckout(false);
     setShowCart(false);
   };
@@ -85,7 +97,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   return (
     <CartContext.Provider
       value={{
-        cart, addToCart, removeFromCart, cartTotal, cartCount,
+        cart, addToCart, removeFromCart, clearCart, cartTotal, cartCount,
         showCart, setShowCart,
         showCheckout, setShowCheckout,
         enviando, handleConfirmarPedido,

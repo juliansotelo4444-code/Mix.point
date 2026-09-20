@@ -60,7 +60,9 @@ export function ReviewsSection() {
         const parsed = JSON.parse(saved);
         return [...parsed, ...INITIAL_REVIEWS];
       }
-    } catch {}
+    } catch {
+      // Ignorar error si localStorage no está disponible
+    }
     return INITIAL_REVIEWS;
   });
 
@@ -102,7 +104,9 @@ export function ReviewsSection() {
     const updatedUserReviews = [nuevaReview, ...userReviews];
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedUserReviews));
-    } catch {}
+    } catch {
+      // Ignorar error si localStorage no está disponible
+    }
 
     setReviews([nuevaReview, ...reviews]);
     setMostrarModal(false);

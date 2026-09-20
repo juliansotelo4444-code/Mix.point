@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useCartContext } from '../context/CartContext';
+import { calcularPrecioUnitario } from '../utils/precios';
 import {
   type DatosEntrega,
   DATOS_VACIOS,
@@ -7,6 +9,11 @@ import {
   borrarDatosEntrega,
 } from '../utils/datosEntrega';
 
+const pesosLabels: Record<string, string> = {
+  kg: "1kg", cincoKg: "5kg", diezKg: "10kg",
+  veinticincoKg: "25kg", treintaKg: "30kg", unidad: "unidad"
+};
+
 interface Props {
   onConfirm: (datos: DatosEntrega) => void;
   onClose: () => void;
@@ -14,6 +21,7 @@ interface Props {
 }
 
 export function CheckoutModal({ onConfirm, onClose, enviando }: Props) {
+  const { cart, cartTotal } = useCartContext();
   const [datos, setDatos] = useState<DatosEntrega>(cargarDatosGuardados);
   const [errores, setErrores] = useState<Partial<DatosEntrega>>({});
   const [recordar, setRecordar] = useState(true);
@@ -68,6 +76,32 @@ export function CheckoutModal({ onConfirm, onClose, enviando }: Props) {
         <p className="checkout-modal-subtitle">
           Necesitamos estos datos para confirmar tu pedido y coordinar la entrega.
         </p>
+
+        {cart.length > 0 && (
+          <div className="checkout-order-summary">
+            <div className="checkout-summary-header">
+              <span className="checkout-summary-title">📦 Detalle de envío</span>
+              <span className="checkout-summary-total">Total: ${cartTotal.toLocaleString('es-AR')}</span>
+            </div>
+            <ul className="checkout-summary-list">
+              {cart.map((item) => {
+                const label = pesosLabels[item.escalaSeleccionada] || item.escalaSeleccionada;
+                const precioUnitario = calcularPrecioUnitario(item.precios, item.escalaSeleccionada);
+                const subtotal = precioUnitario * item.quantity;
+                return (
+                  <li key={`${item.id}-${item.escalaSeleccionada}`} className="checkout-summary-item">
+                    <span className="checkout-item-name">
+                      {item.nombre} <small className="checkout-item-qty">({label} x{item.quantity})</small>
+                    </span>
+                    <span className="checkout-item-cost">
+                      ${subtotal.toLocaleString('es-AR')}
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="checkout-form">
           <div className="checkout-field">

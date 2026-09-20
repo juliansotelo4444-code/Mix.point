@@ -1,7 +1,17 @@
 import { useCartContext } from '../context/CartContext';
 import { CheckoutModal } from './CheckoutModal';
+import { calcularPrecioUnitario } from '../utils/precios';
 
 const MINIMO_COMPRA = 20000;
+
+const pesosLabels: Record<string, string> = {
+  kg: "1kg",
+  cincoKg: "5kg",
+  diezKg: "10kg",
+  veinticincoKg: "25kg",
+  treintaKg: "30kg",
+  unidad: "Unidad",
+};
 
 export function CartModal() {
   const {
@@ -26,21 +36,33 @@ export function CartModal() {
             <p className="cart-modal-empty">Todavía no agregaste productos.</p>
           ) : (
             <div className="cart-modal-items">
-              {cart.map((item) => (
-                <div key={`${item.id}-${item.escalaSeleccionada}`} className="cart-modal-item">
-                  <div className="cart-modal-item-info">
-                    <span className="cart-modal-item-name">{item.nombre}</span>
-                    <span className="cart-modal-item-meta">{item.escalaSeleccionada} · x{item.quantity}</span>
+              {cart.map((item) => {
+                const label = pesosLabels[item.escalaSeleccionada] || item.escalaSeleccionada;
+                const precioUnitario = calcularPrecioUnitario(item.precios, item.escalaSeleccionada);
+                const subtotal = precioUnitario * item.quantity;
+
+                return (
+                  <div key={`${item.id}-${item.escalaSeleccionada}`} className="cart-modal-item">
+                    <div className="cart-modal-item-info">
+                      <span className="cart-modal-item-name">{item.nombre}</span>
+                      <div className="cart-modal-item-details">
+                        <span className="cart-modal-item-meta">{label} · x{item.quantity}</span>
+                        <span className="cart-modal-item-cost">${subtotal.toLocaleString('es-AR')}</span>
+                        {item.quantity > 1 && (
+                          <span className="cart-modal-item-unit">(${precioUnitario.toLocaleString('es-AR')} c/u)</span>
+                        )}
+                      </div>
+                    </div>
+                    <button
+                      className="btn-remove"
+                      onClick={() => removeFromCart(item.id, item.escalaSeleccionada)}
+                      aria-label={`Quitar ${item.nombre} del carrito`}
+                    >
+                      Borrar
+                    </button>
                   </div>
-                  <button
-                    className="btn-remove"
-                    onClick={() => removeFromCart(item.id, item.escalaSeleccionada)}
-                    aria-label={`Quitar ${item.nombre} del carrito`}
-                  >
-                    Borrar
-                  </button>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
 

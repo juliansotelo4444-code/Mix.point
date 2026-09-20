@@ -52,6 +52,7 @@ export function MainLayout() {
                 <li><Link to="/envios" style={{ color: 'rgba(255,255,255,0.85)', textDecoration: 'none' }}>Zonas de Envío</Link></li>
                 <li><Link to="/contacto" style={{ color: 'rgba(255,255,255,0.85)', textDecoration: 'none' }}>Atención a Comercios</Link></li>
                 <li><Link to="/nosotros" style={{ color: 'rgba(255,255,255,0.85)', textDecoration: 'none' }}>Nuestra Historia</Link></li>
+                <li><Link to="/privacidad" style={{ color: 'var(--accent-gold)', textDecoration: 'none', fontWeight: 600 }}>Política de Privacidad & Cookies</Link></li>
               </ul>
             </div>
 
@@ -68,9 +69,18 @@ export function MainLayout() {
             paddingTop: '20px',
             textAlign: 'center',
             fontSize: '0.82rem',
-            color: 'rgba(255,255,255,0.6)'
+            color: 'rgba(255,255,255,0.6)',
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: '12px'
           }}>
-            © {new Date().getFullYear()} Mix Point. Todos los derechos reservados. Alimentos naturales y frutos secos de máxima calidad.
+            <span>© {new Date().getFullYear()} Mix Point. Todos los derechos reservados. Alimentos naturales y frutos secos de máxima calidad.</span>
+            <span>·</span>
+            <Link to="/privacidad" style={{ color: 'var(--accent-gold)', textDecoration: 'underline', fontWeight: 500 }}>
+              Política de Privacidad y Cookies
+            </Link>
           </div>
         </footer>
 

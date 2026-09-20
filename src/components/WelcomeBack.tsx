@@ -20,7 +20,7 @@ export function WelcomeBack() {
 
   return (
     <div className="welcome-back">
-      <span>¡Qué lindo tenerte de vuelta,{nombre}! ✨ Seleccionamos la mejor calidad en frutos secos especialmente para vos. ¡Disfrutá tu compra!"</span>
+      <span>¡Qué lindo tenerte de vuelta, {nombre}! ✨ Seleccionamos la mejor calidad en frutos secos especialmente para vos. ¡Disfrutá tu compra!</span>
       <button
         className="welcome-back-close"
         onClick={() => setVisible(false)}
