@@ -99,7 +99,7 @@ export function Home() {
       </section>
 
       {/* PRODUCTOS DESTACADOS / FAVORITOS */}
-      <section className="teaser-section">
+      {/* <section className="teaser-section">
         <div className="section-header">
           <span className="section-tag">Selección Especial</span>
           <h2 className="section-title">Nuestros Favoritos</h2>
@@ -121,7 +121,7 @@ export function Home() {
             Ver catálogo completo ({products.length} productos) →
           </Link>
         </div>
-      </section>
+      </section> */}
 
       {/* SECCIÓN DE OFERTAS Y COMBOS DESTACADOS */}
       <PromosOffers />
