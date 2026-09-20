@@ -1,19 +1,18 @@
 import { Link } from 'react-router-dom';
-import { useProducts } from '../hooks/useProducts';
-import { ProductCard } from '../components/ProductCard';
-import { useCartContext } from '../context/CartContext';
+// import { useProducts } from '../hooks/useProducts';
+// import { ProductCard } from '../components/ProductCard';
+// import { useCartContext } from '../context/CartContext';
 import { PageCTA } from '../components/PageCTA';
 import { WelcomeBack } from '../components/WelcomeBack';
 import { ReviewsSection } from '../components/ReviewsSection';
-import { PromosOffers } from '../components/PromosOffers';
+// import { PromosOffers } from '../components/PromosOffers';
 import { DesktopVideoPresentation } from '../components/DesktopVideoPresentation';
 
 export function Home() {
-  const { products, loading } = useProducts();
-  const { addToCart } = useCartContext();
-
-  // Teaser de productos: los primeros 4 del catálogo o favoritos
-  const destacados = products.slice(0, 4);
+  // Teaser de productos (desactivado temporalmente):
+  // const { products, loading } = useProducts();
+  // const { addToCart } = useCartContext();
+  // const destacados = products.slice(0, 4);
 
   return (
     <>
@@ -123,8 +122,8 @@ export function Home() {
         </div>
       </section> */}
 
-      {/* SECCIÓN DE OFERTAS Y COMBOS DESTACADOS */}
-      <PromosOffers />
+      {/* SECCIÓN DE OFERTAS Y COMBOS DESTACADOS (Oculta sin borrar) */}
+      {/* <PromosOffers /> */}
 
       {/* VIDEO DE PRESENTACIÓN (SOLO ESCRITORIO) */}
       <DesktopVideoPresentation />
@@ -142,12 +141,12 @@ export function Home() {
 
       {/* TEASERS GRID: NOSOTROS Y ENVÍOS */}
       <section className="teaser-grid-section">
-        <div className="teaser-info-card">
+        {/* <div className="teaser-info-card">
           <span className="teaser-icon">🌾</span>
           <h3>Distribuidora Familiar</h3>
           <p>Trabajamos directo con productores agropecuarios para garantizar mercadería fresca y bien conservada.</p>
           <Link to="/nosotros" className="teaser-link">Conocé nuestra historia →</Link>
-        </div>
+        </div> */}
 
         <div className="teaser-info-card teaser-info-card--accent">
           <span className="teaser-icon">🚚</span>
