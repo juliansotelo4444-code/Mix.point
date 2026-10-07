@@ -52,7 +52,9 @@ export function CheckoutModal({ onConfirm, onClose, enviando }: Props) {
     onConfirm(datos);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setDatos(prev => ({ ...prev, [name]: value }));
     if (errores[name as keyof DatosEntrega]) {
@@ -157,6 +159,34 @@ export function CheckoutModal({ onConfirm, onClose, enviando }: Props) {
               className={errores.direccion ? 'input-error' : ''}
             />
             {errores.direccion && <span className="field-error">{errores.direccion}</span>}
+          </div>
+
+          <div className="checkout-fields-row">
+            <div className="checkout-field">
+              <label htmlFor="metodoPago">Forma de pago</label>
+              <select
+                id="metodoPago"
+                name="metodoPago"
+                value={datos.metodoPago || 'Transferencia bancaria'}
+                onChange={handleChange}
+                className="checkout-select"
+              >
+                <option value="Transferencia bancaria">🏦 Transferencia bancaria</option>
+                <option value="Efectivo contra entrega">💵 Efectivo al recibir</option>
+                <option value="Mercado Pago">💳 Mercado Pago</option>
+              </select>
+            </div>
+
+            <div className="checkout-field">
+              <label htmlFor="notas">Aclaraciones (opcional)</label>
+              <input
+                id="notas"
+                name="notas"
+                value={datos.notas || ''}
+                onChange={handleChange}
+                placeholder="Ej: Timbre 2B, después de 14hs"
+              />
+            </div>
           </div>
 
           <label className="checkout-remember">

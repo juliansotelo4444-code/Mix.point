@@ -2890,4 +2890,138 @@ main {
   flex-wrap: wrap;
 }
 
+/* ==========================================================================
+   ACTUALIZACIONES Y MEJORAS DE UX / UI
+   ========================================================================== */
+
+.search-clear-btn {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.08);
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.search-clear-btn:hover {
+  background: rgba(0, 0, 0, 0.18);
+  color: var(--text-dark);
+}
+
+.filter-controls-group {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.type-filter-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.category-pill-count {
+  margin-left: 6px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.08);
+  color: inherit;
+}
+
+.category-pill--active .category-pill-count {
+  background: rgba(255, 255, 255, 0.25);
+  color: #fff;
+}
+
+.no-products-found {
+  text-align: center;
+  padding: 50px 20px;
+  background: var(--bg-surface);
+  border: 1px dashed var(--border-medium);
+  border-radius: var(--radius-lg);
+  max-width: 600px;
+  margin: 30px auto;
+}
+
+.no-products-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--primary-green);
+  margin-bottom: 8px;
+}
+
+.no-products-sub {
+  color: var(--text-muted);
+  font-size: 0.92rem;
+  margin-bottom: 20px;
+}
+
+.btn-reset-filters {
+  background: var(--primary-green);
+  color: #fff;
+  border: none;
+  padding: 10px 22px;
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, background 0.2s;
+}
+
+.btn-reset-filters:hover {
+  background: var(--primary-green-dark);
+  transform: translateY(-2px);
+}
+
+.btn-add--added {
+  background-color: #2e7d32 !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3) !important;
+  transform: scale(0.98);
+}
+
+.btn-add-check {
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.cart-modal-item-thumb {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid var(--border-light);
+  flex-shrink: 0;
+  background: #fff;
+}
+
+.checkout-select {
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-medium);
+  background-color: var(--bg-surface);
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  color: var(--text-dark);
+  outline: none;
+}
+
+.checkout-select:focus {
+  border-color: var(--primary-green);
+  box-shadow: 0 0 0 3px var(--primary-green-light);
+}
+
 

@@ -8,6 +8,8 @@ export interface DatosEntrega {
   telefono: string;
   direccion: string;
   zona: string;
+  metodoPago?: string;
+  notas?: string;
 }
 
 export const CHECKOUT_STORAGE_KEY = 'mixpoint_datos_entrega';
@@ -17,6 +19,8 @@ export const DATOS_VACIOS: DatosEntrega = {
   telefono: '',
   direccion: '',
   zona: '',
+  metodoPago: 'Transferencia bancaria',
+  notas: '',
 };
 
 export function cargarDatosGuardados(): DatosEntrega {

@@ -68,25 +68,63 @@ function parseCSV(text: string): Product[] {
   return productos.filter(p => !isNaN(p.id));
 }
 
+const PRODUCTS_CACHE_KEY = 'mixpoint_cached_products_v1';
+
+function getCachedProducts(): Product[] {
+  try {
+    const raw = localStorage.getItem(PRODUCTS_CACHE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
+  } catch {
+    // Modo privado o localStorage bloqueado
+  }
+  return [];
+}
+
 export function useProducts() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [products, setProducts] = useState<Product[]>(getCachedProducts);
+  const [loading, setLoading] = useState<boolean>(() => getCachedProducts().length === 0);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    let cancel = false;
+
     fetch(SHEETS_CSV_URL)
       .then(res => {
         if (!res.ok) throw new Error('No se pudo cargar la planilla');
         return res.text();
       })
       .then(text => {
-        setProducts(parseCSV(text));
+        if (cancel) return;
+        const parsed = parseCSV(text);
+        if (parsed.length > 0) {
+          setProducts(parsed);
+          try {
+            localStorage.setItem(PRODUCTS_CACHE_KEY, JSON.stringify(parsed));
+          } catch {
+            // Ignorar límite de almacenamiento
+          }
+        }
         setLoading(false);
+        setError(null);
       })
       .catch(err => {
-        setError(err.message);
+        if (cancel) return;
+        // Si ya teníamos productos en caché, no mostramos error bloqueante
+        setProducts(prev => {
+          if (prev.length === 0) {
+            setError(err.message);
+          }
+          return prev;
+        });
         setLoading(false);
       });
+
+    return () => {
+      cancel = true;
+    };
   }, []);
 
   return { products, loading, error };

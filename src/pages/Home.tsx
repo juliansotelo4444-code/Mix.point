@@ -1,18 +1,31 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-// import { useProducts } from '../hooks/useProducts';
-// import { ProductCard } from '../components/ProductCard';
-// import { useCartContext } from '../context/CartContext';
+import { useProducts } from '../hooks/useProducts';
+import { ProductCard } from '../components/ProductCard';
+import { useCartContext } from '../context/CartContext';
 import { PageCTA } from '../components/PageCTA';
 import { WelcomeBack } from '../components/WelcomeBack';
 import { ReviewsSection } from '../components/ReviewsSection';
-// import { PromosOffers } from '../components/PromosOffers';
 import { DesktopVideoPresentation } from '../components/DesktopVideoPresentation';
 
 export function Home() {
+  const { products, loading } = useProducts();
+  const { addToCart } = useCartContext();
+
   useEffect(() => {
     document.title = 'Mix Point | Frutos Secos & Mix Artesanales Premium';
   }, []);
+
+  // Selección de 4 productos estrella destacados con imagen y precio
+  const destacados = useMemo(() => {
+    if (products.length === 0) return [];
+    // Buscamos productos populares de frutos secos / mix
+    const populares = products.filter(p => 
+      p.categoria?.toLowerCase().includes('frutos secos') ||
+      p.categoria?.toLowerCase().includes('mix')
+    );
+    return (populares.length >= 4 ? populares : products).slice(0, 4);
+  }, [products]);
 
   return (
     <>
@@ -98,7 +111,7 @@ export function Home() {
       </section>
 
       {/* PRODUCTOS DESTACADOS / FAVORITOS */}
-      {/* <section className="teaser-section">
+      <section className="teaser-section">
         <div className="section-header">
           <span className="section-tag">Selección Especial</span>
           <h2 className="section-title">Nuestros Favoritos</h2>
@@ -120,7 +133,7 @@ export function Home() {
             Ver catálogo completo ({products.length} productos) →
           </Link>
         </div>
-      </section> */}
+      </section>
 
       {/* SECCIÓN DE OFERTAS Y COMBOS DESTACADOS (Oculta sin borrar) */}
       {/* <PromosOffers /> */}

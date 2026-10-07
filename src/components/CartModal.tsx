@@ -1,6 +1,7 @@
 import { useCartContext } from '../context/CartContext';
 import { CheckoutModal } from './CheckoutModal';
 import { calcularPrecioUnitario } from '../utils/precios';
+import { getProductImage } from '../utils/productImages';
 
 const MINIMO_COMPRA = 20000;
 
@@ -72,6 +73,14 @@ export function CartModal() {
 
                 return (
                   <div key={`${item.id}-${item.escalaSeleccionada}`} className="cart-modal-item">
+                    <img
+                      src={getProductImage(item.id, item.imagen)}
+                      alt={item.nombre}
+                      className="cart-modal-item-thumb"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = '/assets/Flyer-mix-point.png';
+                      }}
+                    />
                     <div className="cart-modal-item-info">
                       <span className="cart-modal-item-name">{item.nombre}</span>
                       <div className="cart-modal-item-details">

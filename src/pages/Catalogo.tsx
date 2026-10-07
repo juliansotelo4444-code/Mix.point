@@ -16,12 +16,20 @@ const getPrecioBase = (p: Product): number => {
   return p.precios.kg ?? 0;
 };
 
+const normalizarTexto = (txt: string): string =>
+  txt
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .trim();
+
 export function Catalogo() {
   const { products, loading, error } = useProducts();
   const { addToCart } = useCartContext();
 
   const [query, setQuery] = useState("");
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("Todos");
+  const [filtroTipoVenta, setFiltroTipoVenta] = useState<'todos' | 'peso' | 'unidad'>('todos');
   const [orden, setOrden] = useState<TipoOrden>("relevancia");
   const [pagina, setPagina] = useState(1);
 
@@ -29,25 +37,47 @@ export function Catalogo() {
     document.title = 'Catálogo Mayorista & Minorista | Mix Point';
   }, []);
 
-  // Lista de categorías únicas extraídas de los productos
-  const categorias = useMemo(() => {
-    const list = Array.from(new Set(products.map((p) => p.categoria).filter(Boolean)));
-    return ["Todos", ...list];
+  // Lista de categorías únicas con conteo exacto de productos
+  const categoriasConConteo = useMemo(() => {
+    const counts: Record<string, number> = {};
+    products.forEach((p) => {
+      if (p.categoria) {
+        counts[p.categoria] = (counts[p.categoria] || 0) + 1;
+      }
+    });
+
+    const lista = Object.keys(counts).sort().map((cat) => ({
+      nombre: cat,
+      total: counts[cat],
+    }));
+
+    return [{ nombre: "Todos", total: products.length }, ...lista];
   }, [products]);
 
   const productosFiltrados = useMemo(() => {
-    const q = query.toLowerCase().trim();
+    const qNorm = normalizarTexto(query);
+
     return products.filter((p) => {
+      // Filtro por categoría
       const matchCategoria =
         categoriaSeleccionada === "Todos" || p.categoria === categoriaSeleccionada;
+
+      // Filtro por tipo de venta
+      const matchTipo =
+        filtroTipoVenta === 'todos' ||
+        (filtroTipoVenta === 'peso' && p.tipoVenta === 'peso') ||
+        (filtroTipoVenta === 'unidad' && p.tipoVenta === 'unidad');
+
+      // Búsqueda insensible a tildes y mayúsculas
       const matchQuery =
-        !q ||
-        p.nombre.toLowerCase().includes(q) ||
-        p.categoria.toLowerCase().includes(q) ||
-        p.descripcion?.toLowerCase().includes(q);
-      return matchCategoria && matchQuery;
+        !qNorm ||
+        normalizarTexto(p.nombre).includes(qNorm) ||
+        normalizarTexto(p.categoria).includes(qNorm) ||
+        (p.descripcion && normalizarTexto(p.descripcion).includes(qNorm));
+
+      return matchCategoria && matchTipo && matchQuery;
     });
-  }, [query, categoriaSeleccionada, products]);
+  }, [query, categoriaSeleccionada, filtroTipoVenta, products]);
 
   const productosOrdenados = useMemo(() => {
     const list = [...productosFiltrados];
@@ -75,6 +105,11 @@ export function Catalogo() {
     setPagina(1);
   };
 
+  const handleClearQuery = () => {
+    setQuery("");
+    setPagina(1);
+  };
+
   const handleCategoria = (cat: string) => {
     setCategoriaSeleccionada(cat);
     setPagina(1);
@@ -95,50 +130,83 @@ export function Catalogo() {
         </p>
       </div>
 
-      {/* BUSCADOR ELEGANTE Y ORDEN */}
+      {/* BUSCADOR ELEGANTE, FILTROS Y ORDEN */}
       <div className="search-wrapper">
         <div className="search-container">
           <span className="search-icon">🔍</span>
           <input
             type="text"
-            placeholder="Buscar por nombre, tipo de fruto, mix o especia..."
+            placeholder="Buscar por nombre, tipo de fruto, mix o especia (ej: castañas, chía)..."
             value={query}
             onChange={handleQuery}
             className="search-input"
             aria-label="Buscar productos"
           />
+          {query && (
+            <button
+              type="button"
+              onClick={handleClearQuery}
+              className="search-clear-btn"
+              aria-label="Borrar búsqueda"
+              title="Borrar búsqueda"
+            >
+              ✕
+            </button>
+          )}
         </div>
 
-        <div className="sort-container">
-          <label htmlFor="sort-select" className="sort-label">Ordenar por:</label>
-          <select
-            id="sort-select"
-            value={orden}
-            onChange={(e) => {
-              setOrden(e.target.value as TipoOrden);
-              setPagina(1);
-            }}
-            className="sort-select"
-            aria-label="Ordenar productos"
-          >
-            <option value="relevancia">Relevancia / Destacados</option>
-            <option value="precio-menor">Precio: Menor a Mayor</option>
-            <option value="precio-mayor">Precio: Mayor a Menor</option>
-            <option value="nombre-az">Nombre: A - Z</option>
-          </select>
+        <div className="filter-controls-group">
+          {/* Selector de Tipo de Venta */}
+          <div className="type-filter-container">
+            <label htmlFor="tipo-venta-select" className="sort-label">Modalidad:</label>
+            <select
+              id="tipo-venta-select"
+              value={filtroTipoVenta}
+              onChange={(e) => {
+                setFiltroTipoVenta(e.target.value as 'todos' | 'peso' | 'unidad');
+                setPagina(1);
+              }}
+              className="sort-select"
+              aria-label="Filtrar por modalidad de venta"
+            >
+              <option value="todos">Todos los formatos</option>
+              <option value="peso">⚖️ Por Peso / Granel</option>
+              <option value="unidad">📦 Por Unidad / Envasado</option>
+            </select>
+          </div>
+
+          <div className="sort-container">
+            <label htmlFor="sort-select" className="sort-label">Ordenar por:</label>
+            <select
+              id="sort-select"
+              value={orden}
+              onChange={(e) => {
+                setOrden(e.target.value as TipoOrden);
+                setPagina(1);
+              }}
+              className="sort-select"
+              aria-label="Ordenar productos"
+            >
+              <option value="relevancia">Relevancia / Destacados</option>
+              <option value="precio-menor">Precio: Menor a Mayor</option>
+              <option value="precio-mayor">Precio: Mayor a Menor</option>
+              <option value="nombre-az">Nombre: A - Z</option>
+            </select>
+          </div>
         </div>
       </div>
 
-      {/* PILLS DE CATEGORÍAS */}
-      {!loading && categorias.length > 1 && (
+      {/* PILLS DE CATEGORÍAS CON CONTEO */}
+      {!loading && categoriasConConteo.length > 1 && (
         <div className="category-pills-wrapper">
-          {categorias.map((cat) => (
+          {categoriasConConteo.map((cat) => (
             <button
-              key={cat}
-              onClick={() => handleCategoria(cat)}
-              className={`category-pill ${categoriaSeleccionada === cat ? 'category-pill--active' : ''}`}
+              key={cat.nombre}
+              onClick={() => handleCategoria(cat.nombre)}
+              className={`category-pill ${categoriaSeleccionada === cat.nombre ? 'category-pill--active' : ''}`}
             >
-              {cat}
+              <span>{cat.nombre}</span>
+              <span className="category-pill-count">{cat.total}</span>
             </button>
           ))}
         </div>
@@ -174,7 +242,26 @@ export function Catalogo() {
         </p>
       )}
 
-      {!loading && !error && (
+      {!loading && !error && productosOrdenados.length === 0 && (
+        <div className="no-products-found">
+          <p className="no-products-title">🔍 No encontramos productos que coincidan</p>
+          <p className="no-products-sub">Probá cambiando el término de búsqueda o seleccionando otra categoría.</p>
+          <button
+            type="button"
+            className="btn-reset-filters"
+            onClick={() => {
+              setQuery("");
+              setCategoriaSeleccionada("Todos");
+              setFiltroTipoVenta("todos");
+              setPagina(1);
+            }}
+          >
+            Restablecer todos los filtros
+          </button>
+        </div>
+      )}
+
+      {!loading && !error && productosOrdenados.length > 0 && (
         <section className="product-grid">
           {productosPagina.map((product) => (
             <ProductCard

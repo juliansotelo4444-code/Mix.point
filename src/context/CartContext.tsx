@@ -10,12 +10,7 @@ const pesosLabels: Record<string, string> = {
   veinticincoKg: "25kg", treintaKg: "30kg", unidad: "unidad"
 };
 
-interface DatosEntrega {
-  nombre: string;
-  telefono: string;
-  direccion: string;
-  zona: string;
-}
+import { type DatosEntrega } from '../utils/datosEntrega';
 
 type UseCartReturn = ReturnType<typeof useCart>;
 
@@ -87,6 +82,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
       })
       .join('\n');
 
+    const pagoMsg = datos.metodoPago ? `\n💳 Método de pago: ${datos.metodoPago}` : '';
+    const notasMsg = datos.notas?.trim() ? `\n📝 Aclaraciones: ${datos.notas.trim()}` : '';
+
     const mensaje =
       `Hola Mix Point! Quiero confirmar mi pedido${pedidoCodigo}:\n\n` +
       `📦 Detalle del pedido:\n` +
@@ -96,7 +94,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
       `Nombre: ${datos.nombre}\n` +
       `Teléfono: ${datos.telefono}\n` +
       `Dirección: ${datos.direccion}\n` +
-      `Zona: ${datos.zona}`;
+      `Zona: ${datos.zona}` +
+      pagoMsg +
+      notasMsg;
 
     window.open(`https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(mensaje)}`, '_blank');
     clearCart();

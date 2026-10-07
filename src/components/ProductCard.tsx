@@ -24,12 +24,20 @@ export const ProductCard = ({ product, addToCart }: Props) => {
 
   const [pesoSeleccionado, setPesoSeleccionado] = useState<keyof Precios>(escalaInicial);
   const [cantidad, setCantidad] = useState(1);
+  const [agregado, setAgregado] = useState(false);
 
   const incrementar = () => setCantidad(prev => prev + 1);
   const decrementar = () => setCantidad(prev => (prev > 1 ? prev - 1 : 1));
 
   const precioUnitario = calcularPrecioUnitario(product.precios, pesoSeleccionado);
   const tienePrecioValido = precioUnitario > 0;
+
+  const handleAddToCart = () => {
+    addToCart(product, pesoSeleccionado, cantidad);
+    setCantidad(1);
+    setAgregado(true);
+    setTimeout(() => setAgregado(false), 1400);
+  };
 
   const handleConsultarWhatsApp = () => {
     const texto = `Hola Mix Point! Me interesa consultar por el producto: *${product.nombre}*. ¿Tienen stock o lista actualizada?`;
@@ -107,18 +115,25 @@ export const ProductCard = ({ product, addToCart }: Props) => {
 
             <div className="product-actions-group">
               <button
-                className="btn-add"
-                onClick={() => {
-                  addToCart(product, pesoSeleccionado, cantidad);
-                  setCantidad(1);
-                }}
+                className={`btn-add ${agregado ? 'btn-add--added' : ''}`}
+                onClick={handleAddToCart}
+                disabled={agregado}
               >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="9" cy="21" r="1" />
-                  <circle cx="20" cy="21" r="1" />
-                  <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
-                </svg>
-                Agregar al carrito
+                {agregado ? (
+                  <>
+                    <span className="btn-add-check">✓</span>
+                    ¡Agregado!
+                  </>
+                ) : (
+                  <>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="9" cy="21" r="1" />
+                      <circle cx="20" cy="21" r="1" />
+                      <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                    </svg>
+                    Agregar al carrito
+                  </>
+                )}
               </button>
 
               <button
