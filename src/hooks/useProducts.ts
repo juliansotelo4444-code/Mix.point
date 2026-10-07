@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { Product } from '../types';
+import { getProductImage } from '../utils/productImages';
 
 const SHEETS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTsSl1udCka3CKz61sitiiwynsibWeGS65K9zEe-6UXdCb_k1W8_Nr0ABoIZm_7wIvHbWd13KKOqOiI/pub?gid=120010130&single=true&output=csv';
 
@@ -40,12 +41,14 @@ function parseCSV(text: string): Product[] {
 
     const precioBase = num('kg') ?? 0;
 
+    const id = parseInt(get('id'), 10);
+
     return {
-      id: parseInt(get('id'), 10),
+      id,
       nombre: get('nombre'),
       descripcion: get('descripcion') || undefined,
       categoria: get('categoria'),
-      imagen: get('imagen'),
+      imagen: getProductImage(id, get('imagen')),
       tipoVenta,
       precios: tipoVenta === 'unidad'
         // Producto por unidad: el precio que estaba en la columna "kg"
