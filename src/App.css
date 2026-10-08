@@ -3024,4 +3024,233 @@ main {
   box-shadow: 0 0 0 3px var(--primary-green-light);
 }
 
+/* ==========================================================================
+   BARRA SUPERIOR SOCIAL (HEADER TOP BAR)
+   ========================================================================== */
+
+.social-bar-top {
+  background-color: var(--primary-green);
+  color: var(--text-white);
+  padding: 8px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.82rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  z-index: 101;
+}
+
+.social-bar-announcement {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+}
+
+.social-bar-announcement span {
+  color: var(--accent-gold);
+  font-weight: 700;
+}
+
+.social-bar-links {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.social-icon-link {
+  color: rgba(255, 255, 255, 0.85);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease, transform 0.2s ease;
+  text-decoration: none;
+}
+
+.social-icon-link:hover {
+  color: var(--accent-gold);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 640px) {
+  .social-bar-top {
+    flex-direction: column;
+    gap: 6px;
+    padding: 8px 16px;
+    text-align: center;
+  }
+}
+
+/* ==========================================================================
+   REDES EN HERO NOSOTROS
+   ========================================================================== */
+
+.hero-nosotros-social {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.hero-social-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  transition: all 0.25s ease;
+  text-decoration: none;
+  backdrop-filter: blur(6px);
+}
+
+.hero-social-icon:hover {
+  background: var(--accent-gold);
+  border-color: var(--accent-gold);
+  color: #ffffff;
+  transform: translateY(-3px) scale(1.08);
+  box-shadow: 0 8px 20px rgba(200, 138, 53, 0.4);
+}
+
+/* ==========================================================================
+   SECCIÓN SEGUINOS EN REDES (SOCIAL SECTION & CARDS)
+   ========================================================================== */
+
+.social-section {
+  max-width: 960px;
+  margin: 50px auto 70px;
+  padding: 0 24px;
+  text-align: center;
+}
+
+.social-section .section-title {
+  font-family: var(--font-title);
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+  color: var(--primary-green);
+  margin: 0 0 8px;
+  font-weight: 700;
+}
+
+.social-subtitle {
+  color: var(--text-muted);
+  font-size: 1rem;
+  margin: 0 auto 36px;
+  max-width: 520px;
+  line-height: 1.5;
+}
+
+.social-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 22px;
+  justify-content: center;
+}
+
+.social-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 24px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  text-decoration: none;
+  color: var(--text-dark);
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s ease, border-color 0.28s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.social-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--border-light);
+  transition: background 0.28s ease, height 0.28s ease;
+}
+
+.social-card svg {
+  color: var(--primary-green);
+  margin-bottom: 14px;
+  transition: transform 0.28s ease, color 0.28s ease;
+}
+
+.social-card-title {
+  font-family: var(--font-title);
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: var(--primary-green);
+}
+
+.social-card-handle {
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  letter-spacing: 0.2px;
+}
+
+.social-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-card-hover);
+}
+
+.social-card:hover svg {
+  transform: scale(1.15);
+}
+
+/* Identidad visual por red social en hover */
+.social-card--instagram:hover {
+  border-color: #e1306c;
+}
+.social-card--instagram:hover::before {
+  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+  height: 5px;
+}
+.social-card--instagram:hover svg {
+  color: #e1306c;
+}
+.social-card--instagram:hover .social-card-title {
+  color: #e1306c;
+}
+
+.social-card--facebook:hover {
+  border-color: #1877f2;
+}
+.social-card--facebook:hover::before {
+  background: #1877f2;
+  height: 5px;
+}
+.social-card--facebook:hover svg {
+  color: #1877f2;
+}
+.social-card--facebook:hover .social-card-title {
+  color: #1877f2;
+}
+
+.social-card--whatsapp:hover {
+  border-color: #25d366;
+}
+.social-card--whatsapp:hover::before {
+  background: #25d366;
+  height: 5px;
+}
+.social-card--whatsapp:hover svg {
+  color: #25d366;
+}
+.social-card--whatsapp:hover .social-card-title {
+  color: #25d366;
+}
+
 
