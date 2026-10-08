@@ -3253,4 +3253,65 @@ main {
   color: #25d366;
 }
 
+/* ==========================================================================
+   ANIMACIONES AL SCROLEAR (SCROLL REVEAL ANIMATIONS)
+   ========================================================================== */
+
+html {
+  scroll-behavior: smooth;
+}
+
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.reveal-on-scroll.revealed {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+/* Cascada / efecto staggered para grillas de tarjetas */
+.product-grid > .reveal-on-scroll:nth-child(1) { transition-delay: 0.03s; }
+.product-grid > .reveal-on-scroll:nth-child(2) { transition-delay: 0.07s; }
+.product-grid > .reveal-on-scroll:nth-child(3) { transition-delay: 0.11s; }
+.product-grid > .reveal-on-scroll:nth-child(4) { transition-delay: 0.15s; }
+.product-grid > .reveal-on-scroll:nth-child(5) { transition-delay: 0.19s; }
+.product-grid > .reveal-on-scroll:nth-child(6) { transition-delay: 0.23s; }
+.product-grid > .reveal-on-scroll:nth-child(7) { transition-delay: 0.27s; }
+.product-grid > .reveal-on-scroll:nth-child(8) { transition-delay: 0.31s; }
+
+.features-container > .reveal-on-scroll:nth-child(1) { transition-delay: 0.05s; }
+.features-container > .reveal-on-scroll:nth-child(2) { transition-delay: 0.12s; }
+.features-container > .reveal-on-scroll:nth-child(3) { transition-delay: 0.19s; }
+.features-container > .reveal-on-scroll:nth-child(4) { transition-delay: 0.26s; }
+
+.social-grid > .reveal-on-scroll:nth-child(1) { transition-delay: 0.06s; }
+.social-grid > .reveal-on-scroll:nth-child(2) { transition-delay: 0.14s; }
+.social-grid > .reveal-on-scroll:nth-child(3) { transition-delay: 0.22s; }
+
+.reviews-grid > .reveal-on-scroll:nth-child(1) { transition-delay: 0.06s; }
+.reviews-grid > .reveal-on-scroll:nth-child(2) { transition-delay: 0.14s; }
+.reviews-grid > .reveal-on-scroll:nth-child(3) { transition-delay: 0.22s; }
+
+.teaser-grid-section > .reveal-on-scroll:nth-child(1) { transition-delay: 0.06s; }
+.teaser-grid-section > .reveal-on-scroll:nth-child(2) { transition-delay: 0.15s; }
+
+/* Accesibilidad: desactivar si el usuario prefiere movimiento reducido */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal-on-scroll,
+  .reveal-on-scroll.revealed {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
 
