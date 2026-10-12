@@ -13,7 +13,12 @@ const getPrecioBase = (p: Product): number => {
   if (p.tipoVenta === 'unidad') {
     return p.precios.unidad ?? p.precios.kg ?? 0;
   }
-  return p.precios.kg ?? 0;
+  if ((p.precios.kg ?? 0) > 0) {
+    return p.precios.kg;
+  }
+  // Si no tiene precio por kg pero sí tiene bulto mayorista (ej: 5kg, 10kg)
+  const primerPrecioValido = (Object.values(p.precios) as Array<number | undefined>).find(v => (v ?? 0) > 0);
+  return primerPrecioValido ?? 0;
 };
 
 const normalizarTexto = (txt: string): string =>
@@ -234,10 +239,11 @@ export function Catalogo() {
 
       {error && <p className="status-msg status-msg--error">Error al cargar productos. Intentá recargar la página.</p>}
 
-      {(query || categoriaSeleccionada !== "Todos") && !loading && (
+      {(query || categoriaSeleccionada !== "Todos" || filtroTipoVenta !== 'todos') && !loading && (
         <p className="status-msg">
           {productosOrdenados.length} producto{productosOrdenados.length !== 1 ? 's' : ''} encontrado{productosOrdenados.length !== 1 ? 's' : ''}
           {categoriaSeleccionada !== "Todos" && ` en "${categoriaSeleccionada}"`}
+          {filtroTipoVenta !== 'todos' && ` (${filtroTipoVenta === 'peso' ? 'Por peso' : 'Por unidad'})`}
           {query && ` para "${query}"`}
         </p>
       )}

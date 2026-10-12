@@ -33,18 +33,24 @@ export function ScrollRevealController() {
         });
       },
       {
-        threshold: 0.08,
-        rootMargin: '0px 0px -40px 0px',
+        threshold: 0.05,
+        rootMargin: '0px 0px 40px 0px',
       }
     );
 
     const observeElements = () => {
       const elements = document.querySelectorAll(selectors);
       elements.forEach((el) => {
-        // Evitar que el hero superior se oculte
         if (!el.classList.contains('revealed')) {
-          el.classList.add('reveal-on-scroll');
-          observer.observe(el);
+          const rect = el.getBoundingClientRect();
+          const inViewport = rect.top < window.innerHeight && rect.bottom > 0;
+          if (inViewport) {
+            // Si ya está visible en pantalla, revelar de inmediato sin ocultar ni parpadear
+            el.classList.add('revealed');
+          } else {
+            el.classList.add('reveal-on-scroll');
+            observer.observe(el);
+          }
         }
       });
     };

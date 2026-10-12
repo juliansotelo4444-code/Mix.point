@@ -56,8 +56,8 @@
 .navbar-brand-tagline {
   font-family: var(--font-body);
   font-size: 0.72rem;
-  font-weight: 700;
-  color: var(--accent-gold);
+  font-weight: 800;
+  color: var(--accent-gold-text, #854d0e);
   text-transform: uppercase;
   letter-spacing: 1.8px;
   margin-top: 1px;
@@ -273,8 +273,8 @@
 
 .nav-drawer-sub {
   font-size: 0.72rem;
-  font-weight: 700;
-  color: var(--accent-gold);
+  font-weight: 800;
+  color: var(--accent-gold-text, #854d0e);
   text-transform: uppercase;
   letter-spacing: 1.2px;
 }
@@ -402,8 +402,24 @@
 }
 
 @media (max-width: 500px) {
+  .navbar {
+    padding: 10px 14px;
+  }
+
+  .navbar-container {
+    gap: 8px;
+  }
+
+  .navbar-brand {
+    gap: 8px;
+  }
+
   .navbar-brand-name {
-    font-size: 1.35rem;
+    font-size: 1.28rem;
+  }
+
+  .navbar-brand-tagline {
+    display: none;
   }
 
   .navbar-logo-img {
@@ -416,6 +432,18 @@
   }
 
   .nav-cart-btn {
-    padding: 8px 12px;
+    padding: 7px 11px;
+    gap: 6px;
+  }
+
+  .nav-icon-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .nav-hamburger-btn {
+    width: 36px;
+    height: 36px;
+    padding: 8px 6px;
   }
 }

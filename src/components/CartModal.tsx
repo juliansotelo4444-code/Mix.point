@@ -78,7 +78,9 @@ export function CartModal() {
                       alt={item.nombre}
                       className="cart-modal-item-thumb"
                       onError={(e) => {
-                        (e.target as HTMLImageElement).src = '/assets/Flyer-mix-point.png';
+                        const target = e.target as HTMLImageElement;
+                        target.onerror = null;
+                        target.src = '/assets/Flyer-mix-point.png';
                       }}
                     />
                     <div className="cart-modal-item-info">

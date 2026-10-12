@@ -43,11 +43,23 @@ function parseCSV(text: string): Product[] {
 
     const id = parseInt(get('id'), 10);
 
+    const rawCategoria = get('categoria');
+    const nombre = get('nombre');
+    let categoria = rawCategoria;
+    if (!categoria) {
+      const nombreLower = nombre.toLowerCase();
+      if (nombreLower.includes('eritritol') || nombreLower.includes('stevia')) {
+        categoria = 'Azucares';
+      } else {
+        categoria = 'Varios';
+      }
+    }
+
     return {
       id,
-      nombre: get('nombre'),
+      nombre,
       descripcion: get('descripcion') || undefined,
-      categoria: get('categoria'),
+      categoria,
       imagen: getProductImage(id, get('imagen')),
       tipoVenta,
       precios: tipoVenta === 'unidad'
@@ -65,7 +77,12 @@ function parseCSV(text: string): Product[] {
     };
   });
 
-  return productos.filter(p => !isNaN(p.id));
+  const seenIds = new Set<number>();
+  return productos.filter(p => {
+    if (isNaN(p.id) || seenIds.has(p.id)) return false;
+    seenIds.add(p.id);
+    return true;
+  });
 }
 
 const PRODUCTS_CACHE_KEY = 'mixpoint_cached_products_v1';
