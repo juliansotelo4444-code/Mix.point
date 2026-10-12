@@ -57,6 +57,7 @@ export const ProductCard = ({ product, addToCart }: Props) => {
           alt={product.nombre}
           className="product-img"
           loading="lazy"
+          decoding="async"
           onError={(e) => {
             const target = e.target as HTMLImageElement;
             target.onerror = null;

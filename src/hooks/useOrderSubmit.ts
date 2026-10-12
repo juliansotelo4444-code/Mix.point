@@ -1,13 +1,7 @@
 import { useState } from 'react';
+import type { DatosEntrega } from '../utils/datosEntrega';
 
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyLugszoGUzdKhIN1dDyICjm4tP2m2LrTRqZC9LQr_-85R9lG1fm3_yotSU5-LMKAxz/exec';
-
-interface DatosEntrega {
-  nombre: string;
-  telefono: string;
-  direccion: string;
-  zona: string;
-}
 
 interface SubmitResult {
   success: boolean;
@@ -25,6 +19,9 @@ export function useOrderSubmit() {
   ): Promise<SubmitResult> => {
     setEnviando(true);
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 8000);
+
       const response = await fetch(APPS_SCRIPT_URL, {
         method: 'POST',
         // text/plain evita el preflight de CORS; Apps Script igual lo parsea con JSON.parse
@@ -34,11 +31,15 @@ export function useOrderSubmit() {
           telefono: datos.telefono,
           direccion: datos.direccion,
           zona: datos.zona,
+          metodoPago: datos.metodoPago || 'No especificado',
+          notas: datos.notas?.trim() || '',
           productos,
           total,
         }),
+        signal: controller.signal,
       });
 
+      clearTimeout(timeoutId);
       const data = await response.json();
       return data;
     } catch {

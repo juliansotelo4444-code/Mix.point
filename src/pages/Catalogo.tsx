@@ -36,7 +36,6 @@ export function Catalogo() {
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("Todos");
   const [filtroTipoVenta, setFiltroTipoVenta] = useState<'todos' | 'peso' | 'unidad'>('todos');
   const [orden, setOrden] = useState<TipoOrden>("relevancia");
-  const [pagina, setPagina] = useState(1);
 
   useEffect(() => {
     document.title = 'Catálogo Mayorista & Minorista | Mix Point';
@@ -61,6 +60,7 @@ export function Catalogo() {
 
   const productosFiltrados = useMemo(() => {
     const qNorm = normalizarTexto(query);
+    const tokens = qNorm.split(/\s+/).filter(Boolean);
 
     return products.filter((p) => {
       // Filtro por categoría
@@ -73,14 +73,12 @@ export function Catalogo() {
         (filtroTipoVenta === 'peso' && p.tipoVenta === 'peso') ||
         (filtroTipoVenta === 'unidad' && p.tipoVenta === 'unidad');
 
-      // Búsqueda insensible a tildes y mayúsculas
-      const matchQuery =
-        !qNorm ||
-        normalizarTexto(p.nombre).includes(qNorm) ||
-        normalizarTexto(p.categoria).includes(qNorm) ||
-        (p.descripcion && normalizarTexto(p.descripcion).includes(qNorm));
+      if (!matchCategoria || !matchTipo) return false;
+      if (tokens.length === 0) return true;
 
-      return matchCategoria && matchTipo && matchQuery;
+      // Búsqueda insensible a tildes, mayúsculas y orden de palabras (ej: 'mariposa nuez')
+      const targetText = normalizarTexto(`${p.nombre} ${p.categoria || ''} ${p.descripcion || ''}`);
+      return tokens.every((token) => targetText.includes(token));
     });
   }, [query, categoriaSeleccionada, filtroTipoVenta, products]);
 
@@ -98,31 +96,29 @@ export function Catalogo() {
     return list;
   }, [productosFiltrados, orden]);
 
-  const totalPaginas = Math.ceil(productosOrdenados.length / PRODUCTOS_POR_PAGINA);
+  const [limiteVisible, setLimiteVisible] = useState(PRODUCTOS_POR_PAGINA);
 
   const productosPagina = useMemo(() => {
-    const inicio = (pagina - 1) * PRODUCTOS_POR_PAGINA;
-    return productosOrdenados.slice(inicio, inicio + PRODUCTOS_POR_PAGINA);
-  }, [productosOrdenados, pagina]);
+    return productosOrdenados.slice(0, limiteVisible);
+  }, [productosOrdenados, limiteVisible]);
+
+  const handleCargarMas = () => {
+    setLimiteVisible((prev) => prev + PRODUCTOS_POR_PAGINA);
+  };
 
   const handleQuery = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
-    setPagina(1);
+    setLimiteVisible(PRODUCTOS_POR_PAGINA);
   };
 
   const handleClearQuery = () => {
     setQuery("");
-    setPagina(1);
+    setLimiteVisible(PRODUCTOS_POR_PAGINA);
   };
 
   const handleCategoria = (cat: string) => {
     setCategoriaSeleccionada(cat);
-    setPagina(1);
-  };
-
-  const handlePagina = (nueva: number) => {
-    setPagina(nueva);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setLimiteVisible(PRODUCTOS_POR_PAGINA);
   };
 
   return (
@@ -169,7 +165,7 @@ export function Catalogo() {
               value={filtroTipoVenta}
               onChange={(e) => {
                 setFiltroTipoVenta(e.target.value as 'todos' | 'peso' | 'unidad');
-                setPagina(1);
+                setLimiteVisible(PRODUCTOS_POR_PAGINA);
               }}
               className="sort-select"
               aria-label="Filtrar por modalidad de venta"
@@ -187,7 +183,7 @@ export function Catalogo() {
               value={orden}
               onChange={(e) => {
                 setOrden(e.target.value as TipoOrden);
-                setPagina(1);
+                setLimiteVisible(PRODUCTOS_POR_PAGINA);
               }}
               className="sort-select"
               aria-label="Ordenar productos"
@@ -259,7 +255,7 @@ export function Catalogo() {
               setQuery("");
               setCategoriaSeleccionada("Todos");
               setFiltroTipoVenta("todos");
-              setPagina(1);
+              setLimiteVisible(PRODUCTOS_POR_PAGINA);
             }}
           >
             Restablecer todos los filtros
@@ -279,33 +275,31 @@ export function Catalogo() {
         </section>
       )}
 
-      {totalPaginas > 1 && (
-        <div className="paginacion">
-          <button
-            className="pag-btn"
-            onClick={() => handlePagina(pagina - 1)}
-            disabled={pagina === 1}
-          >
-            ← Anterior
-          </button>
+      {productosOrdenados.length > PRODUCTOS_POR_PAGINA && (
+        <div className="load-more-wrapper">
+          <div className="load-more-status">
+            <span>
+              Mostrando <strong>{productosPagina.length}</strong> de <strong>{productosOrdenados.length}</strong> productos
+            </span>
+            <div className="load-more-progress-bar">
+              <div
+                className="load-more-progress-fill"
+                style={{
+                  width: `${Math.min(100, Math.round((productosPagina.length / productosOrdenados.length) * 100))}%`
+                }}
+              />
+            </div>
+          </div>
 
-          {Array.from({ length: totalPaginas }, (_, i) => i + 1).map((n) => (
+          {productosPagina.length < productosOrdenados.length && (
             <button
-              key={n}
-              className={`pag-btn ${n === pagina ? 'pag-btn--active' : ''}`}
-              onClick={() => handlePagina(n)}
+              type="button"
+              className="btn-load-more"
+              onClick={handleCargarMas}
             >
-              {n}
+              Ver más productos (+{Math.min(PRODUCTOS_POR_PAGINA, productosOrdenados.length - productosPagina.length)}) ↓
             </button>
-          ))}
-
-          <button
-            className="pag-btn"
-            onClick={() => handlePagina(pagina + 1)}
-            disabled={pagina === totalPaginas}
-          >
-            Siguiente →
-          </button>
+          )}
         </div>
       )}
 

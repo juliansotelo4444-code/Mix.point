@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useCartContext } from '../context/CartContext';
 import { CheckoutModal } from './CheckoutModal';
 import { calcularPrecioUnitario } from '../utils/precios';
@@ -32,6 +33,45 @@ export function CartModal() {
 
   const porcentajeEnvio = Math.min(100, Math.round((cartTotal / MINIMO_COMPRA) * 100));
   const tieneEnvioGratis = cartTotal >= MINIMO_COMPRA;
+
+  const [copiado, setCopiado] = useState(false);
+
+  const handleCompartirOCopiar = async () => {
+    if (cart.length === 0) return;
+
+    const lineas = cart.map((item) => {
+      const label = pesosLabels[item.escalaSeleccionada] || item.escalaSeleccionada;
+      const precioUnitario = calcularPrecioUnitario(item.precios, item.escalaSeleccionada);
+      const subtotal = precioUnitario * item.quantity;
+      return `• ${item.nombre} (${label}) x${item.quantity}: $${subtotal.toLocaleString('es-AR')}`;
+    });
+
+    const textoCompartir =
+      `🛒 Mi Lista de Compra en Mix Point:\n\n` +
+      `${lineas.join('\n')}\n\n` +
+      `💰 Total estimado: $${cartTotal.toLocaleString('es-AR')}\n` +
+      `🌐 Catálogo online: https://mix-point.vercel.app/catalogo`;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Mi Lista de Compra | Mix Point',
+          text: textoCompartir,
+        });
+        return;
+      } catch {
+        // Ignorar si el usuario canceló el share nativo
+      }
+    }
+
+    try {
+      await navigator.clipboard.writeText(textoCompartir);
+      setCopiado(true);
+      setTimeout(() => setCopiado(false), 2500);
+    } catch {
+      // Ignorar fallo de portapapeles
+    }
+  };
 
   return (
     <>
@@ -77,6 +117,8 @@ export function CartModal() {
                       src={getProductImage(item.id, item.imagen)}
                       alt={item.nombre}
                       className="cart-modal-item-thumb"
+                      loading="lazy"
+                      decoding="async"
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
                         target.onerror = null;
@@ -146,6 +188,28 @@ export function CartModal() {
               disabled={cart.length === 0}
             >
               Finalizar Pedido 📱
+            </button>
+
+            <button
+              type="button"
+              className={`btn-share-cart ${copiado ? 'btn-share-cart--copied' : ''}`}
+              onClick={handleCompartirOCopiar}
+              disabled={cart.length === 0}
+            >
+              {copiado ? (
+                <>✓ ¡Lista copiada al portapapeles!</>
+              ) : (
+                <>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="18" cy="5" r="3" />
+                    <circle cx="6" cy="12" r="3" />
+                    <circle cx="18" cy="19" r="3" />
+                    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                  </svg>
+                  Compartir o Copiar Lista
+                </>
+              )}
             </button>
 
             <div className="cart-modal-trust">

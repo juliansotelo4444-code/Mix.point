@@ -911,6 +911,73 @@ main {
   box-shadow: 0 6px 16px rgba(37, 211, 102, 0.45);
 }
 
+/* ── 10. PROGRESSIVE LOAD MORE (CATÁLOGO) ───────────────────── */
+.load-more-wrapper {
+  max-width: 440px;
+  margin: 36px auto 60px;
+  padding: 0 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.load-more-status {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
+.load-more-status strong {
+  color: var(--text-dark);
+}
+
+.load-more-progress-bar {
+  width: 100%;
+  height: 6px;
+  background-color: var(--border-light);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.load-more-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-gold), var(--primary-green));
+  border-radius: var(--radius-full);
+  transition: width 0.3s ease;
+}
+
+.btn-load-more {
+  background: var(--bg-surface);
+  color: var(--primary-green);
+  border: 2px solid var(--primary-green);
+  padding: 14px 28px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.25s ease;
+  box-shadow: var(--shadow-sm);
+  width: 100%;
+  max-width: 380px;
+}
+
+.btn-load-more:hover {
+  background-color: var(--primary-green);
+  color: var(--text-white);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px var(--primary-green-glow);
+}
+
 /* ── 10. PAGINATION ──────────────────────────────────────────── */
 .paginacion {
   display: flex;
@@ -1639,6 +1706,38 @@ main {
 .btn-whatsapp:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+/* ── BOTÓN COMPARTIR / COPIAR LISTA DEL CARRITO ──────────────── */
+.btn-share-cart {
+  width: 100%;
+  margin-top: 10px;
+  background-color: var(--bg-surface);
+  color: var(--primary-green);
+  border: 1.5px solid var(--border-light);
+  padding: 12px 16px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.btn-share-cart:hover:not(:disabled) {
+  border-color: var(--primary-green);
+  background-color: var(--primary-green-light);
+  transform: translateY(-1px);
+}
+
+.btn-share-cart--copied {
+  background-color: #ecfdf5 !important;
+  color: #065f46 !important;
+  border-color: #a7f3d0 !important;
 }
 
 .cart-modal-trust {

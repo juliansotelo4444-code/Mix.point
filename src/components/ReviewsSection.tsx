@@ -58,7 +58,9 @@ export function ReviewsSection() {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved);
-        return [...parsed, ...INITIAL_REVIEWS];
+        if (Array.isArray(parsed)) {
+          return [...parsed, ...INITIAL_REVIEWS];
+        }
       }
     } catch {
       // Ignorar error si localStorage no está disponible
