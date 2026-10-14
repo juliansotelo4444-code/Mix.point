@@ -53,6 +53,22 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const cartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
 
   const handleConfirmarPedido = async (datos: DatosEntrega) => {
+    const itemsEstructurados = cart.map(item => {
+      const label = pesosLabels[item.escalaSeleccionada] || item.escalaSeleccionada;
+      const precioUnitario = calcularPrecioUnitario(item.precios, item.escalaSeleccionada);
+      const subtotal = precioUnitario * item.quantity;
+      return {
+        producto_id: item.id,
+        nombre: item.nombre,
+        categoria: item.categoria,
+        escala: label,
+        unidad_medida: item.tipoVenta === 'unidad' ? 'unidad' : 'kg',
+        cantidad: item.quantity,
+        precio_unitario: precioUnitario,
+        subtotal: subtotal
+      };
+    });
+
     const productosTexto = cart
       .map(item => {
         const label = pesosLabels[item.escalaSeleccionada] || item.escalaSeleccionada;
@@ -62,7 +78,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       })
       .join(' | ');
 
-    const resultado = await submitPedido(datos, productosTexto, cartTotal);
+    const resultado = await submitPedido(datos, productosTexto, cartTotal, itemsEstructurados);
 
     if (!resultado.success) {
       const continuar = window.confirm(

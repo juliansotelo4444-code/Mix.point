@@ -1,7 +1,16 @@
 import { useState } from 'react';
 import type { DatosEntrega } from '../utils/datosEntrega';
 
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyLugszoGUzdKhIN1dDyICjm4tP2m2LrTRqZC9LQr_-85R9lG1fm3_yotSU5-LMKAxz/exec';
+export interface OrderItemPayload {
+  producto_id?: number;
+  nombre: string;
+  categoria?: string;
+  escala: string;
+  unidad_medida?: string;
+  cantidad: number;
+  precio_unitario: number;
+  subtotal: number;
+}
 
 interface SubmitResult {
   success: boolean;
@@ -9,22 +18,61 @@ interface SubmitResult {
   error?: string;
 }
 
+const APPS_SCRIPT_FALLBACK_URL = 'https://script.google.com/macros/s/AKfycbyLugszoGUzdKhIN1dDyICjm4tP2m2LrTRqZC9LQr_-85R9lG1fm3_yotSU5-LMKAxz/exec';
+
 export function useOrderSubmit() {
   const [enviando, setEnviando] = useState(false);
 
   const submitPedido = async (
     datos: DatosEntrega,
     productos: string,
-    total: number
+    total: number,
+    items: OrderItemPayload[] = []
   ): Promise<SubmitResult> => {
     setEnviando(true);
     try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 8000);
+      const payload = {
+        nombre: datos.nombre,
+        telefono: datos.telefono,
+        direccion: datos.direccion,
+        zona: datos.zona,
+        metodoPago: datos.metodoPago || 'No especificado',
+        notas: datos.notas?.trim() || '',
+        productos,
+        items,
+        total,
+      };
 
-      const response = await fetch(APPS_SCRIPT_URL, {
+      // 1. Enviar directamente a la base de datos Neon vía Serverless Function
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+      try {
+        const response = await fetch('/api/pedidos', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+          signal: controller.signal,
+        });
+
+        clearTimeout(timeoutId);
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data && data.success) {
+            return {
+              success: true,
+              numeroPedido: data.numeroPedido,
+            };
+          }
+        }
+      } catch (errApi) {
+        console.warn('Aviso: intento en /api/pedidos no completado, activando respaldo...', errApi);
+      }
+
+      // 2. Respaldo Apps Script si fuera necesario
+      const fallbackResponse = await fetch(APPS_SCRIPT_FALLBACK_URL, {
         method: 'POST',
-        // text/plain evita el preflight de CORS; Apps Script igual lo parsea con JSON.parse
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify({
           nombre: datos.nombre,
@@ -36,13 +84,12 @@ export function useOrderSubmit() {
           productos,
           total,
         }),
-        signal: controller.signal,
       });
 
-      clearTimeout(timeoutId);
-      const data = await response.json();
-      return data;
-    } catch {
+      const fallbackData = await fallbackResponse.json();
+      return fallbackData;
+    } catch (err) {
+      console.error('Error general al enviar pedido:', err);
       return { success: false, error: 'No se pudo conectar con el servidor' };
     } finally {
       setEnviando(false);
