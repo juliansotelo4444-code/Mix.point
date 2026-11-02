@@ -15,6 +15,8 @@ export interface OrderItemPayload {
 interface SubmitResult {
   success: boolean;
   numeroPedido?: string;
+  horarioEntrega?: string;
+  horaRegistro?: string;
   error?: string;
 }
 
@@ -37,6 +39,7 @@ export function useOrderSubmit() {
         direccion: datos.direccion,
         zona: datos.zona,
         metodoPago: datos.metodoPago || 'No especificado',
+        horarioEntrega: datos.horarioEntrega || 'A coordinar / Lo antes posible',
         notas: datos.notas?.trim() || '',
         productos,
         items,
@@ -63,6 +66,8 @@ export function useOrderSubmit() {
             return {
               success: true,
               numeroPedido: data.numeroPedido,
+              horarioEntrega: data.horarioEntrega,
+              horaRegistro: data.horaRegistro,
             };
           }
         }
@@ -80,6 +85,7 @@ export function useOrderSubmit() {
           direccion: datos.direccion,
           zona: datos.zona,
           metodoPago: datos.metodoPago || 'No especificado',
+          horarioEntrega: datos.horarioEntrega || 'A coordinar',
           notas: datos.notas?.trim() || '',
           productos,
           total,

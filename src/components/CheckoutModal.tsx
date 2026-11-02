@@ -161,6 +161,23 @@ export function CheckoutModal({ onConfirm, onClose, enviando }: Props) {
             {errores.direccion && <span className="field-error">{errores.direccion}</span>}
           </div>
 
+          <div className="checkout-field">
+            <label htmlFor="horarioEntrega">⏰ ¿A qué hora preferís recibir tu pedido?</label>
+            <select
+              id="horarioEntrega"
+              name="horarioEntrega"
+              value={datos.horarioEntrega || 'Mañana (09:00 a 13:00 hs)'}
+              onChange={handleChange}
+              className="checkout-select"
+            >
+              <option value="Mañana (09:00 a 13:00 hs)">🌅 Por la mañana (09:00 a 13:00 hs)</option>
+              <option value="Tarde (13:00 a 18:00 hs)">🌇 Por la tarde (13:00 a 18:00 hs)</option>
+              <option value="Todo el día (09:00 a 18:00 hs)">📦 Todo el día (09:00 a 18:00 hs)</option>
+              <option value="Lo antes posible (coordinar por WhatsApp)">⚡ Lo antes posible (coordinar por WhatsApp)</option>
+              <option value="Horario especial (detallar en notas abajo)">🕒 Horario especial (detallar en notas abajo)</option>
+            </select>
+          </div>
+
           <div className="checkout-fields-row">
             <div className="checkout-field">
               <label htmlFor="metodoPago">Forma de pago</label>
@@ -184,7 +201,7 @@ export function CheckoutModal({ onConfirm, onClose, enviando }: Props) {
                 name="notas"
                 value={datos.notas || ''}
                 onChange={handleChange}
-                placeholder="Ej: Timbre 2B, después de 14hs"
+                placeholder="Ej: Timbre 2B, entregar después de 14hs"
               />
             </div>
           </div>

@@ -9,6 +9,7 @@ export interface DatosEntrega {
   direccion: string;
   zona: string;
   metodoPago?: string;
+  horarioEntrega?: string;
   notas?: string;
 }
 
@@ -20,6 +21,7 @@ export const DATOS_VACIOS: DatosEntrega = {
   direccion: '',
   zona: '',
   metodoPago: 'Transferencia bancaria',
+  horarioEntrega: 'Mañana (09:00 a 13:00 hs)',
   notas: '',
 };
 

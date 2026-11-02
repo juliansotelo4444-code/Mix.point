@@ -98,8 +98,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
       })
       .join('\n');
 
+    const horarioMsg = datos.horarioEntrega ? `\n⏰ Horario preferido de entrega: ${datos.horarioEntrega}` : '';
     const pagoMsg = datos.metodoPago ? `\n💳 Método de pago: ${datos.metodoPago}` : '';
     const notasMsg = datos.notas?.trim() ? `\n📝 Aclaraciones: ${datos.notas.trim()}` : '';
+    const horaMsg = resultado.horaRegistro ? `\n🕒 Pedido registrado: ${resultado.horaRegistro}` : '';
 
     const mensaje =
       `Hola Mix Point! Quiero confirmar mi pedido${pedidoCodigo}:\n\n` +
@@ -111,8 +113,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
       `Teléfono: ${datos.telefono}\n` +
       `Dirección: ${datos.direccion}\n` +
       `Zona: ${datos.zona}` +
+      horarioMsg +
       pagoMsg +
-      notasMsg;
+      notasMsg +
+      horaMsg;
 
     window.open(`https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(mensaje)}`, '_blank');
     clearCart();

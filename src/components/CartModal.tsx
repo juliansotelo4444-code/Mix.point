@@ -29,12 +29,12 @@ export function CartModal() {
     handleConfirmarPedido,
   } = useCartContext();
 
+  const [copiado, setCopiado] = useState(false);
+
   if (!showCart) return null;
 
   const porcentajeEnvio = Math.min(100, Math.round((cartTotal / MINIMO_COMPRA) * 100));
   const tieneEnvioGratis = cartTotal >= MINIMO_COMPRA;
-
-  const [copiado, setCopiado] = useState(false);
 
   const handleCompartirOCopiar = async () => {
     if (cart.length === 0) return;

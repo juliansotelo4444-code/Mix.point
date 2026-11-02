@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import type { Product, Precios } from '../types';
 import { calcularPrecioUnitario } from '../utils/precios';
 
@@ -23,13 +23,15 @@ export const ProductCard = ({ product, addToCart }: Props) => {
     : ((product.precios.kg ?? 0) > 0 ? 'kg' : escalasDisponibles[0] || 'kg');
 
   const [pesoSeleccionado, setPesoSeleccionado] = useState<keyof Precios>(escalaInicial);
+  const [prevId, setPrevId] = useState(product.id);
   const [cantidad, setCantidad] = useState(1);
   const [agregado, setAgregado] = useState(false);
 
-  // Mantener sincronizada la escala si el producto se actualiza con datos frescos
-  useEffect(() => {
+  // Mantener sincronizada la escala si el producto cambia
+  if (product.id !== prevId) {
+    setPrevId(product.id);
     setPesoSeleccionado(escalaInicial);
-  }, [product.id, escalaInicial]);
+  }
 
   const incrementar = () => setCantidad(prev => prev + 1);
   const decrementar = () => setCantidad(prev => (prev > 1 ? prev - 1 : 1));
