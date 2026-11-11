@@ -5,8 +5,6 @@ import { useCartContext } from '../context/CartContext';
 import { FeaturedCarousel } from '../components/FeaturedCarousel';
 import { PageCTA } from '../components/PageCTA';
 import { WelcomeBack } from '../components/WelcomeBack';
-import { ReviewsSection } from '../components/ReviewsSection';
-import { DesktopVideoPresentation } from '../components/DesktopVideoPresentation';
 
 interface CategoryItem {
   id: string;
@@ -24,13 +22,13 @@ const CATEGORIAS_VISUALES: CategoryItem[] = [
     icono: '🌰',
     descripcion: 'Nueces Chandler Extra Light, Almendras Guara, Castañas de Cajú y Pistachos.',
     filtroUrl: '/catalogo?categoria=Frutos%20Secos',
-    badge: 'Más Vendidos',
+    badge: 'Destacados',
   },
   {
     id: 'mixes',
     nombre: 'Mixes Artesanales',
     icono: '🍇',
-    descripcion: 'Mix Patagonia, Clásico, Fitness, Cervecero y Frutos Rojos tostados al punto.',
+    descripcion: 'Mix Patagonia, Clásico, Fitness, Cervecero y combinaciones especiales.',
     filtroUrl: '/catalogo?buscar=Mix',
     badge: 'Elaboración Propia',
   },
@@ -46,23 +44,23 @@ const CATEGORIAS_VISUALES: CategoryItem[] = [
     id: 'aceites',
     nombre: 'Aceites & Condimentos',
     icono: '🫒',
-    descripcion: 'Aceite de oliva extra virgen prensado en frío, sales marinas y especias puras.',
+    descripcion: 'Aceite de oliva extra virgen prensado en frío, sales marinas y especias seleccionadas.',
     filtroUrl: '/catalogo?categoria=Aceites',
-    badge: 'Calidad Gourmet',
+    badge: 'Gourmet',
   },
   {
     id: 'reposteria',
     nombre: 'Chocolates & Repostería',
     icono: '🍫',
-    descripcion: 'Gotas de chocolate 70%, cacao amargo, harinas de almendra y coco rallado.',
+    descripcion: 'Gotas de chocolate, cacao puro, harinas de frutos secos y coco rallado.',
     filtroUrl: '/catalogo?categoria=Reposteria',
-    badge: 'Sin TACC / Saludable',
+    badge: 'Repostería Saludable',
   },
   {
     id: 'snacks',
     nombre: 'Snacks & Frutas Desecadas',
     icono: '🍌',
-    descripcion: 'Dátiles seleccionados, pasas de uva morochas, chips de banana y maní tostado.',
+    descripcion: 'Dátiles, pasas de uva morochas y rubias, chips de banana y maní tostado.',
     filtroUrl: '/catalogo?categoria=Snacks',
     badge: 'Energía Diaria',
   },
@@ -76,7 +74,7 @@ export function Home() {
   const [heroSearch, setHeroSearch] = useState('');
 
   useEffect(() => {
-    document.title = 'Mix Point | Frutos Secos & Mix Artesanales Premium';
+    document.title = 'Mix Point | Frutos Secos & Alimentos Naturales';
   }, []);
 
   const handleHeroSearchSubmit = (e: React.FormEvent) => {
@@ -93,29 +91,29 @@ export function Home() {
     <div className="home-page">
       <WelcomeBack />
 
-      {/* ── 1. HERO SECTION REDISEÑADO CON BUSCADOR INTERACTIVO & VALUE METRICS ── */}
+      {/* ── 1. HERO SECTION: ELEGANTE, CLARO Y CON BUSCADOR DIRECTO ── */}
       <section className="hero-premium">
         <div className="hero-premium-container">
           <div className="hero-content">
             <span className="hero-badge">
               <span className="hero-badge-dot" aria-hidden="true" />
-              🌿 Cosecha Directa & Alimentos Naturales
+              🌿 Distribuidora de Frutos Secos & Alimentos Naturales
             </span>
 
             <h1 className="hero-title">
-              Sabor Natural y <em>Frescura Prémium</em> Directo de Origen
+              Calidad y Frescura <em>Directo a tu Puerta</em>
             </h1>
 
             <p className="hero-subtitle">
-              Nueces seleccionadas, mixes artesanales recién tostados y alimentos saludables. Venta minorista y bultos cerrados para dietéticas con envíos seguros a todo el país.
+              Nueces seleccionadas, almendras, mixes y productos naturales. Venta fraccionada por kilo y bultos cerrados para dietéticas, comercios y consumo familiar en todo el país.
             </p>
 
-            {/* BUSCADOR INSTANTÁNEO EN EL HERO */}
+            {/* BUSCADOR DIRECTO EN EL HERO */}
             <form onSubmit={handleHeroSearchSubmit} className="hero-search-box" role="search">
               <span className="hero-search-icon" aria-hidden="true">🔍</span>
               <input
                 type="text"
-                placeholder="¿Qué producto buscás? (ej: almendras, nueces, chía)..."
+                placeholder="¿Qué producto estás buscando? (ej: almendras, nueces, chía)..."
                 value={heroSearch}
                 onChange={(e) => setHeroSearch(e.target.value)}
                 className="hero-search-input"
@@ -126,7 +124,7 @@ export function Home() {
               </button>
             </form>
 
-            {/* CHIPS DE ACCESO DIRECTO RÁPIDO */}
+            {/* CHIPS DE ACCESO DIRECTO */}
             <div className="hero-quick-chips">
               <span className="hero-chips-label">Populares:</span>
               {['Nueces', 'Almendras', 'Mix Patagonia', 'Aceite de Oliva', 'Chía'].map((item) => (
@@ -140,7 +138,7 @@ export function Home() {
               ))}
             </div>
 
-            {/* BOTONES PRINCIPALES DE LLAMADO A LA ACCIÓN */}
+            {/* BOTONES PRINCIPALES */}
             <div className="hero-cta-group">
               <Link to="/catalogo" className="btn-primary">
                 Explorar Catálogo Completo 🛒
@@ -150,16 +148,16 @@ export function Home() {
               </Link>
             </div>
 
-            {/* VALUE METRICS / PROMESAS DE MARCA */}
+            {/* MÉTRICAS TRANSPARENTES (DATOS REALES DEL NEGOCIO) */}
             <div className="hero-trust-bar">
               <div className="hero-trust-item">
                 <strong>+{products.length > 0 ? products.length : 250}</strong>
-                <span>Variedades</span>
+                <span>Productos en Catálogo</span>
               </div>
               <div className="hero-trust-sep" aria-hidden="true">·</div>
               <div className="hero-trust-item">
-                <strong>Mayorista</strong>
-                <span>Bultos y Kilos</span>
+                <strong>Bulto y Kilo</strong>
+                <span>Mayorista & Minorista</span>
               </div>
               <div className="hero-trust-sep" aria-hidden="true">·</div>
               <div className="hero-trust-item">
@@ -168,13 +166,13 @@ export function Home() {
               </div>
               <div className="hero-trust-sep" aria-hidden="true">·</div>
               <div className="hero-trust-item">
-                <strong>4.9 ★</strong>
-                <span>Calificación</span>
+                <strong>Atención Directa</strong>
+                <span>Vía WhatsApp</span>
               </div>
             </div>
           </div>
 
-          {/* VISUAL SHOWCASE CON FOTOGRAFÍA Y TARJETAS FLOTANTES */}
+          {/* VISUAL SHOWCASE */}
           <div className="hero-visual">
             <div className="hero-image-wrapper">
               <img
@@ -186,28 +184,26 @@ export function Home() {
               <div className="hero-image-overlay" />
             </div>
 
-            {/* TARJETA FLOTANTE 1: PRODUCTO ESTRELLA */}
+            {/* TARJETAS FLOTANTES REALISTAS */}
             <div className="hero-floating-card hero-floating-card--top">
               <span className="floating-card-icon">⭐</span>
               <div className="floating-card-info">
                 <span className="floating-card-title">Nueces Chandler</span>
-                <span className="floating-card-sub">Cosecha Extra Light</span>
+                <span className="floating-card-sub">Partidas y Enteras</span>
               </div>
             </div>
 
-            {/* TARJETA FLOTANTE 2: MIX ARTESANAL */}
             <div className="hero-floating-card hero-floating-card--bottom">
-              <span className="floating-card-icon">🔥</span>
+              <span className="floating-card-icon">🌿</span>
               <div className="floating-card-info">
-                <span className="floating-card-title">Mix Patagonia</span>
-                <span className="floating-card-sub">Elaboración Semanal</span>
+                <span className="floating-card-title">Mixes y Frutos</span>
+                <span className="floating-card-sub">Venta por Kilo y Bulto</span>
               </div>
             </div>
 
-            {/* SELLO DE CALIDAD */}
             <div className="hero-seal-badge">
               <span className="hero-seal-icon">🌿</span>
-              <span className="hero-seal-text">Origen Argentino</span>
+              <span className="hero-seal-text">Calidad Prémium</span>
             </div>
           </div>
         </div>
@@ -217,10 +213,10 @@ export function Home() {
       <section className="home-categories-section" aria-label="Explorar por categoría de producto">
         <div className="home-categories-container">
           <div className="section-header">
-            <span className="section-tag">Variedad de la Huerta a tu Mesa</span>
+            <span className="section-tag">Variedad y Calidad</span>
             <h2 className="section-title">Explorá Nuestras Categorías</h2>
             <p className="section-subtitle">
-              Encontrá rápidamente lo que buscás: frutos secos puros, mixes saludables, harinas y productos gourmet.
+              Encontrá rápidamente lo que buscás: frutos secos puros, mixes artesanales, semillas, aceites y harinas.
             </p>
           </div>
 
@@ -244,10 +240,10 @@ export function Home() {
         </div>
       </section>
 
-      {/* ── 3. CARRUSEL DE PRODUCTOS DESTACADOS DE LA SEMANA (EXCEL BASE) ── */}
+      {/* ── 3. CARRUSEL DE PRODUCTOS DESTACADOS DE LA SEMANA (PRIMEROS 5 IDs DEL EXCEL) ── */}
       <section className="teaser-section">
         {loading ? (
-          <p className="status-msg">Cargando productos destacados de la huerta...</p>
+          <p className="status-msg">Cargando productos destacados del catálogo...</p>
         ) : (
           <FeaturedCarousel
             products={products}
@@ -264,14 +260,14 @@ export function Home() {
         </div>
       </section>
 
-      {/* ── 4. BENTO GRID: ¿POR QUÉ ELEGIR MIX POINT? ── */}
-      <section className="bento-section" aria-label="Ventajas comerciales y propuesta de valor de Mix Point">
+      {/* ── 4. PROPUESTA DE VALOR Y MODALIDADES DE COMPRA (BENTO GRID) ── */}
+      <section className="bento-section" aria-label="Modalidades de compra y propuesta de valor">
         <div className="bento-container">
           <div className="section-header">
-            <span className="section-tag">Nuestra Propuesta de Valor</span>
-            <h2 className="section-title">¿Por Qué Elegir Mix Point?</h2>
+            <span className="section-tag">Cómo Comprar en Mix Point</span>
+            <h2 className="section-title">Modalidades Pensadas para Cada Necesidad</h2>
             <p className="section-subtitle">
-              Combinamos calidad de cosecha prémium, precios directos sin intermediarios y un servicio de logística pensado para comercios y familias.
+              Tanto si tenés un comercio como si querés abastecer tu hogar, contamos con opciones directas y claras.
             </p>
           </div>
 
@@ -281,16 +277,16 @@ export function Home() {
               <div className="bento-badge">Atención a Comercios y Dietéticas</div>
               <h3 className="bento-title">Precios Mayoristas Directos por Bulto Cerrado</h3>
               <p className="bento-desc">
-                Accedé a escalas preferenciales en bolsas de 5kg, 10kg y bultos de 25kg/30kg. Ideales para dietéticas, repostería, cafeterías y revendedores independientes en todo el país.
+                Accedé a precios preferenciales en bolsas cerradas de 5kg, 10kg y bultos de 25kg/30kg. Ideales para dietéticas, repostería, emprendedores gastronómicos y revendedores independientes.
               </p>
               <div className="bento-wholesale-perks">
-                <span className="bento-perk-item">✓ Ahorro de hasta el 25% por escala</span>
-                <span className="bento-perk-item">✓ Facturación comercial A y B</span>
-                <span className="bento-perk-item">✓ Asesor comercial directo vía WhatsApp</span>
+                <span className="bento-perk-item">✓ Escalas especiales por 5kg, 10kg y bulto cerrado</span>
+                <span className="bento-perk-item">✓ Lista de precios mayorista actualizada</span>
+                <span className="bento-perk-item">✓ Asesoramiento directo y pedidos coordinados por WhatsApp</span>
               </div>
               <div className="bento-actions">
                 <Link to="/contacto" className="btn-bento-primary">
-                  Pedir Lista Mayorista por WhatsApp 📱
+                  Consultar Lista Mayorista por WhatsApp 📱
                 </Link>
                 <Link to="/catalogo" className="btn-bento-secondary">
                   Ver Productos en Catálogo →
@@ -298,51 +294,45 @@ export function Home() {
               </div>
             </div>
 
-            {/* Tarjeta 2: Calidad en Origen */}
+            {/* Tarjeta 2: Venta Minorista */}
             <div className="bento-card">
-              <div className="bento-icon-box">🌰</div>
-              <h3 className="bento-title">Cosecha Seleccionada y Frescura</h3>
+              <div className="bento-icon-box">🛍️</div>
+              <h3 className="bento-title">Compra Minorista Fraccionada</h3>
               <p className="bento-desc">
-                Granos enteros, crocantes y con aroma natural intacto. Cuidamos cada lote para evitar humedad y conservar todas las propiedades nutricionales.
+                Comprá por kilogramo o unidad con la misma frescura y calidad superior que entregamos a los comercios.
               </p>
-              <span className="bento-pill-tag">🌿 Origen Nacional</span>
+              <span className="bento-pill-tag">Consumo Familiar</span>
             </div>
 
-            {/* Tarjeta 3: Logística Ágil */}
+            {/* Tarjeta 3: Logística y Envíos */}
             <div className="bento-card">
               <div className="bento-icon-box">🚚</div>
-              <h3 className="bento-title">Envíos en AMBA y Despachos Nacionales</h3>
+              <h3 className="bento-title">Envíos a Domicilio y Despachos</h3>
               <p className="bento-desc">
-                Entregas periódicas en Zona Oeste, Norte, Sur y CABA. Despachos rápidos al interior por Correo Argentino y Andreani con seguimiento online.
+                Entregas programadas en AMBA y despachos rápidos al interior a través de Andreani y Correo Argentino.
               </p>
               <Link to="/envios" className="bento-card-link">
                 Conocer Zonas y Logística →
               </Link>
             </div>
 
-            {/* Tarjeta 4: Garantía Total */}
+            {/* Tarjeta 4: Coordinación Simple */}
             <div className="bento-card">
-              <div className="bento-icon-box">🛡️</div>
-              <h3 className="bento-title">Garantía de Satisfacción 100%</h3>
+              <div className="bento-icon-box">💬</div>
+              <h3 className="bento-title">Coordinación Rápida por WhatsApp</h3>
               <p className="bento-desc">
-                Si algún producto no llega en óptimas condiciones o no cumple tus expectativas, te brindamos cambio inmediato o reintegro sin complicaciones.
+                Confirmamos tu carrito, verificamos disponibilidad de stock y coordinamos el pago y día de entrega sin vueltas.
               </p>
-              <span className="bento-pill-tag">✨ Confianza Total</span>
+              <span className="bento-pill-tag">Atención Personalizada</span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── 5. VIDEO INSTITUCIONAL RESPONSIVE ── */}
-      <DesktopVideoPresentation />
-
-      {/* ── 6. SECCIÓN DE OPINIONES DE COMPRADORES Y DIETÉTICAS ── */}
-      <ReviewsSection />
-
-      {/* ── 7. BANNER CTA FINAL DE CONVERSIÓN ── */}
+      {/* ── 5. BANNER CTA FINAL DE CONVERSIÓN ── */}
       <PageCTA
-        texto="¿Tenés una dietética, comercio o querés comprar por bulto cerrado?"
-        linkTexto="Pedí lista de precios mayorista"
+        texto="¿Querés comprar por bulto cerrado o tenés dudas sobre algún producto?"
+        linkTexto="Hablá con nosotros por WhatsApp"
         to="/contacto"
         icono="📦"
       />
