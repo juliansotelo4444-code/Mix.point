@@ -1,11 +1,29 @@
+import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { MainLayout } from './layouts/MainLayout';
 import { Home } from './pages/Home';
-import { Catalogo } from './pages/Catalogo';
-import { Nosotros } from './pages/Nosotros';
-import { Contacto } from './pages/Contacto';
-import { Envios } from './pages/Envios';
-import { Privacidad } from './pages/Privacidad';
+
+// Lazy loading de rutas secundarias para acelerar la carga inicial
+const Catalogo = lazy(() => import('./pages/Catalogo').then(m => ({ default: m.Catalogo })));
+const Nosotros = lazy(() => import('./pages/Nosotros').then(m => ({ default: m.Nosotros })));
+const Contacto = lazy(() => import('./pages/Contacto').then(m => ({ default: m.Contacto })));
+const Envios = lazy(() => import('./pages/Envios').then(m => ({ default: m.Envios })));
+const Privacidad = lazy(() => import('./pages/Privacidad').then(m => ({ default: m.Privacidad })));
+
+function RouteFallback() {
+  return (
+    <div style={{
+      minHeight: '60vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      color: 'var(--text-muted, #666)',
+      fontSize: '1rem'
+    }}>
+      <p>Cargando página...</p>
+    </div>
+  );
+}
 
 function App() {
   return (
@@ -13,11 +31,46 @@ function App() {
       <Routes>
         <Route element={<MainLayout />}>
           <Route path="/" element={<Home />} />
-          <Route path="/catalogo" element={<Catalogo />} />
-          <Route path="/nosotros" element={<Nosotros />} />
-          <Route path="/contacto" element={<Contacto />} />
-          <Route path="/envios" element={<Envios />} />
-          <Route path="/privacidad" element={<Privacidad />} />
+          <Route
+            path="/catalogo"
+            element={
+              <Suspense fallback={<RouteFallback />}>
+                <Catalogo />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/nosotros"
+            element={
+              <Suspense fallback={<RouteFallback />}>
+                <Nosotros />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/contacto"
+            element={
+              <Suspense fallback={<RouteFallback />}>
+                <Contacto />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/envios"
+            element={
+              <Suspense fallback={<RouteFallback />}>
+                <Envios />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/privacidad"
+            element={
+              <Suspense fallback={<RouteFallback />}>
+                <Privacidad />
+              </Suspense>
+            }
+          />
           <Route path="*" element={<Home />} />
         </Route>
       </Routes>
