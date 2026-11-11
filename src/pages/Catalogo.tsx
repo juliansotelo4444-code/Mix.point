@@ -1,11 +1,23 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useProducts } from '../hooks/useProducts';
 import { ProductCard } from '../components/ProductCard';
+import { FeaturedCarousel } from '../components/FeaturedCarousel';
 import { useCartContext } from '../context/CartContext';
 import { PageCTA } from '../components/PageCTA';
 import type { Product } from '../types';
 
 const PRODUCTOS_POR_PAGINA = 24;
+
+const BUSQUEDAS_POPULARES = [
+  'Nueces',
+  'Almendras',
+  'Mix Patagonia',
+  'Castañas',
+  'Aceite de Oliva',
+  'Granola',
+  'Chía',
+  'Avena',
+];
 
 type TipoOrden = 'relevancia' | 'precio-menor' | 'precio-mayor' | 'nombre-az';
 
@@ -127,102 +139,182 @@ export function Catalogo() {
     setLimiteVisible(PRODUCTOS_POR_PAGINA);
   };
 
+  const hayFiltrosActivos = query || categoriaSeleccionada !== "Todos" || filtroTipoVenta !== 'todos';
+
   return (
-    <>
-      <div className="section-header">
-        <span className="section-tag">Directo de Productores</span>
-        <h1 className="catalog-title" id="catalogo">Catálogo Completo</h1>
-        <p className="section-subtitle">
-          Precios por kilogramo, bolsas mayoristas y bultos cerrados para dietéticas y hogares.
+    <div className="catalog-page-container">
+      {/* HEADER DE SECCIÓN ESTILO BOUTIQUE NATURAL */}
+      <header className="catalog-hero-header">
+        <span className="catalog-eyebrow">Directo de Productores Nacionales</span>
+        <h1 className="catalog-main-title" id="catalogo">Catálogo Completo</h1>
+        <p className="catalog-lead-text">
+          Frutos secos, mixes artesanales y alimentos naturales. Venta al por menor, bolsas mayoristas y bultos cerrados para dietéticas y hogares.
         </p>
-      </div>
+      </header>
 
-      {/* BUSCADOR ELEGANTE, FILTROS Y ORDEN */}
-      <div className="search-wrapper">
-        <div className="search-container">
-          <span className="search-icon">🔍</span>
-          <input
-            type="text"
-            placeholder="Buscar por nombre, tipo de fruto, mix o especia (ej: castañas, chía)..."
-            value={query}
-            onChange={handleQuery}
-            className="search-input"
-            aria-label="Buscar productos"
+      {/* CARRUSEL DE PRODUCTOS DESTACADOS DE LA SEMANA */}
+      {!loading && !hayFiltrosActivos && (
+        <div style={{ maxWidth: '1240px', margin: '0 auto 20px', padding: '0 20px' }}>
+          <FeaturedCarousel
+            products={products}
+            addToCart={addToCart}
+            title="Destacados de la Semana"
+            subtitle="Los 5 frutos secos y mixes más pedidos de nuestro catálogo con precios mayoristas directos."
           />
-          {query && (
-            <button
-              type="button"
-              onClick={handleClearQuery}
-              className="search-clear-btn"
-              aria-label="Borrar búsqueda"
-              title="Borrar búsqueda"
-            >
-              ✕
-            </button>
-          )}
-        </div>
-
-        <div className="filter-controls-group">
-          {/* Selector de Tipo de Venta */}
-          <div className="type-filter-container">
-            <label htmlFor="tipo-venta-select" className="sort-label">Modalidad:</label>
-            <select
-              id="tipo-venta-select"
-              value={filtroTipoVenta}
-              onChange={(e) => {
-                setFiltroTipoVenta(e.target.value as 'todos' | 'peso' | 'unidad');
-                setLimiteVisible(PRODUCTOS_POR_PAGINA);
-              }}
-              className="sort-select"
-              aria-label="Filtrar por modalidad de venta"
-            >
-              <option value="todos">Todos los formatos</option>
-              <option value="peso">⚖️ Por Peso / Granel</option>
-              <option value="unidad">📦 Por Unidad / Envasado</option>
-            </select>
-          </div>
-
-          <div className="sort-container">
-            <label htmlFor="sort-select" className="sort-label">Ordenar por:</label>
-            <select
-              id="sort-select"
-              value={orden}
-              onChange={(e) => {
-                setOrden(e.target.value as TipoOrden);
-                setLimiteVisible(PRODUCTOS_POR_PAGINA);
-              }}
-              className="sort-select"
-              aria-label="Ordenar productos"
-            >
-              <option value="relevancia">Relevancia / Destacados</option>
-              <option value="precio-menor">Precio: Menor a Mayor</option>
-              <option value="precio-mayor">Precio: Mayor a Menor</option>
-              <option value="nombre-az">Nombre: A - Z</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      {/* PILLS DE CATEGORÍAS CON CONTEO */}
-      {!loading && categoriasConConteo.length > 1 && (
-        <div className="category-pills-wrapper">
-          {categoriasConConteo.map((cat) => (
-            <button
-              key={cat.nombre}
-              onClick={() => handleCategoria(cat.nombre)}
-              className={`category-pill ${categoriaSeleccionada === cat.nombre ? 'category-pill--active' : ''}`}
-            >
-              <span>{cat.nombre}</span>
-              <span className="category-pill-count">{cat.total}</span>
-            </button>
-          ))}
         </div>
       )}
+
+      {/* ZONA DE BUSCADOR Y FILTROS DESTACADA */}
+      <section className="catalog-search-panel" aria-label="Búsqueda y filtros del catálogo">
+        <div className="search-wrapper">
+          <div className="search-container search-container--featured">
+            <span className="search-icon" aria-hidden="true">🔍</span>
+            <input
+              type="text"
+              placeholder="Buscar por fruto, mix, especia, aceite (ej: almendras, chía)..."
+              value={query}
+              onChange={handleQuery}
+              className="search-input"
+              aria-label="Buscar productos en el catálogo"
+            />
+            {query && (
+              <button
+                type="button"
+                onClick={handleClearQuery}
+                className="search-clear-btn"
+                aria-label="Borrar búsqueda actual"
+                title="Borrar búsqueda"
+              >
+                ✕
+              </button>
+            )}
+          </div>
+
+          <div className="filter-controls-group">
+            {/* Selector de Modalidad */}
+            <div className="type-filter-container">
+              <label htmlFor="tipo-venta-select" className="sort-label">Formato:</label>
+              <select
+                id="tipo-venta-select"
+                value={filtroTipoVenta}
+                onChange={(e) => {
+                  setFiltroTipoVenta(e.target.value as 'todos' | 'peso' | 'unidad');
+                  setLimiteVisible(PRODUCTOS_POR_PAGINA);
+                }}
+                className="sort-select"
+                aria-label="Filtrar por formato de venta"
+              >
+                <option value="todos">Todos los formatos</option>
+                <option value="peso">⚖️ Por Granel / Peso</option>
+                <option value="unidad">📦 Envasado / Unidad</option>
+              </select>
+            </div>
+
+            {/* Selector de Orden */}
+            <div className="sort-container">
+              <label htmlFor="sort-select" className="sort-label">Ordenar:</label>
+              <select
+                id="sort-select"
+                value={orden}
+                onChange={(e) => {
+                  setOrden(e.target.value as TipoOrden);
+                  setLimiteVisible(PRODUCTOS_POR_PAGINA);
+                }}
+                className="sort-select"
+                aria-label="Ordenar productos"
+              >
+                <option value="relevancia">Relevancia / Destacados</option>
+                <option value="precio-menor">Precio: Menor a Mayor</option>
+                <option value="precio-mayor">Precio: Mayor a Menor</option>
+                <option value="nombre-az">Nombre: A - Z</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* ETIQUETAS DE BÚSQUEDA RÁPIDA / POPULARES */}
+        <div className="search-quick-tags" aria-label="Búsquedas sugeridas">
+          <span className="search-quick-label">Populares:</span>
+          <div className="search-quick-list">
+            {BUSQUEDAS_POPULARES.map((term) => (
+              <button
+                key={term}
+                type="button"
+                className={`search-quick-btn ${query.toLowerCase() === term.toLowerCase() ? 'search-quick-btn--active' : ''}`}
+                onClick={() => {
+                  setQuery(term);
+                  setLimiteVisible(PRODUCTOS_POR_PAGINA);
+                }}
+              >
+                {term}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* PILLS DE CATEGORÍAS CON CONTEO */}
+        {!loading && categoriasConConteo.length > 1 && (
+          <nav className="category-pills-wrapper" aria-label="Categorías de productos">
+            {categoriasConConteo.map((cat) => (
+              <button
+                key={cat.nombre}
+                onClick={() => handleCategoria(cat.nombre)}
+                className={`category-pill ${categoriaSeleccionada === cat.nombre ? 'category-pill--active' : ''}`}
+                aria-pressed={categoriaSeleccionada === cat.nombre}
+              >
+                <span className="category-pill-name">{cat.nombre}</span>
+                <span className="category-pill-count">{cat.total}</span>
+              </button>
+            ))}
+          </nav>
+        )}
+
+        {/* FILTROS ACTIVOS CON BOTÓN DE LIMPIAR */}
+        {hayFiltrosActivos && !loading && (
+          <div className="active-filters-strip">
+            <span className="active-filters-indicator">
+              Mostrando <strong>{productosOrdenados.length}</strong> producto{productosOrdenados.length !== 1 ? 's' : ''}
+            </span>
+            <div className="active-chips-wrapper">
+              {categoriaSeleccionada !== "Todos" && (
+                <span className="active-chip">
+                  Categoría: <strong>{categoriaSeleccionada}</strong>
+                  <button type="button" onClick={() => handleCategoria("Todos")} aria-label="Quitar filtro de categoría">✕</button>
+                </span>
+              )}
+              {filtroTipoVenta !== 'todos' && (
+                <span className="active-chip">
+                  Formato: <strong>{filtroTipoVenta === 'peso' ? 'Granel' : 'Envasado'}</strong>
+                  <button type="button" onClick={() => setFiltroTipoVenta("todos")} aria-label="Quitar filtro de formato">✕</button>
+                </span>
+              )}
+              {query && (
+                <span className="active-chip">
+                  Búsqueda: <strong>"{query}"</strong>
+                  <button type="button" onClick={handleClearQuery} aria-label="Quitar filtro de búsqueda">✕</button>
+                </span>
+              )}
+              <button
+                type="button"
+                className="btn-clear-filters-mini"
+                onClick={() => {
+                  setQuery("");
+                  setCategoriaSeleccionada("Todos");
+                  setFiltroTipoVenta("todos");
+                  setLimiteVisible(PRODUCTOS_POR_PAGINA);
+                }}
+              >
+                Limpiar todos
+              </button>
+            </div>
+          </div>
+        )}
+      </section>
 
       {/* SKELETON CARDS DURANTE CARGA */}
       {loading && (
         <div className="catalog-loading-section">
-          <p className="status-msg">Cargando productos frescos de la huerta...</p>
+          <p className="status-msg">Cargando catálogo actualizado desde la lista oficial...</p>
           <div className="product-grid skeleton-grid">
             {Array.from({ length: 8 }).map((_, idx) => (
               <div key={idx} className="product-card skeleton-card" aria-hidden="true">
@@ -239,21 +331,29 @@ export function Catalogo() {
         </div>
       )}
 
-      {error && <p className="status-msg status-msg--error">Error al cargar productos. Intentá recargar la página.</p>}
-
-      {(query || categoriaSeleccionada !== "Todos" || filtroTipoVenta !== 'todos') && !loading && (
-        <p className="status-msg">
-          {productosOrdenados.length} producto{productosOrdenados.length !== 1 ? 's' : ''} encontrado{productosOrdenados.length !== 1 ? 's' : ''}
-          {categoriaSeleccionada !== "Todos" && ` en "${categoriaSeleccionada}"`}
-          {filtroTipoVenta !== 'todos' && ` (${filtroTipoVenta === 'peso' ? 'Por peso' : 'Por unidad'})`}
-          {query && ` para "${query}"`}
-        </p>
+      {error && (
+        <div className="catalog-error-box">
+          <p className="status-msg status-msg--error">
+            Hubo un inconveniente al cargar el catálogo de productos.
+          </p>
+          <button
+            type="button"
+            className="btn-reload-catalog"
+            onClick={() => window.location.reload()}
+          >
+            Reintentar recargar
+          </button>
+        </div>
       )}
 
+      {/* ESTADO VACÍO (SIN RESULTADOS) */}
       {!loading && !error && productosOrdenados.length === 0 && (
         <div className="no-products-found">
-          <p className="no-products-title">🔍 No encontramos productos que coincidan</p>
-          <p className="no-products-sub">Probá cambiando el término de búsqueda o seleccionando otra categoría.</p>
+          <span className="no-products-icon" aria-hidden="true">🌿</span>
+          <p className="no-products-title">No encontramos productos con ese criterio</p>
+          <p className="no-products-sub">
+            Probá escribiendo el nombre de otra forma o seleccionando otra categoría para explorar nuestra cosecha.
+          </p>
           <button
             type="button"
             className="btn-reset-filters"
@@ -269,8 +369,9 @@ export function Catalogo() {
         </div>
       )}
 
+      {/* GRILLA PRINCIPAL DE PRODUCTOS */}
       {!loading && !error && productosOrdenados.length > 0 && (
-        <section className="product-grid">
+        <main className="product-grid" id="lista-productos" aria-label="Lista de productos del catálogo">
           {productosPagina.map((product) => (
             <ProductCard
               key={product.id}
@@ -278,9 +379,10 @@ export function Catalogo() {
               addToCart={addToCart}
             />
           ))}
-        </section>
+        </main>
       )}
 
+      {/* CARGAR MÁS PRODUCTOS / PAGINACIÓN PROGRESSIVA */}
       {productosOrdenados.length > PRODUCTOS_POR_PAGINA && (
         <div className="load-more-wrapper">
           <div className="load-more-status">
@@ -310,11 +412,11 @@ export function Catalogo() {
       )}
 
       <PageCTA
-        texto="¿Precisás una cotización por pallets o grandes volúmenes?"
-        linkTexto="Contactá a nuestro equipo comercial"
+        texto="¿Precisás cotización por pallets, bultos cerrados o grandes volúmenes?"
+        linkTexto="Contactá a nuestro equipo comercial mayorista"
         to="/contacto"
         icono="📦"
       />
-    </>
+    </div>
   );
 }

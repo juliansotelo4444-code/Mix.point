@@ -1,8 +1,8 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useProducts } from '../hooks/useProducts';
-import { ProductCard } from '../components/ProductCard';
 import { useCartContext } from '../context/CartContext';
+import { FeaturedCarousel } from '../components/FeaturedCarousel';
 import { PageCTA } from '../components/PageCTA';
 import { WelcomeBack } from '../components/WelcomeBack';
 import { ReviewsSection } from '../components/ReviewsSection';
@@ -15,17 +15,6 @@ export function Home() {
   useEffect(() => {
     document.title = 'Mix Point | Frutos Secos & Mix Artesanales Premium';
   }, []);
-
-  // Selección de 4 productos estrella destacados con imagen y precio
-  const destacados = useMemo(() => {
-    if (products.length === 0) return [];
-    // Buscamos productos populares de frutos secos / mix
-    const populares = products.filter(p => 
-      p.categoria?.toLowerCase().includes('frutos secos') ||
-      p.categoria?.toLowerCase().includes('mix')
-    );
-    return (populares.length >= 4 ? populares : products).slice(0, 4);
-  }, [products]);
 
   return (
     <>
@@ -110,33 +99,25 @@ export function Home() {
         </div>
       </section>
 
-      {/* PRODUCTOS DESTACADOS / FAVORITOS */}
+      {/* CARRUSEL DE PRODUCTOS DESTACADOS DE LA SEMANA (PRIMEROS 5 IDs DEL EXCEL) */}
       <section className="teaser-section">
-        <div className="section-header">
-          <span className="section-tag">Selección Especial</span>
-          <h2 className="section-title">Nuestros Favoritos</h2>
-          <p className="section-subtitle">Los productos más elegidos por su calidad y frescura inigualable.</p>
-        </div>
-
         {loading ? (
-          <p className="status-msg">Cargando productos destacados...</p>
+          <p className="status-msg">Cargando productos destacados de la huerta...</p>
         ) : (
-          <div className="product-grid">
-            {destacados.map((product) => (
-              <ProductCard key={product.id} product={product} addToCart={addToCart} />
-            ))}
-          </div>
+          <FeaturedCarousel
+            products={products}
+            addToCart={addToCart}
+            title="Destacados de la Semana"
+            subtitle="Los 5 frutos secos y mixes más elegidos por su calidad y frescura superior directo de la cosecha."
+          />
         )}
 
-        <div className="teaser-cta-wrapper">
+        <div className="teaser-cta-wrapper" style={{ marginTop: '24px' }}>
           <Link to="/catalogo" className="teaser-cta-btn">
-            Ver catálogo completo ({products.length} productos) →
+            Explorar catálogo completo ({products.length} productos) →
           </Link>
         </div>
       </section>
-
-      {/* SECCIÓN DE OFERTAS Y COMBOS DESTACADOS (Oculta sin borrar) */}
-      {/* <PromosOffers /> */}
 
       {/* VIDEO DE PRESENTACIÓN (SOLO ESCRITORIO) */}
       <DesktopVideoPresentation />
@@ -154,13 +135,6 @@ export function Home() {
 
       {/* TEASERS GRID: NOSOTROS Y ENVÍOS */}
       <section className="teaser-grid-section">
-        {/* <div className="teaser-info-card">
-          <span className="teaser-icon">🌾</span>
-          <h3>Distribuidora Familiar</h3>
-          <p>Trabajamos directo con productores agropecuarios para garantizar mercadería fresca y bien conservada.</p>
-          <Link to="/nosotros" className="teaser-link">Conocé nuestra historia →</Link>
-        </div> */}
-
         <div className="teaser-info-card teaser-info-card--accent">
           <span className="teaser-icon">🚚</span>
           <h3>Logística y Envíos</h3>
