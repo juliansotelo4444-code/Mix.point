@@ -2,7 +2,6 @@ import { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useProducts } from '../hooks/useProducts';
 import { ProductCard } from '../components/ProductCard';
-import { FeaturedCarousel } from '../components/FeaturedCarousel';
 import { useCartContext } from '../context/CartContext';
 import { PageCTA } from '../components/PageCTA';
 import type { Product } from '../types';
@@ -168,18 +167,6 @@ export function Catalogo() {
           Frutos secos, mixes artesanales y alimentos naturales. Venta al por menor, bolsas mayoristas y bultos cerrados para dietéticas y hogares.
         </p>
       </header>
-
-      {/* CARRUSEL DE PRODUCTOS DESTACADOS DE LA SEMANA */}
-      {!loading && !hayFiltrosActivos && (
-        <div style={{ maxWidth: '1240px', margin: '0 auto 20px', padding: '0 20px' }}>
-          <FeaturedCarousel
-            products={products}
-            addToCart={addToCart}
-            title="Destacados de la Semana"
-            subtitle="Los 5 frutos secos y mixes más pedidos de nuestro catálogo con precios mayoristas directos."
-          />
-        </div>
-      )}
 
       {/* ZONA DE BUSCADOR Y FILTROS DESTACADA */}
       <section className="catalog-search-panel" aria-label="Búsqueda y filtros del catálogo">
