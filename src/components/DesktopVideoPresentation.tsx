@@ -13,7 +13,7 @@ export function DesktopVideoPresentation() {
     <section className="desktop-video-section" id="presentacion-video">
       <div className="desktop-video-container">
         <div className="desktop-video-header">
-          <span className="desktop-video-tag">🎬 Presentación Institucional · Solo en Escritorio</span>
+          <span className="desktop-video-tag">🎬 Experiencia Mix Point · Video Institucional</span>
           <h2 className="desktop-video-title">Conocé la Calidad Mix Point por Dentro</h2>
           <p className="desktop-video-subtitle">
             Mirá cómo seleccionamos, cuidamos y fraccionamos los mejores frutos secos y alimentos naturales de Argentina directo desde los productores hasta tu mesa.

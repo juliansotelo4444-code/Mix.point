@@ -54,7 +54,9 @@
   --shadow-modal: 0 25px 60px rgba(22, 51, 39, 0.20);
 }
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 

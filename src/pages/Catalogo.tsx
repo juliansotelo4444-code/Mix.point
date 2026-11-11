@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useProducts } from '../hooks/useProducts';
 import { ProductCard } from '../components/ProductCard';
 import { FeaturedCarousel } from '../components/FeaturedCarousel';
@@ -43,11 +44,27 @@ const normalizarTexto = (txt: string): string =>
 export function Catalogo() {
   const { products, loading, error } = useProducts();
   const { addToCart } = useCartContext();
+  const [searchParams] = useSearchParams();
 
-  const [query, setQuery] = useState("");
-  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("Todos");
+  const [query, setQuery] = useState(searchParams.get('buscar') || "");
+  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(searchParams.get('categoria') || "Todos");
+  const [prevParamsString, setPrevParamsString] = useState(searchParams.toString());
   const [filtroTipoVenta, setFiltroTipoVenta] = useState<'todos' | 'peso' | 'unidad'>('todos');
   const [orden, setOrden] = useState<TipoOrden>("relevancia");
+
+  // Sincronizar de forma segura si los parámetros de la URL cambian (ej: al navegar desde la Home)
+  const currentParamsString = searchParams.toString();
+  if (currentParamsString !== prevParamsString) {
+    setPrevParamsString(currentParamsString);
+    const cat = searchParams.get('categoria');
+    const b = searchParams.get('buscar');
+    if (cat !== null) {
+      setCategoriaSeleccionada(cat);
+    }
+    if (b !== null) {
+      setQuery(b);
+    }
+  }
 
   useEffect(() => {
     document.title = 'Catálogo Mayorista & Minorista | Mix Point';
