@@ -78,56 +78,57 @@ export function FeaturedCarousel({
   return (
     <section className="featured-carousel-section" aria-label="Productos destacados de la semana">
       <div className="featured-carousel-header">
-        <div className="featured-carousel-titles">
-          <span className="featured-carousel-tag">
-            <span className="featured-tag-dot" aria-hidden="true" />
-            ⭐ Selección Exclusiva de la Semana
-          </span>
-          <h2 className="featured-carousel-title">{title}</h2>
-          <p className="featured-carousel-sub">{subtitle}</p>
-        </div>
-
-        {/* Controles de navegación de carrusel (Flechas desktop) */}
-        <div className="featured-carousel-nav" aria-label="Controles del carrusel">
-          <button
-            type="button"
-            className="carousel-arrow carousel-arrow--prev"
-            onClick={() => scroll('left')}
-            disabled={!canScrollLeft}
-            aria-label="Ver productos anteriores"
-          >
-            ‹
-          </button>
-          <button
-            type="button"
-            className="carousel-arrow carousel-arrow--next"
-            onClick={() => scroll('right')}
-            disabled={!canScrollRight}
-            aria-label="Ver siguientes productos"
-          >
-            ›
-          </button>
-        </div>
+        <span className="featured-carousel-tag">
+          <span className="featured-tag-dot" aria-hidden="true" />
+          ⭐ Selección Exclusiva de la Semana
+        </span>
+        <h2 className="featured-carousel-title">{title}</h2>
+        <p className="featured-carousel-sub">{subtitle}</p>
       </div>
 
-      {/* Riel deslizable de tarjetas con scroll-snap */}
-      <div className="featured-carousel-track" ref={scrollRef}>
-        {topProducts.map((product, idx) => (
-          <div key={product.id} className="featured-carousel-item">
-            <div className="featured-item-rank-badge" title={`Puesto #${idx + 1} en favoritos`}>
-              #{idx + 1} Más Pedido
+      {/* Contenedor del carrusel con flechas laterales */}
+      <div className="featured-carousel-wrapper">
+        <button
+          type="button"
+          className="carousel-arrow carousel-arrow--prev"
+          onClick={() => scroll('left')}
+          disabled={!canScrollLeft}
+          aria-label="Ver productos anteriores"
+        >
+          ‹
+        </button>
+
+        {/* Riel deslizable de tarjetas con scroll-snap */}
+        <div className="featured-carousel-track" ref={scrollRef}>
+          {topProducts.map((product, idx) => (
+            <div key={product.id} className="featured-carousel-item">
+              <div className="featured-item-rank-badge" title={`Puesto #${idx + 1} en favoritos`}>
+                #{idx + 1} Más Pedido
+              </div>
+              <ProductCard product={product} addToCart={addToCart} />
             </div>
-            <ProductCard product={product} addToCart={addToCart} />
-          </div>
-        ))}
+          ))}
+        </div>
+
+        <button
+          type="button"
+          className="carousel-arrow carousel-arrow--next"
+          onClick={() => scroll('right')}
+          disabled={!canScrollRight}
+          aria-label="Ver siguientes productos"
+        >
+          ›
+        </button>
       </div>
 
       {/* Indicadores de puntos (Dots) */}
-      <div className="featured-carousel-dots" aria-hidden="true">
+      <div className="featured-carousel-dots" role="tablist" aria-label="Paginación de destacados">
         {topProducts.map((_, idx) => (
           <button
             key={idx}
             type="button"
+            role="tab"
+            aria-selected={activeIndex === idx}
             onClick={() => scrollToSlide(idx)}
             className={`carousel-dot ${activeIndex === idx ? 'carousel-dot--active' : ''}`}
             aria-label={`Ir al producto ${idx + 1}`}

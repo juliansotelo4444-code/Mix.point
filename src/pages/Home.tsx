@@ -322,22 +322,24 @@ export function Home() {
       {/* ══════════════════════════════════════════════════════════════
           4. CARRUSEL DESTACADOS DE LA SEMANA (COMPARTIDO Y FLUIDO)
           ══════════════════════════════════════════════════════════════ */}
-      <section className="teaser-section">
-        {loading ? (
-          <p className="status-msg">Cargando productos destacados del catálogo...</p>
-        ) : (
-          <FeaturedCarousel
-            products={products}
-            addToCart={addToCart}
-            title="Destacados de la Semana"
-            subtitle="Los 5 frutos secos y mixes más pedidos de nuestro catálogo con precios mayoristas directos."
-          />
-        )}
+      <section className="teaser-section" aria-label="Productos destacados de la semana">
+        <div className="teaser-container">
+          {loading ? (
+            <p className="status-msg">Cargando productos destacados del catálogo...</p>
+          ) : (
+            <FeaturedCarousel
+              products={products}
+              addToCart={addToCart}
+              title="Destacados de la Semana"
+              subtitle="Los 5 frutos secos y mixes más pedidos de nuestro catálogo con precios mayoristas directos."
+            />
+          )}
 
-        <div className="teaser-cta-wrapper" style={{ marginTop: '24px' }}>
-          <Link to="/catalogo" className="teaser-cta-btn">
-            Explorar catálogo completo ({products.length > 0 ? products.length : 250} productos) →
-          </Link>
+          <div className="teaser-cta-wrapper" style={{ marginTop: '24px' }}>
+            <Link to="/catalogo" className="teaser-cta-btn">
+              Explorar catálogo completo ({products.length > 0 ? products.length : 250} productos) →
+            </Link>
+          </div>
         </div>
       </section>
 
