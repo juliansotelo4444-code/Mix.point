@@ -6,6 +6,7 @@ import { SocialBarTop } from '../components/SocialLinks';
 import { ScrollToTop } from '../components/ScrollToTop';
 import { ScrollRevealController } from '../components/ScrollRevealController';
 import { WhatsAppFloat } from '../components/WhatsAppFloat';
+import { MobileBottomNav } from '../components/MobileBottomNav';
 import { CartProvider } from '../context/CartContext';
 import { WHATSAPP_NUMERO, WHATSAPP_DISPLAY } from '../config/constants';
 import '../App.css';
@@ -88,8 +89,13 @@ export function MainLayout() {
           </div>
         </footer>
 
+        {/* CONTROLES FLOTANTES DESKTOP */}
         <CartButton />
         <WhatsAppFloat />
+
+        {/* NAVEGACIÓN INFERIOR EXCLUSIVA MÓVIL (TIPO APP) */}
+        <MobileBottomNav />
+
         <CartModal />
       </div>
     </CartProvider>

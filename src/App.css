@@ -574,6 +574,221 @@ main {
   margin-top: 2px;
 }
 
+/* ── 4.1 PORTADA MÓVIL ESTILO APP (SOLO CELULARES) ───────────── */
+.mobile-home-hub {
+  padding: 16px 16px 20px;
+  background: linear-gradient(180deg, var(--bg-subtle) 0%, var(--bg-main) 100%);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.mobile-hub-header {
+  margin-bottom: 12px;
+}
+
+.mobile-hub-badge {
+  display: inline-block;
+  background: var(--accent-gold-light);
+  color: var(--accent-gold-text);
+  border: 1px solid rgba(168, 97, 13, 0.25);
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  margin-bottom: 8px;
+}
+
+.mobile-hub-title {
+  font-family: var(--font-title);
+  font-size: 1.65rem;
+  font-weight: 800;
+  color: var(--primary-green);
+  line-height: 1.2;
+  margin: 0 0 4px;
+}
+
+.mobile-hub-sub {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* Buscador instantáneo móvil */
+.mobile-search-bar {
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-full);
+  padding: 4px 6px 4px 14px;
+  margin: 14px 0 16px;
+  box-shadow: 0 4px 14px rgba(22, 51, 39, 0.06);
+  transition: border-color 0.2s;
+}
+
+.mobile-search-bar:focus-within {
+  border-color: var(--primary-green);
+  box-shadow: 0 4px 18px rgba(22, 51, 39, 0.12);
+}
+
+.mobile-search-icon {
+  font-size: 1.05rem;
+  color: var(--accent-gold-text);
+  margin-right: 8px;
+}
+
+.mobile-search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: var(--text-dark);
+  background: transparent;
+  padding: 6px 0;
+  min-width: 0;
+}
+
+.mobile-search-submit-btn {
+  background: var(--primary-green);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-full);
+  padding: 7px 16px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.mobile-search-clear-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1rem;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+/* Slider horizontal de categorías (Stories de Instagram) */
+.mobile-categories-slider-wrapper {
+  margin: 0 -16px 18px;
+  padding: 0 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.mobile-categories-slider-wrapper::-webkit-scrollbar {
+  display: none;
+}
+
+.mobile-categories-slider {
+  display: flex;
+  gap: 14px;
+  width: max-content;
+  padding-bottom: 4px;
+}
+
+.mobile-category-bubble {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  width: 68px;
+  flex-shrink: 0;
+}
+
+.mobile-category-avatar {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ffffff 0%, var(--bg-subtle) 100%);
+  border: 2px solid var(--accent-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(168, 97, 13, 0.15);
+  transition: transform 0.2s ease;
+}
+
+.mobile-category-bubble:active .mobile-category-avatar {
+  transform: scale(0.92);
+}
+
+.mobile-avatar-emoji {
+  font-size: 1.7rem;
+}
+
+.mobile-category-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  text-align: center;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+/* Banner mayorista móvil */
+.mobile-wholesale-card {
+  background: linear-gradient(135deg, #163327 0%, #204838 100%);
+  border-radius: var(--radius-lg);
+  padding: 16px 18px;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 6px 18px rgba(22, 51, 39, 0.2);
+}
+
+.mobile-wholesale-pill {
+  display: inline-block;
+  background: rgba(246, 200, 120, 0.2);
+  color: var(--accent-gold-on-dark);
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  align-self: flex-start;
+}
+
+.mobile-wholesale-card h3 {
+  font-family: var(--font-title);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+}
+
+.mobile-wholesale-card p {
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.4;
+  margin: 0;
+}
+
+.btn-mobile-wholesale-cta {
+  background: var(--accent-gold);
+  color: #ffffff;
+  padding: 10px 16px;
+  border-radius: var(--radius-full);
+  font-weight: 700;
+  font-size: 0.88rem;
+  text-decoration: none;
+  text-align: center;
+  display: block;
+  box-shadow: 0 4px 12px rgba(168, 97, 13, 0.35);
+  transition: transform 0.15s;
+}
+
+.btn-mobile-wholesale-cta:active {
+  transform: scale(0.97);
+}
+
 /* ── 5. SECCIÓN EXPLORÁ POR CATEGORÍA ────────────────────────── */
 .home-categories-section {
   padding: 60px 20px 50px;
@@ -2471,6 +2686,89 @@ main {
   border: 2px solid var(--bg-surface);
 }
 
+/* ── 16.1 MOBILE BOTTOM APP BAR (EXCLUSIVA MÓVIL) ─────────────── */
+.mobile-bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  background: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(14px);
+  border-top: 1.5px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  z-index: 1000;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.mobile-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  min-width: 60px;
+}
+
+.mobile-nav-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+}
+
+.mobile-nav-item--active {
+  color: var(--primary-green);
+  font-weight: 800;
+}
+
+.mobile-nav-item--active .mobile-nav-icon {
+  transform: scale(1.1);
+  color: var(--primary-green);
+}
+
+.mobile-nav-item--wa {
+  color: #128c7e;
+}
+
+.mobile-nav-item--wa:hover {
+  color: #25d366;
+}
+
+.mobile-nav-cart-badge {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  background-color: var(--accent-gold);
+  color: #ffffff;
+  font-size: 0.68rem;
+  font-weight: 800;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid #ffffff;
+}
+
 /* ── 17. CART MODAL / DRAWER ─────────────────────────────────── */
 .cart-modal-overlay {
   position: fixed;
@@ -3119,6 +3417,46 @@ main {
 }
 
 /* ── 21. RESPONSIVE BREAKPOINTS ──────────────────────────────── */
+
+/* 21.1 Reglas para Computadora / Escritorio (> 768px) */
+@media (min-width: 769px) {
+  .mobile-bottom-nav {
+    display: none !important;
+  }
+  .mobile-home-hub {
+    display: none !important;
+  }
+  .hero-premium-desktop-only {
+    display: block !important;
+  }
+  .home-categories-desktop-only {
+    display: block !important;
+  }
+}
+
+/* 21.2 Reglas para Celulares y Tablets Táctiles (<= 768px) */
+@media (max-width: 768px) {
+  .mobile-bottom-nav {
+    display: flex !important;
+  }
+  .mobile-home-hub {
+    display: block !important;
+  }
+  .hero-premium-desktop-only {
+    display: none !important;
+  }
+  .home-categories-desktop-only {
+    display: none !important;
+  }
+  .cart-fab,
+  .wa-float-container {
+    display: none !important; /* Reemplazados por la barra inferior fija en celular */
+  }
+  body {
+    padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+}
+
 @media (max-width: 900px) {
   .hero-premium-container {
     grid-template-columns: 1fr;
