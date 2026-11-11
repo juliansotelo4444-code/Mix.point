@@ -1,20 +1,16 @@
 import { useState, useEffect } from 'react';
 import type { Product } from '../types';
 import { getProductImage } from '../utils/productImages';
-
-const SHEETS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTsSl1udCka3CKz61sitiiwynsibWeGS65K9zEe-6UXdCb_k1W8_Nr0ABoIZm_7wIvHbWd13KKOqOiI/pub?gid=120010130&single=true&output=csv';
+import { SHEETS_CSV_URL } from '../config/constants';
 
 function parseCSV(text: string): Product[] {
   // Google Sheets exporta con saltos de línea \r\n (estilo Windows) y a veces
-  // con un BOM invisible (\uFEFF) al principio del archivo. Si no se limpian,
-  // el header "id" (o el último, "tipoVenta") no matchea con indexOf(),
-  // haciendo que TODOS los productos se descarten silenciosamente al final
-  // por el filter(!isNaN(p.id)).
+  // con un BOM invisible (\uFEFF) al principio del archivo.
   const cleanText = text.replace(/^\uFEFF/, '');
   const lines = cleanText.trim().split(/\r\n|\n/);
   const headers = lines[0].split(',').map(h => h.trim());
 
-  const productos = lines.slice(1).map(line => {
+  const parsedList = lines.slice(1).map((line, rowIndex) => {
     const cols: string[] = [];
     let current = '';
     let inQuotes = false;
@@ -33,20 +29,38 @@ function parseCSV(text: string): Product[] {
       return isNaN(parsed) ? undefined : parsed;
     };
 
-    // Leemos la columna tipoVenta. Si está vacía o no existe, asumimos
-    // "peso" (comportamiento de siempre, no rompe nada de lo que ya
-    // tenías cargado).
-    const tipoVentaRaw = get('tipoVenta').toLowerCase();
-    const tipoVenta: 'peso' | 'unidad' = tipoVentaRaw === 'unidad' ? 'unidad' : 'peso';
+    const nombre = get('nombre');
+    const descripcion = get('descripcion') || undefined;
+
+    // Detectamos tipo de venta. Si no viene explícito, analizamos si por nombre
+    // o descripción es un producto unitario (ej: chocolates x10, tinturas en frasco, esencias)
+    const tipoVentaRaw = get('tipoVenta').toLowerCase().trim();
+    let tipoVenta: 'peso' | 'unidad' = tipoVentaRaw === 'unidad' ? 'unidad' : 'peso';
+    if (!tipoVentaRaw) {
+      const combined = `${nombre} ${descripcion || ''}`.toLowerCase();
+      if (
+        combined.includes('por 10 unidades') ||
+        combined.includes('caja x') ||
+        combined.includes('100cc') ||
+        combined.includes('60 cc') ||
+        combined.includes('60cc') ||
+        combined.includes('50cc') ||
+        combined.includes('40cc')
+      ) {
+        tipoVenta = 'unidad';
+      }
+    }
 
     const precioBase = num('kg') ?? 0;
+    const rawId = parseInt(get('id'), 10);
+    const id = isNaN(rawId) ? 8000 + rowIndex : rawId;
 
-    const id = parseInt(get('id'), 10);
-
-    const rawCategoria = get('categoria');
-    const nombre = get('nombre');
+    // Normalización de categoría: primer letra siempre en mayúscula
+    const rawCategoria = get('categoria').trim();
     let categoria = rawCategoria;
-    if (!categoria) {
+    if (categoria) {
+      categoria = categoria.charAt(0).toUpperCase() + categoria.slice(1);
+    } else {
       const nombreLower = nombre.toLowerCase();
       if (nombreLower.includes('eritritol') || nombreLower.includes('stevia')) {
         categoria = 'Azucares';
@@ -58,15 +72,18 @@ function parseCSV(text: string): Product[] {
     return {
       id,
       nombre,
-      descripcion: get('descripcion') || undefined,
+      descripcion,
       categoria,
       imagen: getProductImage(id, get('imagen')),
       tipoVenta,
       precios: tipoVenta === 'unidad'
-        // Producto por unidad: el precio que estaba en la columna "kg"
-        // pasa a vivir en la clave "unidad" (precio fijo por unidad).
-        ? { kg: 0, unidad: precioBase }
-        // Producto por peso: comportamiento original, sin cambios.
+        ? {
+            kg: 0,
+            unidad: precioBase,
+            // Conservamos precios de bulto/pack mayorista si están cargados en el Excel
+            cincoKg: num('cincoKg'),
+            diezKg: num('diezKg'),
+          }
         : {
             kg:             precioBase,
             cincoKg:        num('cincoKg'),
@@ -77,11 +94,18 @@ function parseCSV(text: string): Product[] {
     };
   });
 
+  // El Excel base es ley: NINGÚN producto debe ser descartado silenciosamente.
+  // Si encontramos IDs duplicados en la planilla, asignamos un ID seguro en memoria
+  // para que ambos productos aparezcan en la tienda sin colisionar en React.
   const seenIds = new Set<number>();
-  return productos.filter(p => {
-    if (isNaN(p.id) || seenIds.has(p.id)) return false;
-    seenIds.add(p.id);
-    return true;
+  return parsedList.map((p, idx) => {
+    let finalId = p.id;
+    if (seenIds.has(finalId)) {
+      console.warn(`[Excel Base] ID duplicado ${finalId} en "${p.nombre}". Asignando ID único virtual.`);
+      finalId = finalId * 1000 + idx;
+    }
+    seenIds.add(finalId);
+    return { ...p, id: finalId };
   });
 }
 
@@ -108,7 +132,9 @@ export function useProducts() {
   useEffect(() => {
     let cancel = false;
 
-    fetch(SHEETS_CSV_URL)
+    // Cache-buster para asegurar datos frescos del Excel en cada recarga
+    const cacheBuster = `&_t=${Date.now()}`;
+    fetch(`${SHEETS_CSV_URL}${cacheBuster}`)
       .then(res => {
         if (!res.ok) throw new Error('No se pudo cargar la planilla');
         return res.text();

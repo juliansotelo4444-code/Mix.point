@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import type { Product, Precios } from '../types';
 import { calcularPrecioUnitario } from '../utils/precios';
-
-const WHATSAPP_NUMERO = '5491131469587';
+import { WHATSAPP_NUMERO } from '../config/constants';
 
 interface Props {
   product: Product;
@@ -76,10 +75,26 @@ export const ProductCard = ({ product, addToCart }: Props) => {
         {product.descripcion && <p className="description">{product.descripcion}</p>}
 
         {esPorUnidad ? (
-          // Producto por unidad: sin selector de formato, mensaje simple
-          <div className="selector-container">
-            <span className="selector-label">Precio por unidad</span>
-          </div>
+          // Producto por unidad: si en el Excel cargaron opciones mayoristas (ej: pack x5), las mostramos
+          escalasDisponibles.length > 1 ? (
+            <div className="selector-container">
+              <span className="selector-label">Formato de compra</span>
+              <select
+                id={`peso-${product.id}`}
+                className="select-formato"
+                value={pesoSeleccionado}
+                onChange={(e) => setPesoSeleccionado(e.target.value as keyof Precios)}
+              >
+                <option value="unidad">Por Unidad Individual</option>
+                {(product.precios.cincoKg ?? 0) > 0 && <option value="cincoKg">Pack Mayorista x5 unidades</option>}
+                {(product.precios.diezKg ?? 0) > 0 && <option value="diezKg">Pack Mayorista x10 unidades</option>}
+              </select>
+            </div>
+          ) : (
+            <div className="selector-container">
+              <span className="selector-label">Precio por unidad</span>
+            </div>
+          )
         ) : (
           // Producto por peso: selector de formato mostrando solo escalas con precio válido
           <div className="selector-container">
@@ -106,7 +121,14 @@ export const ProductCard = ({ product, addToCart }: Props) => {
         <p className="price">
           Precio:{' '}
           {tienePrecioValido ? (
-            <strong>${precioUnitario.toLocaleString("es-AR")}</strong>
+            <>
+              <strong>${precioUnitario.toLocaleString("es-AR")}</strong>
+              {esPorUnidad && pesoSeleccionado !== 'unidad' && (
+                <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginLeft: '6px' }}>
+                  (${(product.precios[pesoSeleccionado] ?? 0).toLocaleString('es-AR')} c/u)
+                </span>
+              )}
+            </>
           ) : (
             <span className="price-consultar">Consultar precio</span>
           )}

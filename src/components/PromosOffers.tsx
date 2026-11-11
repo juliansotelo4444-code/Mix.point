@@ -1,4 +1,4 @@
-const WHATSAPP_NUMERO = '5491131469587';
+import { WHATSAPP_NUMERO } from '../config/constants';
 
 interface PromoOffer {
   id: string;

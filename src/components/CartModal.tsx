@@ -1,19 +1,9 @@
 import { useState } from 'react';
 import { useCartContext } from '../context/CartContext';
 import { CheckoutModal } from './CheckoutModal';
-import { calcularPrecioUnitario } from '../utils/precios';
+import { calcularPrecioUnitario, getEscalaLabel } from '../utils/precios';
 import { getProductImage } from '../utils/productImages';
-
-const MINIMO_COMPRA = 20000;
-
-const pesosLabels: Record<string, string> = {
-  kg: "1kg",
-  cincoKg: "5kg",
-  diezKg: "10kg",
-  veinticincoKg: "25kg",
-  treintaKg: "30kg",
-  unidad: "Unidad",
-};
+import { MINIMO_COMPRA_ENVIO_GRATIS as MINIMO_COMPRA } from '../config/constants';
 
 export function CartModal() {
   const {
@@ -40,7 +30,7 @@ export function CartModal() {
     if (cart.length === 0) return;
 
     const lineas = cart.map((item) => {
-      const label = pesosLabels[item.escalaSeleccionada] || item.escalaSeleccionada;
+      const label = getEscalaLabel(item.escalaSeleccionada, item.tipoVenta);
       const precioUnitario = calcularPrecioUnitario(item.precios, item.escalaSeleccionada);
       const subtotal = precioUnitario * item.quantity;
       return `• ${item.nombre} (${label}) x${item.quantity}: $${subtotal.toLocaleString('es-AR')}`;
@@ -107,7 +97,7 @@ export function CartModal() {
           ) : (
             <div className="cart-modal-items">
               {cart.map((item) => {
-                const label = pesosLabels[item.escalaSeleccionada] || item.escalaSeleccionada;
+                const label = getEscalaLabel(item.escalaSeleccionada, item.tipoVenta);
                 const precioUnitario = calcularPrecioUnitario(item.precios, item.escalaSeleccionada);
                 const subtotal = precioUnitario * item.quantity;
 

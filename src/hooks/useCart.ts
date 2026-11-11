@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import type { Product, CartItem, Precios } from '../types';
 import { calcularPrecioUnitario } from '../utils/precios';
 
@@ -28,6 +28,43 @@ export const useCart = () => {
       // Ignorar si el almacenamiento local falla
     }
   }, [cart]);
+
+  // Sincroniza los precios del carrito con el Excel base más reciente.
+  // El Excel base es ley: si el administrador actualizó precios en Google Sheets,
+  // el cliente debe ver los precios nuevos y nunca precios viejos en caché.
+  const sincronizarConCatalogo = useCallback((productosActuales: Product[]) => {
+    if (!productosActuales || productosActuales.length === 0) return;
+
+    const prodMap = new Map<number, Product>();
+    productosActuales.forEach(p => prodMap.set(p.id, p));
+
+    setCart(prevCart => {
+      let huboCambios = false;
+      const nuevoCarrito = prevCart.map(item => {
+        const live = prodMap.get(item.id);
+        if (!live) return item;
+
+        const cambioPrecios = JSON.stringify(item.precios) !== JSON.stringify(live.precios);
+        const cambioDatos = item.nombre !== live.nombre || item.imagen !== live.imagen || item.tipoVenta !== live.tipoVenta;
+
+        if (cambioPrecios || cambioDatos) {
+          huboCambios = true;
+          return {
+            ...item,
+            nombre: live.nombre,
+            descripcion: live.descripcion,
+            categoria: live.categoria,
+            imagen: live.imagen,
+            precios: live.precios,
+            tipoVenta: live.tipoVenta,
+          };
+        }
+        return item;
+      });
+
+      return huboCambios ? nuevoCarrito : prevCart;
+    });
+  }, []);
 
   const addToCart = (product: Product, peso: keyof Precios, cantidad: number) => {
     setCart(prevCart => {
@@ -116,6 +153,7 @@ export const useCart = () => {
     updateQuantity,
     removeItem,
     clearCart,
-    cartTotal
+    cartTotal,
+    sincronizarConCatalogo,
   };
 };

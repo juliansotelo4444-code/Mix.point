@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { PageCTA } from '../components/PageCTA';
-
-const WHATSAPP_NUMERO = '5491131469587';
+import { WHATSAPP_NUMERO } from '../config/constants';
 
 export function Contacto() {
   useEffect(() => {

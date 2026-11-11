@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { PageCTA } from '../components/PageCTA';
+import { WHATSAPP_NUMERO, WHATSAPP_DISPLAY } from '../config/constants';
 
 export function Privacidad() {
   useEffect(() => {
@@ -31,8 +32,8 @@ export function Privacidad() {
             </p>
             <p>
               Para cualquier duda, modificación o solicitud vinculada a tu privacidad, podés comunicarte directamente con nuestro equipo por WhatsApp al{' '}
-              <a href="https://wa.me/5491131469587" target="_blank" rel="noopener noreferrer" className="privacy-link">
-                +54 9 11 3146-9587
+              <a href={`https://wa.me/${WHATSAPP_NUMERO}`} target="_blank" rel="noopener noreferrer" className="privacy-link">
+                {WHATSAPP_DISPLAY}
               </a>{' '}
               o a través de nuestro canal de Instagram oficial{' '}
               <a href="https://www.instagram.com/mixpoint.frutossecos/" target="_blank" rel="noopener noreferrer" className="privacy-link">

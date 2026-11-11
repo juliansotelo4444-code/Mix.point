@@ -1,15 +1,9 @@
-import { createContext, useContext, useState, type ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 import { useCart } from '../hooks/useCart';
+import { useProducts } from '../hooks/useProducts';
 import { useOrderSubmit } from '../hooks/useOrderSubmit';
-import { calcularPrecioUnitario } from '../utils/precios';
-
-const WHATSAPP_NUMERO = '5491131469587';
-
-const pesosLabels: Record<string, string> = {
-  kg: "1kg", cincoKg: "5kg", diezKg: "10kg",
-  veinticincoKg: "25kg", treintaKg: "30kg", unidad: "unidad"
-};
-
+import { calcularPrecioUnitario, getEscalaLabel } from '../utils/precios';
+import { WHATSAPP_NUMERO } from '../config/constants';
 import { type DatosEntrega } from '../utils/datosEntrega';
 
 type UseCartReturn = ReturnType<typeof useCart>;
@@ -43,18 +37,28 @@ export function CartProvider({ children }: { children: ReactNode }) {
     updateQuantity,
     removeItem,
     clearCart,
-    cartTotal
+    cartTotal,
+    sincronizarConCatalogo,
   } = useCart();
+  const { products } = useProducts();
   const { submitPedido, enviando } = useOrderSubmit();
   const [showCart, setShowCart] = useState(false);
   const [showCheckout, setShowCheckout] = useState(false);
+
+  // Cada vez que se descarga o actualiza el catálogo desde el Excel base,
+  // revalidamos los precios de los productos que ya estaban en el carrito.
+  useEffect(() => {
+    if (products.length > 0) {
+      sincronizarConCatalogo(products);
+    }
+  }, [products, sincronizarConCatalogo]);
 
   // Suma de unidades (no de líneas distintas) para el contador del botón flotante
   const cartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
 
   const handleConfirmarPedido = async (datos: DatosEntrega) => {
     const itemsEstructurados = cart.map(item => {
-      const label = pesosLabels[item.escalaSeleccionada] || item.escalaSeleccionada;
+      const label = getEscalaLabel(item.escalaSeleccionada, item.tipoVenta);
       const precioUnitario = calcularPrecioUnitario(item.precios, item.escalaSeleccionada);
       const subtotal = precioUnitario * item.quantity;
       return {
@@ -71,7 +75,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
     const productosTexto = cart
       .map(item => {
-        const label = pesosLabels[item.escalaSeleccionada] || item.escalaSeleccionada;
+        const label = getEscalaLabel(item.escalaSeleccionada, item.tipoVenta);
         const precioUnitario = calcularPrecioUnitario(item.precios, item.escalaSeleccionada);
         const subtotal = precioUnitario * item.quantity;
         return `${item.nombre} (${label}) x${item.quantity} [$${subtotal.toLocaleString('es-AR')}]`;
@@ -90,7 +94,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     const pedidoCodigo = resultado.numeroPedido ? ` *${resultado.numeroPedido}*` : '';
     const productosMsg = cart
       .map(item => {
-        const label = pesosLabels[item.escalaSeleccionada] || item.escalaSeleccionada;
+        const label = getEscalaLabel(item.escalaSeleccionada, item.tipoVenta);
         const precioUnitario = calcularPrecioUnitario(item.precios, item.escalaSeleccionada);
         const subtotal = precioUnitario * item.quantity;
         const unitarioTxt = item.quantity > 1 ? ` ($${precioUnitario.toLocaleString('es-AR')} c/u)` : '';

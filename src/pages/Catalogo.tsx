@@ -85,7 +85,13 @@ export function Catalogo() {
   const productosOrdenados = useMemo(() => {
     const list = [...productosFiltrados];
     if (orden === 'precio-menor') {
-      return list.sort((a, b) => getPrecioBase(a) - getPrecioBase(b));
+      return list.sort((a, b) => {
+        const pA = getPrecioBase(a);
+        const pB = getPrecioBase(b);
+        if (pA === 0 && pB > 0) return 1;
+        if (pB === 0 && pA > 0) return -1;
+        return pA - pB;
+      });
     }
     if (orden === 'precio-mayor') {
       return list.sort((a, b) => getPrecioBase(b) - getPrecioBase(a));

@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
 import { NavLink, Link, useLocation } from 'react-router-dom';
 import { useCartContext } from '../context/CartContext';
+import { WHATSAPP_NUMERO } from '../config/constants';
 import './Navbar.css';
-
-const WHATSAPP_NUMERO = '5491131469587';
 
 const navClass = ({ isActive }: { isActive: boolean }) =>
   isActive ? 'nav-link nav-link--active' : 'nav-link';

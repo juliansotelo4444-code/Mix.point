@@ -20,3 +20,22 @@ export function calcularPrecioUnitario(precios: Precios, escala: keyof Precios):
   const multiplicador = MULTIPLICADORES[escala] ?? 1;
   return precioBase * multiplicador;
 }
+
+export function getEscalaLabel(escala: keyof Precios, tipoVenta: 'peso' | 'unidad' = 'peso'): string {
+  if (tipoVenta === 'unidad') {
+    if (escala === 'cincoKg') return 'Pack x5 (Mayorista)';
+    if (escala === 'diezKg') return 'Pack x10 (Mayorista)';
+    return 'Unidad';
+  }
+
+  const pesoMap: Record<keyof Precios, string> = {
+    kg: '1kg',
+    cincoKg: '5kg',
+    diezKg: '10kg',
+    veinticincoKg: '25kg',
+    treintaKg: '30kg',
+    unidad: 'Unidad',
+  };
+
+  return pesoMap[escala] || String(escala);
+}

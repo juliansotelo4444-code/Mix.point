@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useCartContext } from '../context/CartContext';
-import { calcularPrecioUnitario } from '../utils/precios';
+import { calcularPrecioUnitario, getEscalaLabel } from '../utils/precios';
 import {
   type DatosEntrega,
   DATOS_VACIOS,
@@ -8,11 +8,6 @@ import {
   guardarDatosEntrega,
   borrarDatosEntrega,
 } from '../utils/datosEntrega';
-
-const pesosLabels: Record<string, string> = {
-  kg: "1kg", cincoKg: "5kg", diezKg: "10kg",
-  veinticincoKg: "25kg", treintaKg: "30kg", unidad: "unidad"
-};
 
 interface Props {
   onConfirm: (datos: DatosEntrega) => void;
@@ -87,7 +82,7 @@ export function CheckoutModal({ onConfirm, onClose, enviando }: Props) {
             </div>
             <ul className="checkout-summary-list">
               {cart.map((item) => {
-                const label = pesosLabels[item.escalaSeleccionada] || item.escalaSeleccionada;
+                const label = getEscalaLabel(item.escalaSeleccionada, item.tipoVenta);
                 const precioUnitario = calcularPrecioUnitario(item.precios, item.escalaSeleccionada);
                 const subtotal = precioUnitario * item.quantity;
                 return (

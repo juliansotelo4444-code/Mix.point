@@ -1,6 +1,5 @@
 import { useState } from 'react';
-
-const WHATSAPP_NUMERO = '5491131469587';
+import { WHATSAPP_NUMERO } from '../config/constants';
 
 export function DesktopVideoPresentation() {
   const [videoError, setVideoError] = useState(false);

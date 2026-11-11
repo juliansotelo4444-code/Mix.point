@@ -7,6 +7,7 @@ import { ScrollToTop } from '../components/ScrollToTop';
 import { ScrollRevealController } from '../components/ScrollRevealController';
 import { WhatsAppFloat } from '../components/WhatsAppFloat';
 import { CartProvider } from '../context/CartContext';
+import { WHATSAPP_NUMERO, WHATSAPP_DISPLAY } from '../config/constants';
 import '../App.css';
 
 export function MainLayout() {
@@ -62,7 +63,7 @@ export function MainLayout() {
             <div>
               <h4 style={{ fontFamily: 'var(--font-title)', fontSize: '1.1rem', color: 'var(--accent-gold-on-dark, #f6c878)', margin: '0 0 14px' }}>Contacto Directo</h4>
               <p style={{ color: 'rgba(255,255,255,0.92)', fontSize: '0.9rem', margin: '0 0 8px' }}>📍 Buenos Aires, Argentina</p>
-              <p style={{ color: 'rgba(255,255,255,0.92)', fontSize: '0.9rem', margin: '0 0 8px' }}>📱 WhatsApp: <a href="https://wa.me/5491131469587" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-gold-on-dark, #f6c878)', textDecoration: 'none', fontWeight: 600 }}>+54 9 11 3146-9587</a></p>
+              <p style={{ color: 'rgba(255,255,255,0.92)', fontSize: '0.9rem', margin: '0 0 8px' }}>📱 WhatsApp: <a href={`https://wa.me/${WHATSAPP_NUMERO}`} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-gold-on-dark, #f6c878)', textDecoration: 'none', fontWeight: 600 }}>{WHATSAPP_DISPLAY}</a></p>
               <p style={{ color: 'rgba(255,255,255,0.92)', fontSize: '0.9rem', margin: 0 }}>📸 Instagram: <a href="https://www.instagram.com/mixpoint.frutossecos/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-gold-on-dark, #f6c878)', textDecoration: 'none', fontWeight: 600 }}>@mixpoint.frutossecos</a></p>
             </div>
           </div>

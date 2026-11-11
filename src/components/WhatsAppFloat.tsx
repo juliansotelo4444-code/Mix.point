@@ -1,7 +1,6 @@
 import { useState } from 'react';
+import { WHATSAPP_NUMERO } from '../config/constants';
 import './WhatsAppFloat.css';
-
-const WHATSAPP_NUMERO = '5491131469587';
 
 export function WhatsAppFloat() {
   const [showTooltip, setShowTooltip] = useState(true);
