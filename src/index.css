@@ -1,38 +1,57 @@
-/* src/index.css - Base Reset & Setup */
+/* src/index.css - Base Reset & Design System Tokens */
 :root {
-  --bg-main: #fdfbf7;
+  /* Fondos Orgánicos */
+  --bg-main: #f9f6f0;
   --bg-surface: #ffffff;
-  --bg-subtle: #f7f3eb;
-  --bg-accent: #f0eae1;
+  --bg-subtle: #f2ece1;
+  --bg-accent: #ebe3d5;
   --bg-card: #ffffff;
 
-  --primary-green: #1a382b;
-  --primary-green-hover: #264e3d;
-  --primary-green-light: #e8f0ec;
+  /* Color Primario: Verde Bosque Profundo */
+  --primary-green: #163327;
+  --primary-green-hover: #224838;
+  --primary-green-dark: #0f241b;
+  --primary-green-light: #e6eee9;
+  --primary-green-glow: rgba(22, 51, 39, 0.18);
 
-  --accent-gold: #c88a35;
-  --accent-gold-hover: #b0762a;
-  --accent-gold-light: #fbf3e8;
+  /* Acento: Ámbar / Dorado Cálido con Alto Contraste */
+  --accent-gold: #a8610d;
+  --accent-gold-text: #854d0e;
+  --accent-gold-hover: #905108;
+  --accent-gold-light: #fef6e9;
+  --accent-gold-glow: rgba(168, 97, 13, 0.22);
+  --accent-gold-on-dark: #f6c878;
+  --accent-star: #e59b22;
 
-  --text-dark: #221e1b;
-  --text-muted: #6b635b;
+  /* Textos con Contraste WCAG AAA */
+  --text-dark: #1b1816;
+  --text-muted: #4e4741;
   --text-light: #fdfbf7;
+  --text-white: #ffffff;
 
-  --border-light: #e8e2d8;
-  --border-subtle: #f0eae1;
+  /* Bordes nítidos y equilibrados */
+  --border-light: #e2d9cc;
+  --border-subtle: #ede5da;
+  --border-medium: #cfc4b4;
+  --border-focus: #163327;
 
+  /* Tipografía */
   --font-title: 'Playfair Display', Georgia, serif;
-  --font-body: 'Montserrat', sans-serif;
+  --font-body: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
+  /* Radios */
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
+  --radius-xl: 24px;
   --radius-full: 9999px;
 
+  /* Sombras */
   --shadow-sm: 0 2px 8px rgba(34, 30, 27, 0.04);
-  --shadow-card: 0 4px 20px rgba(26, 56, 43, 0.06);
-  --shadow-card-hover: 0 10px 30px rgba(26, 56, 43, 0.12);
-  --shadow-modal: 0 20px 50px rgba(34, 30, 27, 0.25);
+  --shadow-card: 0 4px 20px rgba(22, 51, 39, 0.06);
+  --shadow-card-hover: 0 12px 32px rgba(22, 51, 39, 0.12);
+  --shadow-dropdown: 0 10px 30px rgba(34, 30, 27, 0.10);
+  --shadow-modal: 0 25px 60px rgba(22, 51, 39, 0.20);
 }
 
 *, *::before, *::after {
@@ -48,6 +67,7 @@ body {
   font-family: var(--font-body);
   background-color: var(--bg-main);
   color: var(--text-dark);
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

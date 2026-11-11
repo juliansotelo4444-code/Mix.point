@@ -43,7 +43,7 @@ export function Envios() {
           </div>
         </div>
 
-        <div className="info-card" style={{ marginTop: '30px', border: '2px solid var(--accent-gold)' }}>
+        <div className="info-card info-card--guarantee" style={{ marginTop: '30px' }}>
           <span className="info-icon">💰</span>
           <h3>Garantía de Satisfacción 100%</h3>
           <p>
