@@ -2,6 +2,8 @@ import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { MainLayout } from './layouts/MainLayout';
 import { Home } from './pages/Home';
+import { Mantenimiento } from './pages/Mantenimiento';
+import { MODO_MANTENIMIENTO } from './config/constants';
 
 // Lazy loading de rutas secundarias para acelerar la carga inicial
 const Catalogo = lazy(() => import('./pages/Catalogo').then(m => ({ default: m.Catalogo })));
@@ -26,6 +28,10 @@ function RouteFallback() {
 }
 
 function App() {
+  if (MODO_MANTENIMIENTO) {
+    return <Mantenimiento />;
+  }
+
   return (
     <BrowserRouter>
       <Routes>

@@ -52,7 +52,6 @@ export function ProductDetailModal({ product, onClose, addToCart }: Props) {
   if (!product) return null;
 
   const precioUnitario = calcularPrecioUnitario(product.precios, pesoSeleccionado);
-  const precioAnterior = Math.round((precioUnitario * 1.15) / 100) * 100;
   const precioTotal = precioUnitario * cantidad;
 
   const handleIncrementar = () => setCantidad((prev) => prev + 1);
@@ -146,19 +145,16 @@ export function ProductDetailModal({ product, onClose, addToCart }: Props) {
               </div>
             )}
 
-            {/* PRECIO DE OFERTA CON COMPARATIVA */}
+            {/* PRECIO REAL DEL PRODUCTO */}
             <div className="product-modal-price-box">
               <div className="product-modal-price-main">
                 <span className="product-modal-current-price">
                   ${precioUnitario.toLocaleString('es-AR')}
                 </span>
-                <span className="product-modal-old-price">
-                  ${precioAnterior.toLocaleString('es-AR')}
-                </span>
-                <span className="product-modal-discount-tag">15% OFF</span>
+                <span className="product-modal-discount-tag">Precio Oficial</span>
               </div>
               <p className="product-modal-format-note">
-                Presentación: <strong>{getEscalaLabel(pesoSeleccionado, product.tipoVenta)}</strong>
+                Presentación seleccionada: <strong>{getEscalaLabel(pesoSeleccionado, product.tipoVenta)}</strong>
               </p>
             </div>
 

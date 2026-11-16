@@ -12,16 +12,16 @@ interface Props {
 interface OfferProductItem {
   product: Product;
   tituloDisplay: string;
-  precioOferta: number;
-  precioAnterior: number;
-  ahorroPorcentaje: number;
+  precioReal: number;
+  precioMayorista?: number;
+  badgeLabel: string;
 }
 
 export function FeaturedCarousel({
   products,
   addToCart,
-  title = "Ofertas Destacadas de la Semana",
-  subtitle = "Los frutos secos y mixes más pedidos con precios de oferta directa por kilo y bulto."
+  title = "Productos Destacados de la Semana",
+  subtitle = "Los frutos secos y mixes más pedidos con precios oficiales directos de origen."
 }: Props) {
   const trackRef = useRef<HTMLDivElement>(null);
   const [isPaused, setIsPaused] = useState(false);
@@ -31,20 +31,20 @@ export function FeaturedCarousel({
   // Estado para el modal de detalle / compra rápida al hacer clic en una tarjeta
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
-  // 1. Filtramos y preparamos las ofertas destacadas del catálogo
+  // 1. Filtramos y preparamos los productos destacados respetando fielmente el Excel base
   const offerItems: OfferProductItem[] = useMemo(() => {
     if (!products || products.length === 0) return [];
 
-    // Priorizamos los productos insignia de alta demanda pedidos por el usuario:
-    // 358: Mix Patagonia
-    // 5: Almendras Guara
-    // 800: Nueces Chandler Extra Light
-    // 7: Castañas de Cajú
-    // 26: Mix Cervecero
-    // 22: Mix Premium
-    // 3: Nueces Cuarto
-    // 400: Almendras Carmel Chilenas
-    const targetIds = [358, 5, 800, 7, 26, 22, 3, 400];
+    // Priorizamos los productos insignia con sus IDs oficiales de la planilla:
+    // 358: Mix Patagonia ($19.800)
+    // 5: Almendras Guara ($23.900)
+    // 800: Nueces Chandler Extra Light ($16.900)
+    // 7: Castañas de Cajú W4 ($16.500)
+    // 26: Mix Cervecero ($7.440)
+    // 22: Mix Premium ($17.900)
+    // 4: Nueces Con Cáscara ($8.280)
+    // 400: Almendras Carmel Chilenas ($26.900)
+    const targetIds = [358, 5, 800, 7, 26, 22, 4, 400];
     const picked: Product[] = [];
 
     // Buscar los productos por id preferido
@@ -65,9 +65,10 @@ export function FeaturedCarousel({
       }
     }
 
-    return picked.map((product) => {
+    return picked.map((product, idx) => {
       const esUnidad = product.tipoVenta === 'unidad';
-      const precioBase = esUnidad
+      // Precio oficial exacto de la planilla de Google Sheets
+      const precioReal = esUnidad
         ? (product.precios.unidad ?? product.precios.kg ?? 0)
         : (product.precios.kg ?? 0);
 
@@ -90,27 +91,27 @@ export function FeaturedCarousel({
         nombreLimpio = 'MIX CERVECERO';
       } else if (nombreLimpio.toLowerCase().includes('premium')) {
         nombreLimpio = 'MIX PREMIUM';
+      } else if (nombreLimpio.toLowerCase().includes('cascara') || nombreLimpio.toLowerCase().includes('cáscara')) {
+        nombreLimpio = 'NUEZ CON CÁSCARA';
+      } else if (nombreLimpio.toLowerCase().includes('carmel') || nombreLimpio.toLowerCase().includes('chilenas')) {
+        nombreLimpio = 'ALMENDRAS CHILENAS';
       }
 
       const presentacion = esUnidad ? 'X UNIDAD' : 'X 1 KG';
       const tituloDisplay = `${nombreLimpio.toUpperCase()} ${presentacion}`;
 
-      // Precio anterior tachado (si es Patagonia $19.800 -> $22.500 exacto como en el prompt)
-      let precioAnterior = Math.round((precioBase * 1.15) / 100) * 100;
-      if (product.id === 358 && precioBase === 19800) {
-        precioAnterior = 22500;
-      } else if (product.id === 5 && precioBase === 23900) {
-        precioAnterior = 27500;
-      }
+      // Precio mayorista por kilo si existe cargado en el Excel (ej: escala 5kg o 10kg)
+      const precioMayorista = product.precios.cincoKg || product.precios.diezKg;
 
-      const ahorro = Math.max(10, Math.round(((precioAnterior - precioBase) / precioAnterior) * 100));
+      const badges = ['🔥 MÁS PEDIDO', '⭐ DESTACADO', '🌿 SELECCIÓN', '✨ PREMIUM', '📦 MAYORISTA'];
+      const badgeLabel = badges[idx % badges.length];
 
       return {
         product,
         tituloDisplay,
-        precioOferta: precioBase,
-        precioAnterior,
-        ahorroPorcentaje: ahorro,
+        precioReal,
+        precioMayorista,
+        badgeLabel,
       };
     });
   }, [products]);
@@ -128,7 +129,7 @@ export function FeaturedCarousel({
 
     let animId: number;
     let lastTime: number | null = null;
-    const pixelsPerSecond = 32; // Velocidad pausada, elegante y legible
+    const pixelsPerSecond = 32;
 
     const step = (time: number) => {
       if (lastTime === null) lastTime = time;
@@ -138,7 +139,6 @@ export function FeaturedCarousel({
       if (!isPaused && !isInteractingRef.current && el) {
         el.scrollLeft += pixelsPerSecond * delta;
 
-        // Cuando recorre la primera mitad de la lista duplicada, reinicia imperceptiblemente a 0
         const halfWidth = el.scrollWidth / 2;
         if (el.scrollLeft >= halfWidth) {
           el.scrollLeft -= halfWidth;
@@ -197,14 +197,14 @@ export function FeaturedCarousel({
     <>
       <section
         className="offers-carousel-section"
-        aria-label="Carrusel continuo de ofertas destacadas"
+        aria-label="Carrusel continuo de productos destacados"
       >
         <div className="offers-carousel-container">
           {/* HEADER CENTRADO BOUTIQUE */}
           <div className="offers-carousel-header">
             <span className="offers-carousel-badge">
               <span className="offers-badge-flame" aria-hidden="true">🔥</span>
-              Ofertas & Destacados de la Semana
+              Selección Exclusiva de la Semana
             </span>
             <h2 className="offers-carousel-title">{title}</h2>
             <p className="offers-carousel-subtitle">{subtitle}</p>
@@ -223,7 +223,7 @@ export function FeaturedCarousel({
               type="button"
               className="offers-nav-arrow offers-nav-arrow--prev"
               onClick={() => scrollManual('left')}
-              aria-label="Ver ofertas anteriores"
+              aria-label="Ver productos anteriores"
             >
               ‹
             </button>
@@ -249,19 +249,19 @@ export function FeaturedCarousel({
                       setSelectedProduct(item.product);
                     }
                   }}
-                  aria-label={`${item.tituloDisplay} a $${item.precioOferta.toLocaleString('es-AR')}, precio regular $${item.precioAnterior.toLocaleString('es-AR')}`}
+                  aria-label={`${item.tituloDisplay} a $${item.precioReal.toLocaleString('es-AR')}`}
                 >
-                  {/* TAG FLOTANTE DE DESCUENTO */}
+                  {/* TAG FLOTANTE DE LA SEMANA */}
                   <div className="offer-card-ribbon">
-                    <span className="offer-ribbon-text">{item.ahorroPorcentaje}% OFF</span>
+                    <span className="offer-ribbon-text">{item.badgeLabel}</span>
                   </div>
 
-                  {/* TÍTULO SUPERIOR: ETIQUETA SEMI-TRANSPARENTE EN LA PARTE SUPERIOR DE LA IMAGEN */}
+                  {/* TÍTULO SUPERIOR */}
                   <div className="offer-card-top-badge">
                     <h3 className="offer-card-title">{item.tituloDisplay}</h3>
                   </div>
 
-                  {/* IMAGEN CENTRAL: OCUPA LA MAYOR PARTE DE LA TARJETA */}
+                  {/* IMAGEN CENTRAL */}
                   <div className="offer-card-image-box">
                     <img
                       src={item.product.imagen || '/assets/Flyer-mix-point.png'}
@@ -272,16 +272,22 @@ export function FeaturedCarousel({
                     />
                   </div>
 
-                  {/* ETIQUETA DE PRECIO INFERIOR: PÍLDORA FLOTANTE CON PRECIO OFERTA Y TACHADO */}
+                  {/* ETIQUETA DE PRECIO INFERIOR: RESPETA EL PRECIO OFICIAL DEL EXCEL */}
                   <div className="offer-card-footer">
                     <div className="offer-card-price-pill">
                       <span className="offer-price-current">
-                        ${item.precioOferta.toLocaleString('es-AR')}
+                        ${item.precioReal.toLocaleString('es-AR')}
                       </span>
-                      <span className="offer-price-old">
-                        ${item.precioAnterior.toLocaleString('es-AR')}
+                      <span className="offer-price-unit-tag">
+                        {item.product.tipoVenta === 'unidad' ? 'c/u' : 'x kg'}
                       </span>
                     </div>
+
+                    {item.precioMayorista && item.precioMayorista < item.precioReal && (
+                      <span className="offer-card-wholesale-hint">
+                        Bulto: ${item.precioMayorista.toLocaleString('es-AR')}/kg
+                      </span>
+                    )}
 
                     <span className="offer-card-click-hint">
                       Tocar para ver detalle / comprar
@@ -296,7 +302,7 @@ export function FeaturedCarousel({
               type="button"
               className="offers-nav-arrow offers-nav-arrow--next"
               onClick={() => scrollManual('right')}
-              aria-label="Ver siguientes ofertas"
+              aria-label="Ver siguientes productos"
             >
               ›
             </button>
