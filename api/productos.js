@@ -36,6 +36,10 @@ export default async function handler(req, res) {
         p.precio_10kg,
         p.precio_25kg,
         p.precio_30kg,
+        p.precio_oferta,
+        p.destacado_carrusel,
+        p.badge_carrusel,
+        p.orden_carrusel,
         p.stock_actual,
         p.activo,
         COALESCE(c.nombre, 'Varios') as categoria
@@ -63,6 +67,10 @@ export default async function handler(req, res) {
         imagen: p.imagen ? String(p.imagen).trim() : '',
         tipoVenta,
         stock: Number(p.stock_actual) || 0,
+        destacado_carrusel: Boolean(p.destacado_carrusel),
+        badge_carrusel: p.badge_carrusel || '🔥 OFERTA',
+        orden_carrusel: Number(p.orden_carrusel) || 0,
+        precio_oferta: num(p.precio_oferta),
         precios: tipoVenta === 'unidad'
           ? {
               kg: 0,

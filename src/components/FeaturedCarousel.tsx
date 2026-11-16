@@ -13,6 +13,7 @@ interface OfferProductItem {
   product: Product;
   tituloDisplay: string;
   precioReal: number;
+  precioOriginal?: number;
   precioMayorista?: number;
   badgeLabel: string;
 }
@@ -31,32 +32,30 @@ export function FeaturedCarousel({
   // Estado para el modal de detalle / compra rápida al hacer clic en una tarjeta
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
-  // 1. Filtramos y preparamos los productos destacados respetando fielmente el Excel base
+  // 1. Filtramos y preparamos los productos destacados respetando fielmente la base de datos de gestión
   const offerItems: OfferProductItem[] = useMemo(() => {
     if (!products || products.length === 0) return [];
 
-    // Priorizamos los productos insignia con sus IDs oficiales de la planilla:
-    // 358: Mix Patagonia ($19.800)
-    // 5: Almendras Guara ($23.900)
-    // 800: Nueces Chandler Extra Light ($16.900)
-    // 7: Castañas de Cajú W4 ($16.500)
-    // 26: Mix Cervecero ($7.440)
-    // 22: Mix Premium ($17.900)
-    // 4: Nueces Con Cáscara ($8.280)
-    // 400: Almendras Carmel Chilenas ($26.900)
-    const targetIds = [358, 5, 800, 7, 26, 22, 4, 400];
-    const picked: Product[] = [];
+    // Priorizamos los productos marcados dinámicamente en la base de gestión
+    const dinamicos = products
+      .filter((p) => Boolean(p.destacado_carrusel))
+      .sort((a, b) => (a.orden_carrusel ?? 0) - (b.orden_carrusel ?? 0));
 
-    // Buscar los productos por id preferido
-    for (const tid of targetIds) {
-      const found = products.find((p) => p.id === tid);
-      if (found && !picked.some((p) => p.id === found.id)) {
-        picked.push(found);
+    let picked: Product[] = [...dinamicos];
+
+    // Si aún no hay configurados en la base o hay menos de 4, completamos con los insignia de respaldo
+    if (picked.length < 4) {
+      const targetIds = [358, 5, 800, 7, 26, 22, 4, 400];
+      for (const tid of targetIds) {
+        const found = products.find((p) => p.id === tid);
+        if (found && !picked.some((p) => p.id === found.id)) {
+          picked.push(found);
+        }
       }
     }
 
     // Si faltan, completar con los primeros del catálogo que tengan precio válido
-    if (picked.length < 5) {
+    if (picked.length < 4) {
       for (const p of products) {
         if (!picked.some((item) => item.id === p.id) && ((p.precios.kg ?? 0) > 0 || (p.precios.unidad ?? 0) > 0)) {
           picked.push(p);
@@ -67,10 +66,14 @@ export function FeaturedCarousel({
 
     return picked.map((product, idx) => {
       const esUnidad = product.tipoVenta === 'unidad';
-      // Precio oficial exacto de la planilla de Google Sheets
-      const precioReal = esUnidad
+      const precioBase = esUnidad
         ? (product.precios.unidad ?? product.precios.kg ?? 0)
         : (product.precios.kg ?? 0);
+
+      // Si tiene precio de oferta promocional configurado en la base, lo aplicamos
+      const tieneOferta = typeof product.precio_oferta === 'number' && product.precio_oferta > 0 && product.precio_oferta < precioBase;
+      const precioReal = tieneOferta ? product.precio_oferta! : precioBase;
+      const precioOriginal = tieneOferta ? precioBase : undefined;
 
       // Limpiamos y formateamos el nombre en mayúsculas con su presentación
       let nombreLimpio = product.nombre
@@ -79,37 +82,20 @@ export function FeaturedCarousel({
         .replace(/Mariposa/gi, '')
         .trim();
 
-      if (nombreLimpio.toLowerCase().includes('chandler')) {
-        nombreLimpio = 'NUECES CHANDLER';
-      } else if (nombreLimpio.toLowerCase().includes('guara')) {
-        nombreLimpio = 'ALMENDRAS GUARA';
-      } else if (nombreLimpio.toLowerCase().includes('patagonia')) {
-        nombreLimpio = 'MIX PATAGONIA';
-      } else if (nombreLimpio.toLowerCase().includes('caju') || nombreLimpio.toLowerCase().includes('cajú')) {
-        nombreLimpio = 'CASTAÑAS DE CAJÚ';
-      } else if (nombreLimpio.toLowerCase().includes('cervecero')) {
-        nombreLimpio = 'MIX CERVECERO';
-      } else if (nombreLimpio.toLowerCase().includes('premium')) {
-        nombreLimpio = 'MIX PREMIUM';
-      } else if (nombreLimpio.toLowerCase().includes('cascara') || nombreLimpio.toLowerCase().includes('cáscara')) {
-        nombreLimpio = 'NUEZ CON CÁSCARA';
-      } else if (nombreLimpio.toLowerCase().includes('carmel') || nombreLimpio.toLowerCase().includes('chilenas')) {
-        nombreLimpio = 'ALMENDRAS CHILENAS';
-      }
-
       const presentacion = esUnidad ? 'X UNIDAD' : 'X 1 KG';
       const tituloDisplay = `${nombreLimpio.toUpperCase()} ${presentacion}`;
 
-      // Precio mayorista por kilo si existe cargado en el Excel (ej: escala 5kg o 10kg)
+      // Precio mayorista por kilo si existe cargado (escala 5kg o 10kg)
       const precioMayorista = product.precios.cincoKg || product.precios.diezKg;
 
-      const badges = ['🔥 MÁS PEDIDO', '⭐ DESTACADO', '🌿 SELECCIÓN', '✨ PREMIUM', '📦 MAYORISTA'];
-      const badgeLabel = badges[idx % badges.length];
+      const defaultBadges = ['🔥 MÁS PEDIDO', '⭐ DESTACADO', '🌿 SELECCIÓN', '✨ PREMIUM', '📦 MAYORISTA'];
+      const badgeLabel = product.badge_carrusel?.trim() || defaultBadges[idx % defaultBadges.length];
 
       return {
         product,
         tituloDisplay,
         precioReal,
+        precioOriginal,
         precioMayorista,
         badgeLabel,
       };
@@ -272,9 +258,14 @@ export function FeaturedCarousel({
                     />
                   </div>
 
-                  {/* ETIQUETA DE PRECIO INFERIOR: RESPETA EL PRECIO OFICIAL DEL EXCEL */}
+                  {/* ETIQUETA DE PRECIO INFERIOR: RESPETA EL PRECIO OFICIAL DE GESTIÓN */}
                   <div className="offer-card-footer">
                     <div className="offer-card-price-pill">
+                      {item.precioOriginal && (
+                        <span style={{ textDecoration: 'line-through', opacity: 0.6, fontSize: '0.82em', marginRight: 5 }}>
+                          ${item.precioOriginal.toLocaleString('es-AR')}
+                        </span>
+                      )}
                       <span className="offer-price-current">
                         ${item.precioReal.toLocaleString('es-AR')}
                       </span>
