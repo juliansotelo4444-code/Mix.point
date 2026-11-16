@@ -97,19 +97,30 @@ export const PRODUCT_IMAGE_MAP: Record<number, string> = {
 export function getProductImage(id: number, rawImagen?: string): string {
   const cleanRaw = rawImagen?.trim() ?? '';
 
+  // 0. Si viene con data:image base64 o blob (subidas directas del administrador)
+  if (cleanRaw.startsWith('data:image') || cleanRaw.startsWith('blob:')) {
+    return cleanRaw;
+  }
+
   // 1. Si está mapeado localmente a un archivo en public/assets/
   const mapped = PRODUCT_IMAGE_MAP[id];
   if (mapped) {
     return `/assets/${mapped}`;
   }
 
-  // 2. Si ya viene con ruta local /assets/...
-  if (cleanRaw.startsWith('/assets/') || cleanRaw.startsWith('assets/')) {
+  // 2. Si ya viene con ruta local /assets/... o /catalogo/...
+  if (cleanRaw.startsWith('/assets/') || cleanRaw.startsWith('assets/') || cleanRaw.startsWith('/catalogo/')) {
     return cleanRaw.startsWith('/') ? cleanRaw : `/${cleanRaw}`;
   }
 
-  // 3. Si viene con URL externa o texto
+  // 3. Si viene con URL externa o nombre de archivo
   if (cleanRaw) {
+    if (cleanRaw.startsWith('http://') || cleanRaw.startsWith('https://')) {
+      return cleanRaw;
+    }
+    if (cleanRaw.includes('.')) {
+      return `/assets/${cleanRaw}`;
+    }
     return cleanRaw;
   }
 

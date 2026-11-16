@@ -11,12 +11,14 @@ export interface Precios {
 
 export interface Product {
   id: number;
+  codigo?: string;
   nombre: string;
   categoria: string;
   descripcion?: string;
   precios: Precios;
   imagen: string;
   tipoVenta: 'peso' | 'unidad';
+  stock?: number;
 }
 
 export interface CartItem extends Product {

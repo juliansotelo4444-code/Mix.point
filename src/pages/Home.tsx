@@ -108,6 +108,16 @@ export function Home() {
           <p className="mobile-hub-sub">Precios directos de origen con envíos a todo el país.</p>
         </div>
 
+        {/* CARRUSEL HORIZONTAL CONTINUO DE OFERTAS MÓVIL (PEEK EFFECT) */}
+        {!loading && (
+          <FeaturedCarousel
+            products={products}
+            addToCart={addToCart}
+            title="Ofertas de la Semana"
+            subtitle="Los frutos secos y mixes más pedidos con precios de oferta directa."
+          />
+        )}
+
         {/* BUSCADOR INSTANTÁNEO MÓVIL CON BOTÓN TÁCTIL */}
         <form onSubmit={handleHeroSearchSubmit} className="mobile-search-bar" role="search">
           <span className="mobile-search-icon" aria-hidden="true">🔍</span>
@@ -287,6 +297,20 @@ export function Home() {
       </section>
 
       {/* ══════════════════════════════════════════════════════════════
+          CARRUSEL HORIZONTAL CONTINUO DE OFERTAS (DESKTOP)
+          ══════════════════════════════════════════════════════════════ */}
+      <div className="desktop-offers-wrapper">
+        {!loading && (
+          <FeaturedCarousel
+            products={products}
+            addToCart={addToCart}
+            title="Ofertas Destacadas de la Semana"
+            subtitle="Precios preferenciales directos en frutos secos seleccionados y mixes artesanales."
+          />
+        )}
+      </div>
+
+      {/* ══════════════════════════════════════════════════════════════
           3. EXPLORÁ POR CATEGORÍA (GRILLA COMPLETA EN DESKTOP)
           ══════════════════════════════════════════════════════════════ */}
       <section className="home-categories-section home-categories-desktop-only" aria-label="Explorar por categoría de producto">
@@ -320,22 +344,11 @@ export function Home() {
       </section>
 
       {/* ══════════════════════════════════════════════════════════════
-          4. CARRUSEL DESTACADOS DE LA SEMANA (COMPARTIDO Y FLUIDO)
+          4. ACCESO AL CATÁLOGO COMPLETO
           ══════════════════════════════════════════════════════════════ */}
-      <section className="teaser-section" aria-label="Productos destacados de la semana">
+      <section className="teaser-section" aria-label="Explorar catálogo completo">
         <div className="teaser-container">
-          {loading ? (
-            <p className="status-msg">Cargando productos destacados del catálogo...</p>
-          ) : (
-            <FeaturedCarousel
-              products={products}
-              addToCart={addToCart}
-              title="Destacados de la Semana"
-              subtitle="Los 5 frutos secos y mixes más pedidos de nuestro catálogo con precios mayoristas directos."
-            />
-          )}
-
-          <div className="teaser-cta-wrapper" style={{ marginTop: '24px' }}>
+          <div className="teaser-cta-wrapper">
             <Link to="/catalogo" className="teaser-cta-btn">
               Explorar catálogo completo ({products.length > 0 ? products.length : 250} productos) →
             </Link>

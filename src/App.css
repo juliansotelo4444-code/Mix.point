@@ -1970,116 +1970,114 @@ main {
   box-shadow: 0 8px 20px rgba(37, 211, 102, 0.45);
 }
 
-/* ── 9.1 FEATURED CAROUSEL (DESTACADOS DE LA SEMANA) ────────── */
-.featured-carousel-section {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(249, 246, 240, 0.9) 100%);
-  border: 1.5px solid var(--border-light);
-  border-radius: 28px;
-  padding: 36px 24px 28px;
-  max-width: 1240px;
+/* ── 9.1 OFFERS HORIZONTAL CAROUSEL (OFERTAS & DESTACADOS) ───── */
+.desktop-offers-wrapper {
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .desktop-offers-wrapper {
+    display: none !important;
+  }
+}
+
+.offers-carousel-section {
   width: 100%;
-  margin: 10px auto 32px;
-  box-shadow: 0 10px 30px rgba(22, 51, 39, 0.05);
+  padding: 24px 0 28px;
   position: relative;
   overflow: hidden;
+  background: linear-gradient(180deg, rgba(251, 249, 244, 0.6) 0%, rgba(246, 241, 230, 0.8) 100%);
 }
 
-.featured-carousel-section::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, var(--accent-gold), var(--primary-green), var(--accent-gold));
+.offers-carousel-container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 16px;
+  position: relative;
 }
 
-.featured-carousel-header {
+@media (max-width: 768px) {
+  .offers-carousel-section {
+    padding: 14px 0 20px;
+    background: transparent;
+  }
+  .offers-carousel-container {
+    padding: 0;
+  }
+}
+
+/* Header Centrado */
+.offers-carousel-header {
   text-align: center;
-  margin-bottom: 26px;
+  margin-bottom: 20px;
+  padding: 0 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 0 10px;
 }
 
-.featured-carousel-tag {
+.offers-carousel-badge {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
   gap: 6px;
   background: var(--accent-gold-light);
   color: var(--accent-gold-text);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.8px;
-  padding: 6px 14px;
+  padding: 5px 14px;
   border-radius: var(--radius-full);
-  margin-bottom: 12px;
-  border: 1px solid rgba(180, 107, 20, 0.2);
+  margin-bottom: 8px;
+  border: 1px solid rgba(197, 155, 39, 0.3);
+  box-shadow: 0 2px 8px rgba(197, 155, 39, 0.12);
 }
 
-.featured-tag-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--accent-gold);
-  animation: pulseDot 2s infinite;
+.offers-badge-flame {
+  font-size: 0.9rem;
+  animation: pulseFlame 1.8s infinite;
 }
 
-@keyframes pulseDot {
-  0% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.4); opacity: 0.6; }
-  100% { transform: scale(1); opacity: 1; }
+@keyframes pulseFlame {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
 }
 
-.featured-carousel-title {
+.offers-carousel-title {
   font-family: var(--font-title);
-  font-size: clamp(1.8rem, 3.5vw, 2.3rem);
+  font-size: clamp(1.6rem, 3.2vw, 2.1rem);
   font-weight: 700;
   color: var(--primary-green);
-  margin: 0 0 10px;
+  margin: 0 0 6px;
   letter-spacing: -0.4px;
   text-align: center;
-  position: relative;
-  display: inline-block;
 }
 
-.featured-carousel-title::after {
-  content: '';
-  display: block;
-  width: 44px;
-  height: 3px;
-  background: var(--accent-gold);
-  margin: 8px auto 0;
-  border-radius: 2px;
-}
-
-.featured-carousel-sub {
+.offers-carousel-subtitle {
   color: var(--text-muted);
-  font-size: 0.98rem;
+  font-size: 0.92rem;
   margin: 0 auto;
-  max-width: 640px;
+  max-width: 600px;
   text-align: center;
-  line-height: 1.5;
+  line-height: 1.45;
 }
 
-.featured-carousel-wrapper {
+/* Contenedor del Track y Flechas */
+.offers-carousel-wrapper {
   position: relative;
   width: 100%;
 }
 
-.carousel-arrow {
+.offers-nav-arrow {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  width: 46px;
-  height: 46px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   background: #ffffff;
-  border: 1.5px solid var(--border-light);
+  border: 1.5px solid var(--accent-gold);
   color: var(--primary-green);
   font-size: 1.7rem;
   line-height: 1;
@@ -2087,137 +2085,605 @@ main {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 6px 18px rgba(22, 51, 39, 0.18);
   user-select: none;
   z-index: 10;
 }
 
-.carousel-arrow--prev {
-  left: 4px;
+.offers-nav-arrow--prev {
+  left: -12px;
 }
 
-.carousel-arrow--next {
-  right: 4px;
+.offers-nav-arrow--next {
+  right: -12px;
 }
 
-.carousel-arrow:hover:not(:disabled) {
+.offers-nav-arrow:hover {
   background: var(--primary-green);
   color: #ffffff;
   border-color: var(--primary-green);
   transform: translateY(-50%) scale(1.1);
-  box-shadow: 0 8px 22px rgba(22, 51, 39, 0.25);
-}
-
-.carousel-arrow:disabled {
-  opacity: 0.25;
-  cursor: not-allowed;
-  box-shadow: none;
-  pointer-events: none;
+  box-shadow: 0 8px 24px rgba(22, 51, 39, 0.28);
 }
 
 @media (max-width: 768px) {
-  .carousel-arrow {
+  .offers-nav-arrow {
     display: none;
   }
 }
 
-.featured-carousel-track {
+/* Track Deslizable Continuo */
+.offers-carousel-track {
   display: flex;
-  gap: 20px;
+  gap: 16px;
   overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  scroll-behavior: smooth;
-  padding: 10px 4px 18px;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
+  padding: 12px 6px 18px;
+  cursor: grab;
 }
 
-.featured-carousel-track::-webkit-scrollbar {
+.offers-carousel-track:active {
+  cursor: grabbing;
+}
+
+.offers-carousel-track::-webkit-scrollbar {
   display: none;
 }
 
-.featured-carousel-item {
-  flex: 0 0 clamp(260px, 80vw, 300px);
-  max-width: clamp(260px, 80vw, 300px);
-  scroll-snap-align: center;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-}
-
-@media (min-width: 640px) {
-  .featured-carousel-item {
-    flex: 0 0 310px;
-    max-width: 310px;
-    scroll-snap-align: start;
+/* Peek Effect en Mobile: 1 tarjeta centrada y asoman las laterales */
+@media (max-width: 768px) {
+  .offers-carousel-track {
+    padding: 10px 14vw 16px;
+    gap: 12px;
+    scroll-snap-type: x mandatory;
   }
 }
 
-.featured-item-rank-badge {
+/* ── Estructura Visual de la Tarjeta (Offer Card) ── */
+.offer-card {
+  flex: 0 0 calc(20% - 14px);
+  min-width: 220px;
+  max-width: 250px;
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1.5px solid rgba(197, 155, 39, 0.4);
+  box-shadow: 0 8px 22px rgba(22, 51, 39, 0.08);
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s ease, border-color 0.28s ease;
+  user-select: none;
+}
+
+.offer-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 36px rgba(22, 51, 39, 0.16);
+  border-color: var(--accent-gold);
+}
+
+@media (max-width: 1024px) and (min-width: 769px) {
+  .offer-card {
+    flex: 0 0 240px;
+    min-width: 240px;
+  }
+}
+
+@media (max-width: 768px) {
+  .offer-card {
+    flex: 0 0 72vw;
+    max-width: 290px;
+    scroll-snap-align: center;
+  }
+}
+
+/* Ribbon de Descuento */
+.offer-card-ribbon {
   position: absolute;
-  top: 6px;
-  right: 6px;
-  background: linear-gradient(135deg, var(--accent-gold), #854d0e);
+  top: 10px;
+  right: 10px;
+  background: linear-gradient(135deg, #c59b27, #854d0e);
   color: #ffffff;
-  font-size: 0.72rem;
+  border-radius: var(--radius-full);
+  padding: 3px 9px;
+  z-index: 4;
+  box-shadow: 0 3px 10px rgba(197, 155, 39, 0.35);
+}
+
+.offer-ribbon-text {
+  font-size: 0.68rem;
   font-weight: 800;
   letter-spacing: 0.5px;
-  padding: 4px 10px;
-  border-radius: var(--radius-full);
-  z-index: 5;
-  box-shadow: 0 4px 12px rgba(180, 107, 20, 0.35);
-  pointer-events: none;
+  text-transform: uppercase;
 }
 
-.featured-carousel-dots {
+/* Título Superior: Etiqueta semi-transparente sobre la imagen */
+.offer-card-top-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 48px;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid rgba(197, 155, 39, 0.3);
+  border-radius: 12px;
+  padding: 6px 10px;
+  z-index: 3;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.offer-card-title {
+  font-family: var(--font-title);
+  font-size: 0.76rem;
+  font-weight: 800;
+  color: #0f241b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Imagen Central: Ocupa la mayor parte */
+.offer-card-image-box {
+  width: 100%;
+  height: 215px;
+  overflow: hidden;
+  background: #faf7f2;
+  position: relative;
+}
+
+.offer-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.offer-card:hover .offer-card-img {
+  transform: scale(1.06);
+}
+
+/* Footer con Píldora de Precios Flotante */
+.offer-card-footer {
+  padding: 12px 12px 14px;
+  background: #ffffff;
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  border-top: 1px solid rgba(197, 155, 39, 0.12);
+}
+
+.offer-card-price-pill {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  margin-top: 14px;
-}
-
-.carousel-dot {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: var(--border-light);
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  transition: all 0.25s ease;
-}
-
-.carousel-dot--active {
-  width: 24px;
-  border-radius: 6px;
-  background: var(--primary-green);
-}
-
-.btn-consultar-wa-card {
-  width: 100%;
-  padding: 12px 16px;
+  background: linear-gradient(180deg, #ffffff 0%, #fcf8ee 100%);
+  border: 1.5px solid var(--accent-gold);
   border-radius: var(--radius-full);
-  background-color: #25d366;
+  padding: 5px 14px;
+  box-shadow: 0 3px 10px rgba(197, 155, 39, 0.16);
+  width: 100%;
+}
+
+.offer-price-current {
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #0f241b;
+  letter-spacing: -0.3px;
+}
+
+.offer-price-old {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #8c9196;
+  text-decoration: line-through;
+}
+
+.offer-card-click-hint {
+  font-size: 0.68rem;
+  color: var(--accent-gold-text);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+/* Nota inferior informativa */
+.offers-carousel-footer-note {
+  text-align: center;
+  margin-top: 8px;
+  padding: 0 16px;
+}
+
+.offers-footer-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.85);
+  padding: 5px 14px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-light);
+}
+
+.offers-pulse-icon {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-gold);
+  animation: pulseDot 2s infinite;
+}
+
+/* ── MODAL DE DETALLE Y COMPRA RÁPIDA (PRODUCT DETAIL MODAL) ──── */
+.product-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 36, 27, 0.68);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.product-modal-card {
+  background: #ffffff;
+  border-radius: 24px;
+  border: 1.5px solid var(--accent-gold);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+  max-width: 760px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  animation: modalScaleUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalScaleUp {
+  0% { transform: scale(0.94); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.product-modal-close-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #f1ede4;
+  border: none;
+  font-size: 1.1rem;
+  color: var(--primary-green);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: all 0.2s ease;
+}
+
+.product-modal-close-btn:hover {
+  background: var(--primary-green);
+  color: #ffffff;
+  transform: rotate(90deg);
+}
+
+.product-modal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 0;
+}
+
+@media (max-width: 640px) {
+  .product-modal-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.product-modal-media {
+  position: relative;
+  background: #fbf9f4;
+  border-right: 1px solid var(--border-light);
+  min-height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+@media (max-width: 640px) {
+  .product-modal-media {
+    border-right: none;
+    border-bottom: 1px solid var(--border-light);
+    height: 220px;
+    min-height: auto;
+  }
+}
+
+.product-modal-badge-float {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  background: linear-gradient(135deg, var(--accent-gold), #854d0e);
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  z-index: 2;
+  box-shadow: 0 3px 10px rgba(180, 107, 20, 0.35);
+}
+
+.product-modal-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.product-modal-body {
+  padding: 24px 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.product-modal-header {
+  border-bottom: 1px solid var(--border-light);
+  padding-bottom: 14px;
+}
+
+.product-modal-category {
+  display: inline-block;
+  color: var(--accent-gold-text);
+  font-size: 0.74rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+
+.product-modal-title {
+  font-family: var(--font-title);
+  font-size: 1.45rem;
+  color: var(--primary-green);
+  margin: 0 0 6px;
+  line-height: 1.25;
+}
+
+.product-modal-desc {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  margin: 0;
+  line-height: 1.45;
+}
+
+.product-modal-scale-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.product-modal-label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.product-modal-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.product-scale-pill {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 6px 12px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border-light);
+  background: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.product-scale-pill--active {
+  border-color: var(--primary-green);
+  background: rgba(22, 51, 39, 0.05);
+}
+
+.scale-pill-name {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--primary-green);
+}
+
+.scale-pill-price {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.product-modal-price-box {
+  background: #fdfbf7;
+  border: 1px solid rgba(197, 155, 39, 0.25);
+  border-radius: 14px;
+  padding: 12px 16px;
+}
+
+.product-modal-price-main {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.product-modal-current-price {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--primary-green);
+}
+
+.product-modal-old-price {
+  font-size: 1rem;
+  color: #8c9196;
+  text-decoration: line-through;
+}
+
+.product-modal-discount-tag {
+  background: var(--accent-gold-light);
+  color: var(--accent-gold-text);
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+}
+
+.product-modal-format-note {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin: 4px 0 0;
+}
+
+.product-modal-qty-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 8px 0;
+}
+
+.product-modal-qty-control {
+  display: inline-flex;
+  align-items: center;
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-full);
+  background: #ffffff;
+  overflow: hidden;
+}
+
+.product-modal-qty-btn {
+  width: 38px;
+  height: 38px;
+  border: none;
+  background: transparent;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--primary-green);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease;
+}
+
+.product-modal-qty-btn:hover {
+  background: rgba(22, 51, 39, 0.08);
+}
+
+.product-modal-qty-val {
+  min-width: 32px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.product-modal-subtotal {
+  text-align: right;
+}
+
+.subtotal-label {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.subtotal-value {
+  font-size: 1.25rem;
+  color: var(--primary-green);
+}
+
+.product-modal-actions {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 10px;
+}
+
+@media (max-width: 500px) {
+  .product-modal-actions {
+    grid-template-columns: 1fr;
+  }
+}
+
+.btn-modal-add-cart {
+  background: var(--primary-green);
   color: #ffffff;
   border: none;
-  font-family: var(--font-body);
-  font-size: 0.88rem;
+  padding: 13px 18px;
+  border-radius: var(--radius-full);
   font-weight: 700;
+  font-size: 0.92rem;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  transition: all 0.25s ease;
-  box-shadow: 0 3px 10px rgba(37, 211, 102, 0.3);
+  transition: all 0.22s ease;
+  box-shadow: 0 4px 14px var(--primary-green-glow);
 }
 
-.btn-consultar-wa-card:hover {
-  background-color: #20ba5a;
+.btn-modal-add-cart:hover {
+  background: var(--primary-green-hover);
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(37, 211, 102, 0.45);
+}
+
+.btn-modal-add-cart--added {
+  background: #15803d !important;
+}
+
+.btn-modal-wa-cta {
+  background: #25d366;
+  color: #ffffff;
+  border: none;
+  padding: 13px 18px;
+  border-radius: var(--radius-full);
+  font-weight: 700;
+  font-size: 0.92rem;
+  cursor: pointer;
+  transition: all 0.22s ease;
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+}
+
+.btn-modal-wa-cta:hover {
+  background: #20ba5a;
+  transform: translateY(-2px);
+}
+
+.product-modal-view-cat-link {
+  background: transparent;
+  border: none;
+  color: var(--accent-gold-text);
+  font-size: 0.84rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: center;
+  padding: 4px 0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.product-modal-view-cat-link:hover {
+  color: var(--primary-green);
 }
 
 /* ── 10. PROGRESSIVE LOAD MORE (CATÁLOGO) ───────────────────── */

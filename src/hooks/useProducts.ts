@@ -109,11 +109,12 @@ function parseCSV(text: string): Product[] {
   });
 }
 
-const PRODUCTS_CACHE_KEY = 'mixpoint_cached_products_v1';
+const PRODUCTS_CACHE_KEY = 'mixpoint_products_db_v2';
+const LEGACY_CACHE_KEY = 'mixpoint_cached_products_v1';
 
 function getCachedProducts(): Product[] {
   try {
-    const raw = localStorage.getItem(PRODUCTS_CACHE_KEY);
+    const raw = localStorage.getItem(PRODUCTS_CACHE_KEY) || localStorage.getItem(LEGACY_CACHE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed) && parsed.length > 0) return parsed;
@@ -129,46 +130,122 @@ export function useProducts() {
   const [loading, setLoading] = useState<boolean>(() => getCachedProducts().length === 0);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    let cancel = false;
-
-    // Cache-buster para asegurar datos frescos del Excel en cada recarga
-    const cacheBuster = `&_t=${Date.now()}`;
-    fetch(`${SHEETS_CSV_URL}${cacheBuster}`)
-      .then(res => {
-        if (!res.ok) throw new Error('No se pudo cargar la planilla');
-        return res.text();
-      })
-      .then(text => {
-        if (cancel) return;
-        const parsed = parseCSV(text);
-        if (parsed.length > 0) {
-          setProducts(parsed);
+  const cargarCatalogo = async (cancelToken = { cancelled: false }) => {
+    // 1. Intentar cargar directamente desde la base de datos Neon vía Serverless Function
+    try {
+      const res = await fetch(`/api/productos?_t=${Date.now()}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 0) {
+          if (cancelToken.cancelled) return;
+          const normalizados: Product[] = data.map((p) => ({
+            ...p,
+            imagen: getProductImage(p.id, p.imagen),
+          }));
+          setProducts(normalizados);
           try {
-            localStorage.setItem(PRODUCTS_CACHE_KEY, JSON.stringify(parsed));
+            localStorage.setItem(PRODUCTS_CACHE_KEY, JSON.stringify(normalizados));
           } catch {
             // Ignorar límite de almacenamiento
           }
+          setLoading(false);
+          setError(null);
+          return;
         }
-        setLoading(false);
-        setError(null);
-      })
-      .catch(err => {
-        if (cancel) return;
-        // Si ya teníamos productos en caché, no mostramos error bloqueante
-        setProducts(prev => {
-          if (prev.length === 0) {
-            setError(err.message);
-          }
-          return prev;
-        });
-        setLoading(false);
+      }
+    } catch (errDb) {
+      console.warn('[useProducts] Intento con /api/productos no completado, probando respaldo...', errDb);
+    }
+
+    // 2. Respaldo secundario: intentar consultar backend local si estuviera corriendo en puerto 4000
+    try {
+      const resLocal = await fetch(`http://localhost:4000/api/productos/public?_t=${Date.now()}`);
+      if (resLocal.ok) {
+        const rawLocal = await resLocal.json();
+        if (Array.isArray(rawLocal) && rawLocal.length > 0) {
+          if (cancelToken.cancelled) return;
+          const normalizadosLocal: Product[] = rawLocal.map((p, idx) => {
+            const esUnidad = p.unidad_medida === 'unidad';
+            const base = Number(p.precio_venta) || 0;
+            const num = (v: any) => {
+              const n = Number(v);
+              return (!isNaN(n) && n > 0) ? n : undefined;
+            };
+            return {
+              id: Number(p.id) || (8000 + idx),
+              codigo: p.codigo || '',
+              nombre: p.nombre,
+              descripcion: p.descripcion || undefined,
+              categoria: p.categoria || 'Varios',
+              imagen: getProductImage(Number(p.id), p.imagen),
+              tipoVenta: esUnidad ? 'unidad' : 'peso',
+              stock: Number(p.stock_actual) || 0,
+              precios: esUnidad
+                ? {
+                    kg: 0,
+                    unidad: base,
+                    cincoKg: num(p.precio_5kg),
+                    diezKg: num(p.precio_10kg),
+                    veinticincoKg: num(p.precio_25kg),
+                    treintaKg: num(p.precio_30kg),
+                  }
+                : {
+                    kg: base,
+                    cincoKg: num(p.precio_5kg),
+                    diezKg: num(p.precio_10kg),
+                    veinticincoKg: num(p.precio_25kg),
+                    treintaKg: num(p.precio_30kg),
+                  }
+            };
+          });
+          setProducts(normalizadosLocal);
+          try {
+            localStorage.setItem(PRODUCTS_CACHE_KEY, JSON.stringify(normalizadosLocal));
+          } catch {}
+          setLoading(false);
+          setError(null);
+          return;
+        }
+      }
+    } catch {}
+
+    // 3. Respaldo terciario de contingencia: Google Sheets CSV original
+    try {
+      const cacheBuster = `&_t=${Date.now()}`;
+      const res = await fetch(`${SHEETS_CSV_URL}${cacheBuster}`);
+      if (!res.ok) throw new Error('No se pudo cargar la planilla');
+      const text = await res.text();
+      if (cancelToken.cancelled) return;
+      const parsed = parseCSV(text);
+      if (parsed.length > 0) {
+        setProducts(parsed);
+        try {
+          localStorage.setItem(PRODUCTS_CACHE_KEY, JSON.stringify(parsed));
+        } catch {}
+      }
+      setLoading(false);
+      setError(null);
+    } catch (err: any) {
+      if (cancelToken.cancelled) return;
+      // Si ya teníamos productos en caché, no mostramos pantalla de error
+      setProducts(prev => {
+        if (prev.length === 0) {
+          setError(err.message || 'Error al cargar productos');
+        }
+        return prev;
       });
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const cancelToken = { cancelled: false };
+    cargarCatalogo(cancelToken);
 
     return () => {
-      cancel = true;
+      cancelToken.cancelled = true;
     };
   }, []);
 
-  return { products, loading, error };
+  return { products, loading, error, refetch: () => cargarCatalogo({ cancelled: false }) };
 }
