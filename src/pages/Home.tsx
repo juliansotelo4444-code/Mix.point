@@ -248,7 +248,7 @@ export function Home() {
               Abastecemos tu dietética, fábrica de alfajores, panadería o restaurante
             </h2>
             <p className="text-gray-300 mt-4 text-base leading-relaxed">
-              Trabajamos con bultos cerrados de 5kg, 10kg, 25kg y 30kg. Te ofrecemos lista de precios mayorista actualizada semanalmente, trazabilidad de lotes y entregas coordinadas sin seña previa.
+               Te ofrecemos lista de precios mayorista actualizada semanalmente, trazabilidad de lotes y entregas coordinadas sin seña previa.
             </p>
 
             <div className="mt-8 flex flex-col sm:flex-row gap-4">
