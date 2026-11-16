@@ -109,11 +109,12 @@ function parseCSV(text: string): Product[] {
   });
 }
 
-const PRODUCTS_CACHE_KEY = 'mixpoint_products_sheets_v3';
+const PRODUCTS_CACHE_KEY = 'mixpoint_products_neon_v1';
+const LEGACY_CACHE_KEY = 'mixpoint_products_sheets_v3';
 
 function getCachedProducts(): Product[] {
   try {
-    const raw = localStorage.getItem(PRODUCTS_CACHE_KEY);
+    const raw = localStorage.getItem(PRODUCTS_CACHE_KEY) || localStorage.getItem(LEGACY_CACHE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed) && parsed.length > 0) return parsed;
@@ -132,28 +133,134 @@ export function useProducts() {
   useEffect(() => {
     let cancel = false;
 
-    // Cache-buster para asegurar datos frescos del Excel en cada recarga
-    const cacheBuster = `&_t=${Date.now()}`;
-    fetch(`${SHEETS_CSV_URL}${cacheBuster}`)
-      .then(res => {
-        if (!res.ok) throw new Error('No se pudo cargar la planilla');
-        return res.text();
-      })
-      .then(text => {
+    async function cargarCatalogo() {
+      // 1. FUENTE PRINCIPAL: Base de datos Neon PostgreSQL en tiempo real
+      try {
+        const res = await fetch(`/api/productos?_t=${Date.now()}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data) && data.length > 0) {
+            if (cancel) return;
+            const normalizados: Product[] = data.map((p: any) => {
+              const esUnidad = p.tipoVenta === 'unidad' || p.unidad_medida === 'unidad';
+              const precioBase = Number(p.precio_venta || (p.precios ? (p.precios.unidad ?? p.precios.kg) : 0)) || 0;
+              const numVal = (v: any) => {
+                const n = Number(v);
+                return (!isNaN(n) && n > 0) ? n : undefined;
+              };
+
+              return {
+                id: Number(p.id),
+                codigo: p.codigo || '',
+                nombre: p.nombre,
+                descripcion: p.descripcion || undefined,
+                categoria: p.categoria || 'Varios',
+                imagen: getProductImage(Number(p.id), p.imagen),
+                tipoVenta: esUnidad ? 'unidad' : 'peso',
+                stock: Number(p.stock_actual ?? p.stock ?? 0),
+                precios: p.precios || (esUnidad
+                  ? {
+                      kg: 0,
+                      unidad: precioBase,
+                      cincoKg: numVal(p.precio_5kg),
+                      diezKg: numVal(p.precio_10kg),
+                      veinticincoKg: numVal(p.precio_25kg),
+                      treintaKg: numVal(p.precio_30kg),
+                    }
+                  : {
+                      kg: precioBase,
+                      cincoKg: numVal(p.precio_5kg),
+                      diezKg: numVal(p.precio_10kg),
+                      veinticincoKg: numVal(p.precio_25kg),
+                      treintaKg: numVal(p.precio_30kg),
+                    }),
+              };
+            });
+
+            setProducts(normalizados);
+            try {
+              localStorage.setItem(PRODUCTS_CACHE_KEY, JSON.stringify(normalizados));
+            } catch {}
+            setLoading(false);
+            setError(null);
+            return;
+          }
+        }
+      } catch (errDb) {
+        console.warn('[useProducts] Consulta /api/productos no disponible, usando respaldo...', errDb);
+      }
+
+      // 2. RESPALDO LOCAL: Backend Express en puerto 4000 si está corriendo localmente
+      try {
+        const resLocal = await fetch(`http://localhost:4000/api/productos/public?_t=${Date.now()}`);
+        if (resLocal.ok) {
+          const rawLocal = await resLocal.json();
+          if (Array.isArray(rawLocal) && rawLocal.length > 0) {
+            if (cancel) return;
+            const normalizadosLocal: Product[] = rawLocal.map((p: any, idx: number) => {
+              const esUnidad = p.unidad_medida === 'unidad';
+              const base = Number(p.precio_venta) || 0;
+              const numVal = (v: any) => {
+                const n = Number(v);
+                return (!isNaN(n) && n > 0) ? n : undefined;
+              };
+
+              return {
+                id: Number(p.id) || (8000 + idx),
+                codigo: p.codigo || '',
+                nombre: p.nombre,
+                descripcion: p.descripcion || undefined,
+                categoria: p.categoria || 'Varios',
+                imagen: getProductImage(Number(p.id), p.imagen),
+                tipoVenta: esUnidad ? 'unidad' : 'peso',
+                stock: Number(p.stock_actual) || 0,
+                precios: esUnidad
+                  ? {
+                      kg: 0,
+                      unidad: base,
+                      cincoKg: numVal(p.precio_5kg),
+                      diezKg: numVal(p.precio_10kg),
+                      veinticincoKg: numVal(p.precio_25kg),
+                      treintaKg: numVal(p.precio_30kg),
+                    }
+                  : {
+                      kg: base,
+                      cincoKg: numVal(p.precio_5kg),
+                      diezKg: numVal(p.precio_10kg),
+                      veinticincoKg: numVal(p.precio_25kg),
+                      treintaKg: numVal(p.precio_30kg),
+                    },
+              };
+            });
+
+            setProducts(normalizadosLocal);
+            try {
+              localStorage.setItem(PRODUCTS_CACHE_KEY, JSON.stringify(normalizadosLocal));
+            } catch {}
+            setLoading(false);
+            setError(null);
+            return;
+          }
+        }
+      } catch {}
+
+      // 3. RESPALDO DE CONTINGENCIA: Google Sheets CSV
+      try {
+        const cacheBuster = `&_t=${Date.now()}`;
+        const res = await fetch(`${SHEETS_CSV_URL}${cacheBuster}`);
+        if (!res.ok) throw new Error('No se pudo cargar la planilla de respaldo');
+        const text = await res.text();
         if (cancel) return;
         const parsed = parseCSV(text);
         if (parsed.length > 0) {
           setProducts(parsed);
           try {
             localStorage.setItem(PRODUCTS_CACHE_KEY, JSON.stringify(parsed));
-          } catch {
-            // Ignorar límite de almacenamiento
-          }
+          } catch {}
         }
         setLoading(false);
         setError(null);
-      })
-      .catch((err: unknown) => {
+      } catch (err: unknown) {
         if (cancel) return;
         const msg = err instanceof Error ? err.message : 'Error al cargar productos';
         setProducts(prev => {
@@ -163,7 +270,10 @@ export function useProducts() {
           return prev;
         });
         setLoading(false);
-      });
+      }
+    }
+
+    cargarCatalogo();
 
     return () => {
       cancel = true;
