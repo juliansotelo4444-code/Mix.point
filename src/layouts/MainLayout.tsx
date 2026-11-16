@@ -2,7 +2,6 @@ import { Outlet, Link } from 'react-router-dom';
 import { Navbar } from '../components/Navbar';
 import { CartButton } from '../components/CartButton';
 import { CartModal } from '../components/CartModal';
-import { SocialBarTop } from '../components/SocialLinks';
 import { ScrollToTop } from '../components/ScrollToTop';
 import { ScrollRevealController } from '../components/ScrollRevealController';
 import { WhatsAppFloat } from '../components/WhatsAppFloat';
@@ -17,7 +16,6 @@ export function MainLayout() {
       <ScrollToTop />
       <ScrollRevealController />
       <div className="app-container">
-        <SocialBarTop />
         <Navbar />
 
         <main>

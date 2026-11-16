@@ -1,8 +1,8 @@
 // src/config/constants.ts
 
-export const WHATSAPP_NUMERO = '5491131469587';
-export const WHATSAPP_DISPLAY = '+54 9 11 3146-9587';
-export const MINIMO_COMPRA_ENVIO_GRATIS = 20000;
+export const WHATSAPP_NUMERO = '5491157077061';
+export const WHATSAPP_DISPLAY = '+54 9 11 5707-7061';
+export const MINIMO_COMPRA_ENVIO_GRATIS = 70000;
 
 // Modo mantenimiento: poner en true para mostrar la pantalla de pausa/atención
 export const MODO_MANTENIMIENTO = false;
