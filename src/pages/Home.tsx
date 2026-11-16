@@ -102,10 +102,26 @@ export function Home() {
           1. EXPERIENCIA EXCLUSIVA MÓVIL: RÁPIDA, DIRECTA Y TIPO APP
           ══════════════════════════════════════════════════════════════ */}
       <section className="mobile-home-hub" aria-label="Portada móvil rápida">
-        <div className="mobile-hub-header">
-          <span className="mobile-hub-badge">🌿 Venta Mayorista & Minorista</span>
-          <h1 className="mobile-hub-title">Frutos Secos & Mixes Prémium</h1>
-          <p className="mobile-hub-sub">Precios directos de origen con envíos a todo el país.</p>
+        {/* BANNER PRINCIPAL OFICIAL DE MIX POINT (PAGO CONTRA ENTREGA) */}
+        <div className="mobile-hero-banner-container">
+          <div className="mobile-hero-banner-card">
+            <img
+              src="/assets/banner-pago-contra-entrega.jpg"
+              alt="Mix Point - Pago Contra Entrega. Recibí tu pedido en tu puerta y aboná al momento"
+              className="mobile-hero-banner-image"
+              loading="eager"
+            />
+          </div>
+          <div className="mobile-hero-banner-actions">
+            <a
+              href="https://wa.me/5491157077061?text=Hola%20Mix%20Point!%20Quiero%20hacer%20un%20pedido%20con%20pago%20contra%20entrega"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-hero-banner-wa"
+            >
+              💬 Pedir por WhatsApp con Pago Contra Entrega
+            </a>
+          </div>
         </div>
 
         {/* CARRUSEL HORIZONTAL CONTINUO DE OFERTAS MÓVIL (PEEK EFFECT) */}
@@ -184,11 +200,14 @@ export function Home() {
           <div className="hero-content">
             <span className="hero-badge">
               <span className="hero-badge-dot" aria-hidden="true" />
-              🌿 Distribuidora de Frutos Secos & Alimentos Naturales
+              🌿 Mix Point • Frutos Secos & Alimentos Naturales
             </span>
 
             <h1 className="hero-title">
-              Calidad y Frescura <em>Directo a tu Puerta</em>
+              <span style={{ color: 'var(--accent-gold)' }}>PAGO CONTRA</span> ENTREGA
+              <em style={{ display: 'block', fontSize: '1.25rem', marginTop: '6px', color: '#f4eee2', fontStyle: 'normal' }}>
+                Recibí tu pedido en tu puerta y aboná al momento
+              </em>
             </h1>
 
             <p className="hero-subtitle">
@@ -235,62 +254,63 @@ export function Home() {
               </Link>
             </div>
 
-            {/* MÉTRICAS TRANSPARENTES DESKTOP */}
+            {/* MÉTRICAS TRANSPARENTES DESKTOP (ALINEADAS CON EL BANNER OFICIAL) */}
             <div className="hero-trust-bar">
               <div className="hero-trust-item">
-                <strong>+{products.length > 0 ? products.length : 250}</strong>
-                <span>Productos en Catálogo</span>
+                <strong>🤝 Abonás al Recibir</strong>
+                <span>Pago Contra Entrega</span>
               </div>
               <div className="hero-trust-sep" aria-hidden="true">·</div>
               <div className="hero-trust-item">
-                <strong>Bulto y Kilo</strong>
-                <span>Mayorista & Minorista</span>
-              </div>
-              <div className="hero-trust-sep" aria-hidden="true">·</div>
-              <div className="hero-trust-item">
-                <strong>Envíos</strong>
+                <strong>🚚 Envíos</strong>
                 <span>A Todo el País</span>
               </div>
               <div className="hero-trust-sep" aria-hidden="true">·</div>
               <div className="hero-trust-item">
-                <strong>Atención Directa</strong>
-                <span>Vía WhatsApp</span>
+                <strong>📦 Bulto y Kilo</strong>
+                <span>Mayorista & Minorista</span>
+              </div>
+              <div className="hero-trust-sep" aria-hidden="true">·</div>
+              <div className="hero-trust-item">
+                <strong>✨ 100% Calidad</strong>
+                <span>Garantizada</span>
               </div>
             </div>
           </div>
 
-          {/* VISUAL SHOWCASE DESKTOP */}
+          {/* VISUAL SHOWCASE DESKTOP CON EL BANNER OFICIAL */}
           <div className="hero-visual">
             <div className="hero-image-wrapper">
               <img
-                src="/assets/fondo.frutos.jpg"
-                alt="Frutos Secos Premium Mix Point"
+                src="/assets/banner-pago-contra-entrega.jpg"
+                alt="Mix Point - Pago Contra Entrega Frutos Secos"
                 className="hero-image"
                 loading="eager"
+                style={{ objectFit: 'contain', background: '#091f16' }}
               />
               <div className="hero-image-overlay" />
             </div>
 
             {/* TARJETAS FLOTANTES DESKTOP */}
             <div className="hero-floating-card hero-floating-card--top">
-              <span className="floating-card-icon">⭐</span>
+              <span className="floating-card-icon">🤝</span>
               <div className="floating-card-info">
-                <span className="floating-card-title">Nueces Chandler</span>
-                <span className="floating-card-sub">Partidas y Enteras</span>
+                <span className="floating-card-title">Abonás al Recibir</span>
+                <span className="floating-card-sub">Sin pagos por adelantado</span>
               </div>
             </div>
 
             <div className="hero-floating-card hero-floating-card--bottom">
-              <span className="floating-card-icon">🌿</span>
+              <span className="floating-card-icon">🚚</span>
               <div className="floating-card-info">
-                <span className="floating-card-title">Mixes y Frutos</span>
-                <span className="floating-card-sub">Venta por Kilo y Bulto</span>
+                <span className="floating-card-title">Envíos a Todo el País</span>
+                <span className="floating-card-sub">Puerta a puerta</span>
               </div>
             </div>
 
             <div className="hero-seal-badge">
               <span className="hero-seal-icon">🌿</span>
-              <span className="hero-seal-text">Calidad Prémium</span>
+              <span className="hero-seal-text">Origen Argentino</span>
             </div>
           </div>
         </div>
