@@ -75,15 +75,14 @@ export function FeaturedCarousel({
       const precioReal = tieneOferta ? product.precio_oferta! : precioBase;
       const precioOriginal = tieneOferta ? precioBase : undefined;
 
-      // Limpiamos y formateamos el nombre en mayúsculas con su presentación
+      // Limpiamos y formateamos el nombre en mayúsculas
       let nombreLimpio = product.nombre
         .replace(/2026/g, '')
         .replace(/Nacionales/gi, '')
         .replace(/Mariposa/gi, '')
         .trim();
 
-      const presentacion = esUnidad ? 'X UNIDAD' : 'X 1 KG';
-      const tituloDisplay = `${nombreLimpio.toUpperCase()} ${presentacion}`;
+      const tituloDisplay = nombreLimpio;
 
       // Precio mayorista por kilo si existe cargado (escala 5kg o 10kg)
       const precioMayorista = product.precios.cincoKg || product.precios.diezKg;
@@ -242,11 +241,6 @@ export function FeaturedCarousel({
                     <span className="offer-ribbon-text">{item.badgeLabel}</span>
                   </div>
 
-                  {/* TÍTULO SUPERIOR */}
-                  <div className="offer-card-top-badge">
-                    <h3 className="offer-card-title">{item.tituloDisplay}</h3>
-                  </div>
-
                   {/* IMAGEN CENTRAL */}
                   <div className="offer-card-image-box">
                     <img
@@ -258,8 +252,12 @@ export function FeaturedCarousel({
                     />
                   </div>
 
-                  {/* ETIQUETA DE PRECIO INFERIOR: RESPETA EL PRECIO OFICIAL DE GESTIÓN */}
+                  {/* CUERPO INFERIOR CON TÍTULO Y PRECIOS */}
                   <div className="offer-card-footer">
+                    <h3 className="offer-card-title" title={item.tituloDisplay}>
+                      {item.tituloDisplay}
+                    </h3>
+
                     <div className="offer-card-price-pill">
                       {item.precioOriginal && (
                         <span style={{ textDecoration: 'line-through', opacity: 0.6, fontSize: '0.82em', marginRight: 5 }}>

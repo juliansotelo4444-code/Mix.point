@@ -2227,57 +2227,27 @@ main {
 /* Ribbon de Descuento */
 .offer-card-ribbon {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 12px;
+  right: 12px;
   background: linear-gradient(135deg, #c59b27, #854d0e);
   color: #ffffff;
   border-radius: var(--radius-full);
-  padding: 3px 9px;
+  padding: 4px 10px;
   z-index: 4;
-  box-shadow: 0 3px 10px rgba(197, 155, 39, 0.35);
+  box-shadow: 0 4px 12px rgba(133, 77, 14, 0.35);
 }
 
 .offer-ribbon-text {
-  font-size: 0.68rem;
+  font-size: 0.7rem;
   font-weight: 800;
   letter-spacing: 0.5px;
   text-transform: uppercase;
 }
 
-/* Título Superior: Etiqueta semi-transparente sobre la imagen */
-.offer-card-top-badge {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  right: 48px;
-  background: rgba(255, 255, 255, 0.94);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  border: 1px solid rgba(197, 155, 39, 0.3);
-  border-radius: 12px;
-  padding: 6px 10px;
-  z-index: 3;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-}
-
-.offer-card-title {
-  font-family: var(--font-title);
-  font-size: 0.76rem;
-  font-weight: 800;
-  color: #0f241b;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin: 0;
-  line-height: 1.25;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* Imagen Central: Ocupa la mayor parte */
+/* Imagen Central */
 .offer-card-image-box {
   width: 100%;
-  height: 215px;
+  height: 195px;
   overflow: hidden;
   background: #faf7f2;
   position: relative;
@@ -2295,15 +2265,35 @@ main {
   transform: scale(1.06);
 }
 
-/* Footer con Píldora de Precios Flotante */
+/* Footer con Título y Píldora de Precios */
 .offer-card-footer {
-  padding: 12px 12px 14px;
+  padding: 12px 14px 14px;
   background: #ffffff;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   border-top: 1px solid rgba(197, 155, 39, 0.12);
+  flex: 1;
+  justify-content: space-between;
+}
+
+.offer-card-title {
+  font-family: var(--font-title, inherit);
+  font-size: 0.84rem;
+  font-weight: 800;
+  color: #0f241b;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin: 0 0 2px;
+  line-height: 1.25;
+  text-align: center;
+  width: 100%;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 2.1rem;
 }
 
 .offer-card-price-pill {
