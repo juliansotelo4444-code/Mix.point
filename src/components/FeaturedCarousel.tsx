@@ -249,6 +249,11 @@ export function FeaturedCarousel({
                       className="offer-card-img"
                       loading="lazy"
                       decoding="async"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.onerror = null;
+                        target.src = '/assets/Flyer-mix-point.png';
+                      }}
                     />
                   </div>
 

@@ -1654,18 +1654,25 @@ main {
   overflow: hidden;
   margin-bottom: 14px;
   border: 1px solid rgba(0, 0, 0, 0.04);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
 }
 
 .product-img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
   display: block;
-  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.04));
 }
 
 .product-card:hover .product-img {
-  transform: scale(1.08);
+  transform: scale(1.05);
 }
 
 .product-badges-row {
@@ -2247,22 +2254,29 @@ main {
 /* Imagen Central */
 .offer-card-image-box {
   width: 100%;
-  height: 195px;
+  height: 205px;
   overflow: hidden;
-  background: #faf7f2;
+  background: radial-gradient(circle at center, #ffffff 40%, #faf6ee 100%);
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 14px;
 }
 
 .offer-card-img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
   display: block;
-  transition: transform 0.4s ease;
+  transition: transform 0.35s ease;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.05));
 }
 
 .offer-card:hover .offer-card-img {
-  transform: scale(1.06);
+  transform: scale(1.05);
 }
 
 /* Footer con Título y Píldora de Precios */
@@ -2442,13 +2456,14 @@ main {
 
 .product-modal-media {
   position: relative;
-  background: #fbf9f4;
+  background: radial-gradient(circle at center, #ffffff 40%, #fbf9f4 100%);
   border-right: 1px solid var(--border-light);
   min-height: 280px;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  padding: 16px;
 }
 
 @media (max-width: 640px) {
@@ -2457,6 +2472,7 @@ main {
     border-bottom: 1px solid var(--border-light);
     height: 220px;
     min-height: auto;
+    padding: 12px;
   }
 }
 
@@ -2477,7 +2493,10 @@ main {
 .product-modal-img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  max-width: 100%;
+  max-height: 280px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.06));
 }
 
 .product-modal-body {

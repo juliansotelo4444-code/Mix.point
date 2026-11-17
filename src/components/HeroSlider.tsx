@@ -94,8 +94,8 @@ export function HeroSlider() {
       onTouchEnd={handleTouchEnd}
       aria-label="Campañas destacadas Mix Point"
     >
-      {/* Contenedor con ratio panorámico optimizado para no cortar textos */}
-      <div className="w-full relative aspect-[16/9] sm:aspect-[16/8] md:aspect-[16/7] lg:aspect-[16/6] max-h-[560px] flex items-center justify-center">
+      {/* Contenedor con ratio panorámico optimizado para no cortar textos ni flyers */}
+      <div className="w-full relative aspect-[16/9] sm:aspect-[16/9] md:aspect-[16/9] lg:aspect-[18/9] max-h-[520px] flex items-center justify-center">
         {SLIDES.map((slide, index) => {
           const isActive = index === currentIndex;
           return (
@@ -114,7 +114,7 @@ export function HeroSlider() {
                 <img
                   src={slide.src}
                   alt={slide.alt}
-                  className="w-full h-full object-contain md:object-cover object-left md:object-center"
+                  className="w-full h-full object-cover object-center"
                   loading={index === 0 ? 'eager' : 'lazy'}
                   decoding="async"
                 />
