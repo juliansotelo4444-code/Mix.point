@@ -102,28 +102,23 @@ export function getProductImage(id: number, rawImagen?: string): string {
     return cleanRaw;
   }
 
-  // 1. Si está mapeado localmente a un archivo en public/assets/
+  // 1. Si ya viene con ruta local /assets/... o /catalogo/... o URL externa desde la BD
+  if (cleanRaw.startsWith('/assets/') || cleanRaw.startsWith('assets/') || cleanRaw.startsWith('/catalogo/')) {
+    return cleanRaw.startsWith('/') ? cleanRaw : `/${cleanRaw}`;
+  }
+  if (cleanRaw.startsWith('http://') || cleanRaw.startsWith('https://')) {
+    return cleanRaw;
+  }
+  if (cleanRaw.includes('.')) {
+    return cleanRaw.startsWith('/') ? cleanRaw : `/assets/${cleanRaw}`;
+  }
+
+  // 2. Respaldo por ID si no tiene imagen asignada en BD
   const mapped = PRODUCT_IMAGE_MAP[id];
   if (mapped) {
     return `/assets/${mapped}`;
   }
 
-  // 2. Si ya viene con ruta local /assets/... o /catalogo/...
-  if (cleanRaw.startsWith('/assets/') || cleanRaw.startsWith('assets/') || cleanRaw.startsWith('/catalogo/')) {
-    return cleanRaw.startsWith('/') ? cleanRaw : `/${cleanRaw}`;
-  }
-
-  // 3. Si viene con URL externa o nombre de archivo
-  if (cleanRaw) {
-    if (cleanRaw.startsWith('http://') || cleanRaw.startsWith('https://')) {
-      return cleanRaw;
-    }
-    if (cleanRaw.includes('.')) {
-      return `/assets/${cleanRaw}`;
-    }
-    return cleanRaw;
-  }
-
-  // 4. Fallback por defecto si no posee imagen
+  // 3. Fallback por defecto si no posee imagen
   return '/assets/Flyer-mix-point.png';
 }
