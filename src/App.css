@@ -2188,7 +2188,8 @@ main {
   .offers-carousel-track {
     padding: 10px 14vw 16px;
     gap: 12px;
-    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
   }
 }
 
@@ -2225,9 +2226,8 @@ main {
 
 @media (max-width: 768px) {
   .offer-card {
-    flex: 0 0 72vw;
+    flex: 0 0 74vw;
     max-width: 290px;
-    scroll-snap-align: center;
   }
 }
 
@@ -2349,12 +2349,72 @@ main {
   border-radius: var(--radius-full);
 }
 
-.offer-card-click-hint {
-  font-size: 0.68rem;
-  color: var(--accent-gold-text);
+/* Acciones de la Tarjeta del Carrusel */
+.offer-card-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  margin-top: 4px;
+}
+
+.offer-btn-add {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  width: 100%;
+  padding: 8px 12px;
+  background: var(--primary-green, #163327);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-full, 9999px);
+  font-family: var(--font-body, inherit);
+  font-size: 0.8rem;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 3px 10px rgba(22, 51, 39, 0.2);
+  user-select: none;
+}
+
+.offer-btn-add:hover {
+  background: var(--primary-light, #234e3d);
+  transform: translateY(-1px);
+  box-shadow: 0 5px 14px rgba(22, 51, 39, 0.28);
+}
+
+.offer-btn-add:active {
+  transform: translateY(0);
+}
+
+.offer-btn-add--added {
+  background: #166534 !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(22, 101, 52, 0.35) !important;
+}
+
+.offer-btn-detail {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 100%;
+  padding: 4px 8px;
+  background: transparent;
+  color: var(--accent-gold-text, #92620f);
+  border: 1px dashed rgba(197, 155, 39, 0.45);
+  border-radius: var(--radius-full, 9999px);
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.offer-btn-detail:hover {
+  background: #fdfaf2;
+  border-color: var(--accent-gold, #c59b27);
+  border-style: solid;
 }
 
 /* Nota inferior informativa */

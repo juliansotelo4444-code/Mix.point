@@ -158,6 +158,10 @@ export function useProducts() {
                 imagen: getProductImage(Number(p.id), p.imagen),
                 tipoVenta: esUnidad ? 'unidad' : 'peso',
                 stock: Number(p.stock_actual ?? p.stock ?? 0),
+                destacado_carrusel: Boolean(p.destacado_carrusel),
+                badge_carrusel: p.badge_carrusel || undefined,
+                orden_carrusel: Number(p.orden_carrusel) || 0,
+                precio_oferta: numVal(p.precio_oferta),
                 precios: p.precios || (esUnidad
                   ? {
                       kg: 0,
@@ -214,6 +218,10 @@ export function useProducts() {
                 imagen: getProductImage(Number(p.id), p.imagen),
                 tipoVenta: esUnidad ? 'unidad' : 'peso',
                 stock: Number(p.stock_actual) || 0,
+                destacado_carrusel: Boolean(p.destacado_carrusel),
+                badge_carrusel: p.badge_carrusel || undefined,
+                orden_carrusel: Number(p.orden_carrusel) || 0,
+                precio_oferta: numVal(p.precio_oferta),
                 precios: esUnidad
                   ? {
                       kg: 0,

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import type { Product, Precios } from '../types';
 import { calcularPrecioUnitario, getEscalaLabel } from '../utils/precios';
 import { WHATSAPP_NUMERO } from '../config/constants';
+import { useCartContext } from '../context/CartContext';
 
 interface Props {
   product: Product | null;
@@ -12,6 +13,7 @@ interface Props {
 
 export function ProductDetailModal({ product, onClose, addToCart }: Props) {
   const navigate = useNavigate();
+  const { setShowCart } = useCartContext();
   const [cantidad, setCantidad] = useState(1);
   const [agregado, setAgregado] = useState(false);
 
@@ -63,7 +65,8 @@ export function ProductDetailModal({ product, onClose, addToCart }: Props) {
     setTimeout(() => {
       setAgregado(false);
       onClose();
-    }, 900);
+      setShowCart(true);
+    }, 600);
   };
 
   const handleConsultarWhatsApp = () => {

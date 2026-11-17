@@ -31,6 +31,39 @@ export function FeaturedCarousel({
 
   // Estado para el modal de detalle / compra rápida al hacer clic en una tarjeta
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [agregadoId, setAgregadoId] = useState<number | null>(null);
+
+  const handleQuickAdd = (product: Product, precioReal: number, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const esUnidad = product.tipoVenta === 'unidad';
+    const escala: keyof Precios = esUnidad
+      ? 'unidad'
+      : (product.precios.kg ?? 0) > 0
+      ? 'kg'
+      : (Object.keys(product.precios) as Array<keyof Precios>).find(
+          (k) => (product.precios[k] ?? 0) > 0
+        ) || 'kg';
+
+    // Si tiene precio promocional, lo reflejamos en el producto añadido al carrito
+    let productoFinal = product;
+    if (precioReal && precioReal > 0) {
+      productoFinal = {
+        ...product,
+        precios: {
+          ...product.precios,
+          [escala]: precioReal,
+        },
+      };
+    }
+
+    addToCart(productoFinal, escala, 1);
+    setAgregadoId(product.id);
+    setTimeout(() => {
+      setAgregadoId(null);
+    }, 1400);
+  };
 
   // 1. Filtramos y preparamos los productos destacados respetando fielmente la base de datos de gestión
   const offerItems: OfferProductItem[] = useMemo(() => {
@@ -283,9 +316,44 @@ export function FeaturedCarousel({
                       </span>
                     )}
 
-                    <span className="offer-card-click-hint">
-                      Tocar para ver detalle / comprar
-                    </span>
+                    {/* BOTONES DE COMPRA Y OPCIONES */}
+                    <div className="offer-card-actions">
+                      <button
+                        type="button"
+                        className={`offer-btn-add ${agregadoId === item.product.id ? 'offer-btn-add--added' : ''}`}
+                        onClick={(e) => handleQuickAdd(item.product, item.precioReal, e)}
+                        disabled={agregadoId === item.product.id}
+                        aria-label={`Agregar ${item.tituloDisplay} al carrito`}
+                      >
+                        {agregadoId === item.product.id ? (
+                          <>
+                            <span className="btn-add-check" aria-hidden="true">✓</span>
+                            <span>¡Agregado!</span>
+                          </>
+                        ) : (
+                          <>
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                              <circle cx="9" cy="21" r="1" />
+                              <circle cx="20" cy="21" r="1" />
+                              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                            </svg>
+                            <span>Agregar al carrito</span>
+                          </>
+                        )}
+                      </button>
+
+                      <button
+                        type="button"
+                        className="offer-btn-detail"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setSelectedProduct(item.product);
+                        }}
+                      >
+                        Ver opciones / bulto →
+                      </button>
+                    </div>
                   </div>
                 </article>
               ))}
