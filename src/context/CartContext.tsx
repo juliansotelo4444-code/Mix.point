@@ -2,7 +2,7 @@ import { createContext, useContext, useState, useEffect, type ReactNode } from '
 import { useCart } from '../hooks/useCart';
 import { useProducts } from '../hooks/useProducts';
 import { useOrderSubmit } from '../hooks/useOrderSubmit';
-import { calcularPrecioUnitario, getEscalaLabel } from '../utils/precios';
+import { calcularPrecioUnitario, getEscalaLabel, MULTIPLICADORES } from '../utils/precios';
 import { WHATSAPP_NUMERO } from '../config/constants';
 import { type DatosEntrega } from '../utils/datosEntrega';
 
@@ -61,14 +61,25 @@ export function CartProvider({ children }: { children: ReactNode }) {
       const label = getEscalaLabel(item.escalaSeleccionada, item.tipoVenta);
       const precioUnitario = calcularPrecioUnitario(item.precios, item.escalaSeleccionada);
       const subtotal = precioUnitario * item.quantity;
+      const mult = MULTIPLICADORES[item.escalaSeleccionada] || 1;
+      const kilosTotales = item.tipoVenta === 'unidad' ? item.quantity : (item.quantity * mult);
+      const precioPorKg = item.tipoVenta === 'unidad'
+        ? precioUnitario
+        : (item.precios[item.escalaSeleccionada] || Math.round((precioUnitario / mult) * 100) / 100);
+
       return {
         producto_id: item.id,
         nombre: item.nombre,
         categoria: item.categoria,
         escala: label,
+        escala_key: item.escalaSeleccionada,
+        multiplicador: mult,
+        bultos: item.quantity,
+        kilos_totales: kilosTotales,
         unidad_medida: item.tipoVenta === 'unidad' ? 'unidad' : 'kg',
         cantidad: item.quantity,
         precio_unitario: precioUnitario,
+        precio_por_kg: precioPorKg,
         subtotal: subtotal
       };
     });

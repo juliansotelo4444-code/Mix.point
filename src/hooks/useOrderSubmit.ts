@@ -6,9 +6,14 @@ export interface OrderItemPayload {
   nombre: string;
   categoria?: string;
   escala: string;
+  escala_key?: string;
+  multiplicador?: number;
+  bultos?: number;
+  kilos_totales?: number;
   unidad_medida?: string;
   cantidad: number;
   precio_unitario: number;
+  precio_por_kg?: number;
   subtotal: number;
 }
 
