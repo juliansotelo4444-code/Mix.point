@@ -96,10 +96,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     const resultado = await submitPedido(datos, productosTexto, cartTotal, itemsEstructurados);
 
     if (!resultado.success) {
-      const continuar = window.confirm(
-        'Hubo un problema temporal con el registro automático, pero podés enviar tu pedido directamente por WhatsApp para que lo preparemos.\n\n¿Querés enviarlo ahora?'
-      );
-      if (!continuar) return;
+      console.warn('Aviso: el registro automático no confirmó respuesta en servidor, pero se envía por WhatsApp oficial.');
     }
 
     const pedidoCodigo = resultado.numeroPedido ? ` *${resultado.numeroPedido}*` : '';

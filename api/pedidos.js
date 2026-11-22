@@ -118,7 +118,27 @@ export default async function handler(req, res) {
       console.warn('Aviso: no se pudo insertar en notificaciones:', errNotif.message);
     }
 
-    // 5. Opcional: Notificar por Telegram o Webhook si estuvieran configurados en `configuracion_sistema`
+    // 5. Replicar automáticamente a Google Sheets en tiempo real
+    try {
+      fetch('https://script.google.com/macros/s/AKfycbyLugszoGUzdKhIN1dDyICjm4tP2m2LrTRqZC9LQr_-85R9lG1fm3_yotSU5-LMKAxz/exec', {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({
+          numero: nuevoNumero,
+          nombre: String(nombre).trim(),
+          telefono: String(telefono || '').trim(),
+          direccion: String(direccion || '').trim(),
+          zona: String(zona || '').trim(),
+          metodoPago: String(metodoPago || 'No especificado').trim(),
+          horarioEntrega: horarioEntregaVal,
+          notas: notasFinal,
+          productos: String(productos || '').trim(),
+          total: totalNumerico
+        })
+      }).catch((e) => console.warn('Aviso replicación Google Sheets:', e.message));
+    } catch (_) {}
+
+    // 6. Opcional: Notificar por Telegram o Webhook si estuvieran configurados en `configuracion_sistema`
     try {
       const configs = await sql.query(
         "SELECT clave, valor FROM configuracion_sistema WHERE clave IN ('telegram_bot_token', 'telegram_chat_id', 'alertas_webhook_url')"

@@ -53,7 +53,7 @@ export function useOrderSubmit() {
 
       // 1. Enviar directamente a la base de datos Neon vía Serverless Function
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000);
+      const timeoutId = setTimeout(() => controller.abort(), 15000);
 
       try {
         const response = await fetch('/api/pedidos', {
@@ -80,25 +80,37 @@ export function useOrderSubmit() {
         console.warn('Aviso: intento en /api/pedidos no completado, activando respaldo...', errApi);
       }
 
-      // 2. Respaldo Apps Script si fuera necesario
-      const fallbackResponse = await fetch(APPS_SCRIPT_FALLBACK_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({
-          nombre: datos.nombre,
-          telefono: datos.telefono,
-          direccion: datos.direccion,
-          zona: datos.zona,
-          metodoPago: datos.metodoPago || 'No especificado',
-          horarioEntrega: datos.horarioEntrega || 'A coordinar',
-          notas: datos.notas?.trim() || '',
-          productos,
-          total,
-        }),
-      });
+      // 2. Respaldo Apps Script (Google Sheets) si fuera necesario
+      try {
+        const fallbackResponse = await fetch(APPS_SCRIPT_FALLBACK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({
+            nombre: datos.nombre,
+            telefono: datos.telefono,
+            direccion: datos.direccion,
+            zona: datos.zona,
+            metodoPago: datos.metodoPago || 'No especificado',
+            horarioEntrega: datos.horarioEntrega || 'A coordinar',
+            notas: datos.notas?.trim() || '',
+            productos,
+            total,
+          }),
+        });
 
-      const fallbackData = await fallbackResponse.json();
-      return fallbackData;
+        const fallbackData = await fallbackResponse.json();
+        if (fallbackData && fallbackData.success) {
+          return fallbackData;
+        }
+      } catch (errFallback) {
+        console.warn('Aviso: respaldo Apps Script no respondió:', errFallback);
+      }
+
+      // 3. Si ambos fallan por cortes de red, permitir que continúe a WhatsApp para no perder la venta
+      return {
+        success: true,
+        horarioEntrega: datos.horarioEntrega || 'A coordinar / Lo antes posible',
+      };
     } catch (err) {
       console.error('Error general al enviar pedido:', err);
       return { success: false, error: 'No se pudo conectar con el servidor' };
