@@ -17,6 +17,13 @@ export interface OrderItemPayload {
   subtotal: number;
 }
 
+export interface OrderExtrasPayload {
+  sessionId?: string;
+  cuponCodigo?: string;
+  descuentoMonto?: number;
+  remitoOrigenId?: number;
+}
+
 interface SubmitResult {
   success: boolean;
   numeroPedido?: string;
@@ -34,7 +41,8 @@ export function useOrderSubmit() {
     datos: DatosEntrega,
     productos: string,
     total: number,
-    items: OrderItemPayload[] = []
+    items: OrderItemPayload[] = [],
+    extras: OrderExtrasPayload = {}
   ): Promise<SubmitResult> => {
     setEnviando(true);
     try {
@@ -49,6 +57,10 @@ export function useOrderSubmit() {
         productos,
         items,
         total,
+        ...(extras.sessionId ? { sessionId: extras.sessionId } : {}),
+        ...(extras.cuponCodigo ? { cuponCodigo: extras.cuponCodigo } : {}),
+        ...(extras.descuentoMonto ? { descuentoMonto: extras.descuentoMonto } : {}),
+        ...(extras.remitoOrigenId ? { remitoOrigenId: extras.remitoOrigenId } : {}),
       };
 
       // 1. Enviar directamente a la base de datos Neon vía Serverless Function

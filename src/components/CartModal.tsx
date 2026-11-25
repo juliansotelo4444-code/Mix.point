@@ -9,6 +9,11 @@ export function CartModal() {
   const {
     cart,
     cartTotal,
+    descuentoCupon,
+    totalConDescuento,
+    cuponAplicado,
+    aplicarCupon,
+    quitarCupon,
     updateQuantity,
     removeItem,
     showCart,
@@ -20,6 +25,21 @@ export function CartModal() {
   } = useCartContext();
 
   const [copiado, setCopiado] = useState(false);
+  const [cuponInput, setCuponInput] = useState('');
+  const [cuponLoading, setCuponLoading] = useState(false);
+  const [cuponError, setCuponError] = useState('');
+
+  const handleAplicarCupon = async () => {
+    setCuponError('');
+    setCuponLoading(true);
+    const res = await aplicarCupon(cuponInput);
+    setCuponLoading(false);
+    if (res.ok) {
+      setCuponInput('');
+    } else {
+      setCuponError(res.error || 'Cupón inválido');
+    }
+  };
 
   if (!showCart) return null;
 
@@ -170,7 +190,82 @@ export function CartModal() {
           )}
 
           <div className="cart-modal-summary">
-            <p className="cart-modal-total">Total: <span className="gold-text">${cartTotal.toLocaleString('es-AR')}</span></p>
+            {/* CAJA DE CUPÓN */}
+            {cart.length > 0 && (
+              <div style={{ marginBottom: 12 }}>
+                {cuponAplicado ? (
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    background: '#ECFDF5',
+                    border: '1px solid #A7F3D0',
+                    color: '#065F46',
+                    borderRadius: 8,
+                    padding: '8px 10px',
+                    fontSize: '0.85rem'
+                  }}>
+                    <span>
+                      🎟️ Cupón <strong>{cuponAplicado.codigo}</strong> ({cuponAplicado.tipo_descuento === 'monto_fijo' ? `$${cuponAplicado.valor_descuento.toLocaleString('es-AR')} OFF` : `${cuponAplicado.valor_descuento}% OFF`}): <strong>-${descuentoCupon.toLocaleString('es-AR')}</strong>
+                    </span>
+                    <button
+                      type="button"
+                      onClick={quitarCupon}
+                      style={{ background: 'none', border: 'none', color: '#991B1B', fontWeight: 700, cursor: 'pointer', fontSize: '0.8rem' }}
+                    >
+                      Quitar
+                    </button>
+                  </div>
+                ) : (
+                  <div>
+                    <div style={{ display: 'flex', gap: 6 }}>
+                      <input
+                        type="text"
+                        value={cuponInput}
+                        onChange={(e) => setCuponInput(e.target.value.toUpperCase())}
+                        placeholder="¿Tenés cupón? Ej: REPONER-XXXX"
+                        style={{
+                          flex: 1,
+                          padding: '8px 10px',
+                          borderRadius: 8,
+                          border: '1px solid rgba(212, 175, 55, 0.35)',
+                          background: 'rgba(255,255,255,0.06)',
+                          color: 'inherit',
+                          fontSize: '0.85rem'
+                        }}
+                      />
+                      <button
+                        type="button"
+                        onClick={handleAplicarCupon}
+                        disabled={cuponLoading || !cuponInput.trim()}
+                        style={{
+                          padding: '8px 12px',
+                          borderRadius: 8,
+                          border: '1px solid rgba(212, 175, 55, 0.5)',
+                          background: 'rgba(212, 175, 55, 0.18)',
+                          color: 'inherit',
+                          fontWeight: 700,
+                          fontSize: '0.82rem',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        {cuponLoading ? '...' : 'Aplicar'}
+                      </button>
+                    </div>
+                    {cuponError && (
+                      <div style={{ color: '#f87171', fontSize: '0.78rem', marginTop: 4 }}>{cuponError}</div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {descuentoCupon > 0 && (
+              <p style={{ margin: '0 0 4px', fontSize: '0.88rem', opacity: 0.85 }}>
+                Subtotal: ${cartTotal.toLocaleString('es-AR')} · Descuento: -${descuentoCupon.toLocaleString('es-AR')}
+              </p>
+            )}
+            <p className="cart-modal-total">Total: <span className="gold-text">${totalConDescuento.toLocaleString('es-AR')}</span></p>
 
             <button
               className="btn-whatsapp"

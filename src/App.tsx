@@ -11,6 +11,7 @@ const Nosotros = lazy(() => import('./pages/Nosotros').then(m => ({ default: m.N
 const Contacto = lazy(() => import('./pages/Contacto').then(m => ({ default: m.Contacto })));
 const Envios = lazy(() => import('./pages/Envios').then(m => ({ default: m.Envios })));
 const Privacidad = lazy(() => import('./pages/Privacidad').then(m => ({ default: m.Privacidad })));
+const Reponer = lazy(() => import('./pages/Reponer').then(m => ({ default: m.Reponer })));
 
 function RouteFallback() {
   return (
@@ -74,6 +75,14 @@ function App() {
             element={
               <Suspense fallback={<RouteFallback />}>
                 <Privacidad />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/reponer/:pedidoId"
+            element={
+              <Suspense fallback={<RouteFallback />}>
+                <Reponer />
               </Suspense>
             }
           />

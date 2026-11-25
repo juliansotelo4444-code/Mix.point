@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useCartContext } from '../context/CartContext';
 import { calcularPrecioUnitario, getEscalaLabel } from '../utils/precios';
 import {
@@ -16,10 +16,23 @@ interface Props {
 }
 
 export function CheckoutModal({ onConfirm, onClose, enviando }: Props) {
-  const { cart, cartTotal } = useCartContext();
+  const { cart, descuentoCupon, totalConDescuento, cuponAplicado, sincronizarCarritoConDatos } = useCartContext();
   const [datos, setDatos] = useState<DatosEntrega>(cargarDatosGuardados);
   const [errores, setErrores] = useState<Partial<DatosEntrega>>({});
   const [recordar, setRecordar] = useState(true);
+
+  // Captura temprana del carrito en BD apenas el cliente escribe un teléfono/email válido
+  useEffect(() => {
+    const telDigits = String(datos.telefono || '').replace(/\D/g, '');
+    const emailStr = String(datos.email || '').trim();
+    if (cart.length === 0 || (telDigits.length < 8 && !emailStr.includes('@'))) return;
+
+    const timer = setTimeout(() => {
+      sincronizarCarritoConDatos(datos);
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, [datos.nombre, datos.telefono, datos.email, datos.direccion, datos.zona, cart.length, sincronizarCarritoConDatos]);
 
   const validar = (): boolean => {
     const nuevosErrores: Partial<DatosEntrega> = {};
@@ -78,7 +91,14 @@ export function CheckoutModal({ onConfirm, onClose, enviando }: Props) {
           <div className="checkout-order-summary">
             <div className="checkout-summary-header">
               <span className="checkout-summary-title">📦 Detalle de envío</span>
-              <span className="checkout-summary-total">Total: ${cartTotal.toLocaleString('es-AR')}</span>
+              <span className="checkout-summary-total">
+                Total: ${totalConDescuento.toLocaleString('es-AR')}
+                {cuponAplicado && descuentoCupon > 0 && (
+                  <small style={{ marginLeft: 6, color: '#10b981' }}>
+                    (-${descuentoCupon.toLocaleString('es-AR')} · {cuponAplicado.codigo})
+                  </small>
+                )}
+              </span>
             </div>
             <ul className="checkout-summary-list">
               {cart.map((item) => {

@@ -137,14 +137,18 @@ export const useCart = () => {
     );
   };
 
-  const clearCart = () => {
+  const clearCart = useCallback(() => {
     setCart([]);
     try {
       localStorage.removeItem(CART_STORAGE_KEY);
     } catch {
       // Ignorar
     }
-  };
+  }, []);
+
+  const replaceCart = useCallback((newItems: CartItem[]) => {
+    setCart(Array.isArray(newItems) ? newItems : []);
+  }, []);
 
   return {
     cart,
@@ -153,6 +157,7 @@ export const useCart = () => {
     updateQuantity,
     removeItem,
     clearCart,
+    replaceCart,
     cartTotal,
     sincronizarConCatalogo,
   };

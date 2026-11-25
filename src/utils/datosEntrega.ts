@@ -6,6 +6,7 @@
 export interface DatosEntrega {
   nombre: string;
   telefono: string;
+  email?: string;
   direccion: string;
   zona: string;
   metodoPago?: string;
@@ -14,16 +15,33 @@ export interface DatosEntrega {
 }
 
 export const CHECKOUT_STORAGE_KEY = 'mixpoint_datos_entrega';
+export const CART_SESSION_KEY = 'mixpoint_cart_session_id';
 
 export const DATOS_VACIOS: DatosEntrega = {
   nombre: '',
   telefono: '',
+  email: '',
   direccion: '',
   zona: '',
   metodoPago: 'Transferencia bancaria',
   horarioEntrega: 'Mañana (09:00 a 13:00 hs)',
   notas: '',
 };
+
+export function getOrCreateCartSessionId(): string {
+  try {
+    const existing = localStorage.getItem(CART_SESSION_KEY);
+    if (existing && existing.trim()) return existing;
+    const generated =
+      typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+        ? crypto.randomUUID()
+        : `mp_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
+    localStorage.setItem(CART_SESSION_KEY, generated);
+    return generated;
+  } catch {
+    return `mp_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
+  }
+}
 
 export function cargarDatosGuardados(): DatosEntrega {
   try {
