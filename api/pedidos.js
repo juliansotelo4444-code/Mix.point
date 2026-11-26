@@ -219,36 +219,74 @@ export default async function handler(req, res) {
       }).catch((e) => console.warn('Aviso replicación Google Sheets:', e.message));
     } catch (_) {}
 
-    // 6. Opcional: Notificar por Telegram o Webhook si estuvieran configurados en `configuracion_sistema`
+    // 6. Notificar por WhatsApp (CallMeBot), Telegram o Webhook si estuvieran configurados en `configuracion_sistema`
     try {
       const configs = await sql.query(
-        "SELECT clave, valor FROM configuracion_sistema WHERE clave IN ('telegram_bot_token', 'telegram_chat_id', 'alertas_webhook_url')"
+        "SELECT clave, valor FROM configuracion_sistema WHERE clave IN ('telegram_bot_token', 'telegram_chat_id', 'alertas_webhook_url', 'callmebot_destinatarios')"
       );
       const cfgMap = {};
       for (const c of configs) cfgMap[c.clave] = c.valor;
 
-      if (cfgMap.telegram_bot_token && cfgMap.telegram_chat_id) {
-        const tgMsg =
-          `🛒 *Nuevo Pedido Web ${nuevoNumero}*\n\n` +
-          `👤 *Cliente:* ${String(nombre).trim()}\n` +
-          `📞 *Teléfono:* ${String(telefono || '').trim()}\n` +
-          `📍 *Dirección:* ${String(direccion || '').trim()} (${String(zona || '').trim()})\n` +
-          `⏰ *Horario de entrega:* ${horarioEntregaVal}\n` +
-          `💰 *Total:* $${totalNumerico.toLocaleString('es-AR')}\n` +
-          `🕒 *Hora recibido:* ${momentoPedido}\n\n` +
-          `_Registrado automáticamente en Mix Point._`;
+      const itemsArr = Array.isArray(items) ? items : [];
+      let prodText = '';
+      if (itemsArr.length > 0) {
+        prodText = '\n📦 *Productos (' + itemsArr.length + '):*\n' + itemsArr.slice(0, 6).map(it => {
+          const cant = it.cantidad || 1;
+          const nom = it.nombre || 'Producto';
+          const sub = Number(it.subtotal) || (cant * (Number(it.precio_unitario) || 0));
+          return '  • ' + cant + 'x ' + nom + ' ($' + sub.toLocaleString('es-AR') + ')';
+        }).join('\n');
+        if (itemsArr.length > 6) prodText += '\n  • ... y ' + (itemsArr.length - 6) + ' ítems más';
+      }
 
+      const notifMsg =
+        `🛒 *¡NUEVO PEDIDO WEB RECIBIDO!*\n` +
+        `━━━━━━━━━━━━━━━━━━━━\n` +
+        `• Pedido: *${nuevoNumero}*\n` +
+        `• Cliente: *${String(nombre).trim()}*\n` +
+        `• Total: *$${totalNumerico.toLocaleString('es-AR')}*\n` +
+        (telefono ? `• Teléfono: ${String(telefono).trim()}\n` : '') +
+        (direccion ? `• Entrega: ${String(direccion).trim()} ${zona ? '(' + String(zona).trim() + ')' : ''}\n` : '') +
+        `• Horario: ${horarioEntregaVal}\n` +
+        `• Pago: ${String(metodoPago || 'No especificado').trim()}\n` +
+        prodText +
+        (notasConCupon ? `\n📝 *Notas:* ${notasConCupon}\n` : '') +
+        `━━━━━━━━━━━━━━━━━━━━\n` +
+        `👉 _Registrado automáticamente en Mix Point._`;
+
+      // Telegram
+      if (cfgMap.telegram_bot_token && cfgMap.telegram_chat_id) {
         fetch(`https://api.telegram.org/bot${cfgMap.telegram_bot_token}/sendMessage`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             chat_id: cfgMap.telegram_chat_id,
-            text: tgMsg,
+            text: notifMsg,
             parse_mode: 'Markdown'
           })
         }).catch((e) => console.warn('Error enviando a Telegram:', e.message));
       }
 
+      // WhatsApp CallMeBot a cada celular configurado
+      if (cfgMap.callmebot_destinatarios) {
+        try {
+          const dests = JSON.parse(cfgMap.callmebot_destinatarios);
+          if (Array.isArray(dests) && dests.length > 0) {
+            for (const d of dests) {
+              const tel = String(d.telefono || '').replace(/[^0-9]/g, '');
+              const key = String(d.apikey || '').trim();
+              if (!tel || !key) continue;
+
+              const url = `https://api.callmebot.com/whatsapp.php?phone=${tel}&text=${encodeURIComponent(notifMsg)}&apikey=${key}`;
+              fetch(url).catch(e => console.warn('Error enviando CallMeBot en nuevo pedido:', e.message));
+            }
+          }
+        } catch (e) {
+          console.warn('Error parseando callmebot_destinatarios:', e.message);
+        }
+      }
+
+      // Webhook
       if (cfgMap.alertas_webhook_url) {
         fetch(cfgMap.alertas_webhook_url, {
           method: 'POST',
@@ -259,7 +297,8 @@ export default async function handler(req, res) {
             cliente: String(nombre).trim(),
             total: totalNumerico,
             horarioEntrega: horarioEntregaVal,
-            hora: momentoPedido
+            hora: momentoPedido,
+            items: itemsArr
           })
         }).catch((e) => console.warn('Error webhook:', e.message));
       }
